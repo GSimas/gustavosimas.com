@@ -1,0 +1,10 @@
+{
+  "name": "Gustavo Simas — Conhecimento, Tecnologia e Imaginação",
+  "short_name": "Gustavo Simas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090d0a",
+  "theme_color": "#a8e935",
+  "lang": "pt-BR",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
