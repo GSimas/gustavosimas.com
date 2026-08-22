@@ -1,31 +1,46 @@
-# This is a README.md file...
-## ...for the [gsimas.github.io](http://gsimas.github.io) webpage
+# Gustavo Simas — atlas pessoal
 
-![](https://img.shields.io/badge/GSimas-Hola%2C%20amigo-green)
+Site pessoal e portfólio interativo de Gustavo Simas da Silva, reunindo pesquisa, tecnologia, literatura, música e experimentação visual.
 
-> "O que me preocupa não é o barulho dos maus, mas sim, o silêncio dos bons" - **Albert Einstein**
+## Recursos
 
-Hello, World! 
+- página inicial responsiva com os eixos Investigar, Construir e Criar;
+- portfólio filtrável por pesquisa, tecnologia, literatura, música e visual;
+- rota `/curriculo` com currículo detalhado e impressão em PDF;
+- temas claro e escuro, alto contraste, ampliação de fonte e redução de movimento;
+- animações com Motion e ícones Lucide;
+- SEO, sitemap, robots, manifesto de web app e metadados sociais;
+- TypeScript, React 19 e Vite;
+- configuração pronta para deploy na Netlify.
 
-This is the repository for **GSimas Github Webpage**. Right now I'm just testing the possibilities, wondering about what can be done 
-in order to improve the website UX (User Experience), performance and aesthetics. I intend to test Jekyll and different Github Themes.
-Currently, you will find nothing at all on the website, because it was barely created. But feel free to copy the source code, if you do,
-please cite the developers, althought there is no LICENSE at all on this repository... Well, let's go on.
+## Instalação
 
-You'll find more about me on my Github profile page: [CLICK HERE](https://github.com/GSimas)
+```bash
+npm install
+npm run dev
+```
 
-*Até mais e obrigado pelos peixes* (I suppose you know how to read portuguese)
+## Build de produção
 
-Repository created yesterday - 2017
+```bash
+npm run build
+```
 
-Repository update today - 2018
+Os arquivos finais serão gerados em `dist/`.
 
-Repository managed tomorrow - 2019
+## Deploy na Netlify
 
-~~Copyright - ~~2020~~ 2021~~
+O arquivo `netlify.toml` já contém a configuração necessária:
 
-Copirraite - 2022
+- comando de build: `npm run build`
+- diretório de publicação: `dist`
+- Node.js: 20
 
-Agora estamos em - 2023
+Importe o repositório na Netlify e publique. A regra de redirecionamento para SPA já está configurada, permitindo acesso direto a `/curriculo`.
 
-Hoje é 31 de outubro de 2024 (feliz halloween)
+## Conteúdo
+
+- `src/App.tsx`: conteúdo, componentes e interações;
+- `src/styles.css`: identidade visual, responsividade, acessibilidade e impressão;
+- `public/assets`: fotografias e imagens do portfólio;
+- `public`: favicon, manifesto, robots, sitemap e redirecionamentos.
