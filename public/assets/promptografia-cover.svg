@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Capa autoral de Promptografia e Agência Criativa</title>
+  <desc id="desc">Composição editorial escura com uma rede de pontos, linha temporal e tipografia clara.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#07060c"/>
+      <stop offset="1" stop-color="#12101d"/>
+    </linearGradient>
+    <radialGradient id="halo">
+      <stop stop-color="#7b688f" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#7b688f" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+  <circle cx="900" cy="430" r="390" fill="url(#halo)"/>
+  <g stroke="#817691" stroke-opacity=".22" stroke-width="1.5">
+    <path d="M610 566 693 452 784 516 870 382 978 462 1093 326"/>
+    <path d="M610 566 753 627 784 516 936 596 978 462 1125 548"/>
+    <path d="M693 452 740 332 870 382 936 596 1125 548"/>
+    <path d="M740 332 829 252 982 278 1093 326"/>
+  </g>
+  <g fill="#0b0911" stroke="#8d819d" stroke-width="2">
+    <circle cx="610" cy="566" r="8"/><circle cx="693" cy="452" r="6"/><circle cx="740" cy="332" r="7"/>
+    <circle cx="753" cy="627" r="5"/><circle cx="784" cy="516" r="10"/><circle cx="829" cy="252" r="5"/>
+    <circle cx="870" cy="382" r="9"/><circle cx="936" cy="596" r="6"/><circle cx="978" cy="462" r="8"/>
+    <circle cx="982" cy="278" r="6"/><circle cx="1093" cy="326" r="8"/><circle cx="1125" cy="548" r="5"/>
+  </g>
+  <g fill="#d9a376" filter="url(#glow)"><circle cx="870" cy="382" r="4"/><circle cx="978" cy="462" r="4"/><circle cx="1093" cy="326" r="4"/></g>
+  <g transform="translate(95 0)">
+  <g font-family="Arial, sans-serif">
+    <text x="70" y="95" fill="#d8d2dc" font-size="16" font-weight="700" letter-spacing="5">PROMPTOGRAFIA</text>
+    <text x="70" y="157" fill="#c79571" font-size="12" letter-spacing="5">IMAGEM · APARATO · AGÊNCIA CRIATIVA</text>
+  </g>
+  <g fill="#f0eaec" font-family="Georgia, serif">
+    <text x="70" y="260" font-size="72">Promptografia</text>
+    <text x="70" y="340" font-size="72">e agência</text>
+    <text x="70" y="420" font-size="72" font-style="italic" fill="#c7b9cf">criativa humana.</text>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="12" letter-spacing="3">
+    <text x="70" y="527" fill="#857c8a">HUMANO</text>
+    <text x="255" y="527" fill="#857c8a">APARATO</text>
+    <text x="449" y="527" fill="#d9a376">COCRIAÇÃO</text>
+    <path d="M70 555H535" stroke="#766d7b"/>
+    <circle cx="70" cy="555" r="5" fill="#d9a376"/><circle cx="300" cy="555" r="5" fill="#857c8a"/><circle cx="535" cy="555" r="5" fill="#d9a376"/>
+  </g>
+  <text x="70" y="674" fill="#8f8594" font-family="Arial, sans-serif" font-size="12" letter-spacing="4">PESQUISA EM CIÊNCIA, TECNOLOGIA E SOCIEDADE</text>
+  </g>
+  <text x="1045" y="674" fill="#d9a376" font-family="Arial, sans-serif" font-size="12" letter-spacing="3">2026</text>
+</svg>

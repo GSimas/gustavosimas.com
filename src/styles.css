@@ -834,6 +834,21 @@ img {
   color: #eaf3ff;
   background: #162c4a;
 }
+.visual-simetrics {
+  background: #0a1024;
+}
+.visual-life-infinite {
+  background: #07100b;
+}
+.visual-mdforge {
+  background: #171411;
+}
+.visual-datavizlab {
+  background: #091123;
+}
+.visual-tokenlab {
+  background: #050906;
+}
 
 .project-body {
   flex: 1;

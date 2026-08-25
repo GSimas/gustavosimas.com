@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Capa autoral do LIFE infinito</title>
+  <desc id="desc">Padrões celulares luminosos sobre um universo quadriculado infinito.</desc>
+  <defs>
+    <radialGradient id="halo"><stop stop-color="#baff55" stop-opacity=".16"/><stop offset="1" stop-color="#baff55" stop-opacity="0"/></radialGradient>
+    <pattern id="grid" width="34" height="34" patternUnits="userSpaceOnUse">
+      <path d="M34 0H0V34" fill="none" stroke="#b9d6b9" stroke-opacity=".10"/>
+    </pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1200" height="760" fill="#07100b"/>
+  <circle cx="620" cy="390" r="430" fill="url(#halo)"/>
+  <rect width="1200" height="760" fill="url(#grid)"/>
+  <g fill="#eff7eb" font-family="Arial, sans-serif">
+    <text x="70" y="102" font-size="30" font-weight="800">LIFE<tspan fill="#baff55">∞</tspan></text>
+    <text x="70" y="132" font-size="12" letter-spacing="5" fill="#93a596">INFINITE LIFE LAB</text>
+    <text x="944" y="102" font-size="12" letter-spacing="3" fill="#baff55">GERAÇÃO  /  ∞</text>
+  </g>
+  <g fill="#baff55" filter="url(#glow)">
+    <rect x="252" y="263" width="46" height="46" rx="8"/><rect x="302" y="263" width="46" height="46" rx="8"/><rect x="302" y="313" width="46" height="46" rx="8"/><rect x="352" y="313" width="46" height="46" rx="8"/><rect x="252" y="363" width="46" height="46" rx="8"/>
+    <rect x="548" y="225" width="46" height="46" rx="8"/><rect x="598" y="225" width="46" height="46" rx="8"/><rect x="648" y="225" width="46" height="46" rx="8"/>
+    <rect x="598" y="275" width="46" height="46" rx="8"/><rect x="598" y="325" width="46" height="46" rx="8"/>
+    <rect x="836" y="363" width="46" height="46" rx="8"/><rect x="886" y="363" width="46" height="46" rx="8"/><rect x="936" y="363" width="46" height="46" rx="8"/>
+    <rect x="836" y="413" width="46" height="46" rx="8"/><rect x="936" y="413" width="46" height="46" rx="8"/>
+    <rect x="836" y="463" width="46" height="46" rx="8"/><rect x="886" y="463" width="46" height="46" rx="8"/><rect x="936" y="463" width="46" height="46" rx="8"/>
+    <rect x="504" y="520" width="46" height="46" rx="8"/><rect x="554" y="520" width="46" height="46" rx="8"/><rect x="604" y="520" width="46" height="46" rx="8"/><rect x="654" y="520" width="46" height="46" rx="8"/>
+  </g>
+  <g fill="#8aa08f" font-family="Arial, sans-serif" font-size="12" letter-spacing="3">
+    <text x="70" y="671">EMERGÊNCIA  ·  AUTO-ORGANIZAÇÃO  ·  VIDA ARTIFICIAL</text>
+    <text x="1015" y="671">X 0  Y 0</text>
+  </g>
+  <path d="M70 636H1130" stroke="#baff55" stroke-opacity=".25"/>
+</svg>

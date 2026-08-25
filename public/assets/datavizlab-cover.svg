@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Capa autoral do DataVizLab</title>
+  <desc id="desc">Painel de visualização com barras, pontos e formas analíticas acessíveis.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#091123"/><stop offset="1" stop-color="#141938"/></linearGradient>
+    <linearGradient id="violet" x1="0" y1="1" x2="0" y2="0"><stop stop-color="#465be8"/><stop offset="1" stop-color="#788cff"/></linearGradient>
+    <linearGradient id="gold" x1="0" y1="1" x2="0" y2="0"><stop stop-color="#d68b20"/><stop offset="1" stop-color="#ffc85c"/></linearGradient>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M60 0H0V60" fill="none" stroke="#8291c8" stroke-opacity=".08"/></pattern>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+  <rect width="1200" height="760" fill="url(#grid)"/>
+  <g fill="#eff2ff" font-family="Arial, sans-serif">
+    <text x="68" y="105" font-size="28" font-weight="800">DataViz<tspan fill="#7286ff">Lab</tspan></text>
+    <text x="876" y="102" font-size="12" letter-spacing="4" fill="#6ed6bd">ATLAS  /  ESTÚDIO</text>
+  </g>
+  <g transform="translate(74 190)">
+    <rect width="1052" height="420" rx="24" fill="#101a32" stroke="#7180af" stroke-opacity=".42"/>
+    <path d="M88 342H974M88 76V342" stroke="#8e9ac1" stroke-opacity=".35"/>
+    <g opacity=".32" stroke="#8e9ac1"><path d="M88 275H974"/><path d="M88 208H974"/><path d="M88 141H974"/></g>
+    <g>
+      <rect x="145" y="223" width="67" height="119" rx="4" fill="url(#violet)"/>
+      <rect x="228" y="151" width="67" height="191" rx="4" fill="url(#gold)"/>
+      <rect x="368" y="251" width="67" height="91" rx="4" fill="url(#violet)"/>
+      <rect x="451" y="100" width="67" height="242" rx="4" fill="url(#gold)"/>
+      <rect x="591" y="183" width="67" height="159" rx="4" fill="url(#violet)"/>
+      <rect x="674" y="73" width="67" height="269" rx="4" fill="url(#gold)"/>
+    </g>
+    <path d="M804 295c37-90 72-51 108-145 24-64 47-69 62-74" fill="none" stroke="#6ed6bd" stroke-width="5"/>
+    <g fill="#6ed6bd"><circle cx="804" cy="295" r="9"/><circle cx="855" cy="226" r="9"/><circle cx="912" cy="150" r="9"/><circle cx="974" cy="76" r="9"/></g>
+    <rect x="720" y="18" width="254" height="48" rx="24" fill="#172440" stroke="#6ed6bd" stroke-opacity=".5"/>
+    <text x="750" y="48" fill="#dce4ff" font-family="Arial, sans-serif" font-size="12" letter-spacing="2">RECOMENDAÇÃO  96%</text>
+  </g>
+  <text x="70" y="677" fill="#98a4c9" font-family="Arial, sans-serif" font-size="13" letter-spacing="4">DO DADO À FORMA CERTA.</text>
+  <text x="927" y="677" fill="#7185ff" font-family="Arial, sans-serif" font-size="13" letter-spacing="3">78 MÉTODOS</text>
+</svg>

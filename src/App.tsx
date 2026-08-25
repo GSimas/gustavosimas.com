@@ -83,8 +83,9 @@ const projects: Project[] = [
     year: "2024",
     description:
       "Metamodelo conceitual para ecossistemas de conhecimento e culturas de aprendizagem organizacional (PPGEGC/UFSC. Vencedor do Prêmio SBGC de Melhor Dissertação).",
-    href: "https://repositorio.ufsc.br/handle/123456789/264422",
+    href: "https://dissertacao.gustavosimas.com/",
     visual: "eco",
+    image: "/assets/eco-caos-cover.svg",
   },
   {
     title: "Rancho de Amor à Ilha",
@@ -122,8 +123,9 @@ const projects: Project[] = [
     year: "2026",
     description:
       "Investigação sobre agência criativa humana, autoria e práticas visuais mediadas por IA generativa (Revista Brasileira de Estudos CTS).",
-    href: "https://revistabrasileiradeestudoscts.emnuvens.com.br/cts/article/view/100",
+    href: "https://promptografia.gustavosimas.com/",
     visual: "agency",
+    image: "/assets/promptografia-cover.svg",
   },
   {
     title: "VI Mídia Produtora",
@@ -134,6 +136,56 @@ const projects: Project[] = [
     href: "https://www.linkedin.com/in/simasgs/",
     visual: "vimidia",
     image: "/assets/mensagem-audiolivro.jpg",
+  },
+  {
+    title: "Simetrics",
+    category: "Tecnologia",
+    year: "2026",
+    description:
+      "Plataforma de inteligência bibliométrica e cientométrica que transforma bases de até 10 mil documentos em indicadores, redes de conhecimento e mapas temáticos — com processamento local no navegador.",
+    href: "https://simetrics.app/",
+    visual: "simetrics",
+    image: "/assets/simetrics-cover.svg",
+  },
+  {
+    title: "LIFE∞ — Infinite Life Lab",
+    category: "Tecnologia",
+    year: "2026",
+    description:
+      "Laboratório interativo do Jogo da Vida de Conway em canvas infinito para criar padrões, acompanhar métricas e explorar emergência, auto-organização, complexidade e vida artificial.",
+    href: "https://gameoflife.gustavosimas.com/",
+    visual: "life-infinite",
+    image: "/assets/life-infinite-cover.svg",
+  },
+  {
+    title: "MDForge",
+    category: "Tecnologia",
+    year: "2026",
+    description:
+      "Conversor privado de arquivos e pastas para Markdown editável. Processa documentos em múltiplos formatos inteiramente no navegador, sem uploads ou armazenamento em servidores.",
+    href: "https://mdforge.gustavosimas.com/",
+    visual: "mdforge",
+    image: "/assets/mdforge-cover.svg",
+  },
+  {
+    title: "DataVizLab",
+    category: "Tecnologia",
+    year: "2026",
+    description:
+      "Plataforma com 78 métodos, recomendador e estúdio local para escolher, construir, auditar e exportar visualizações de dados claras, acessíveis e adequadas à pergunta analítica.",
+    href: "https://datavizlab.gustavosimas.com/",
+    visual: "datavizlab",
+    image: "/assets/datavizlab-cover.svg",
+  },
+  {
+    title: "TokenLab",
+    category: "Tecnologia",
+    year: "2026",
+    description:
+      "Analisador local para contar tokens, simular estratégias de chunking e estimar carga, sobreposição e requisições antes de indexar bases de conhecimento em pipelines de RAG.",
+    href: "https://tokenlab.gustavosimas.com/",
+    visual: "tokenlab",
+    image: "/assets/tokenlab-cover.svg",
   },
 ];
 

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Capa autoral do ECO-CAOS</title>
+  <desc id="desc">Ecossistema de conhecimento representado por dimensões conectadas em órbitas verdes.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#071a13"/>
+      <stop offset="1" stop-color="#0b2419"/>
+    </linearGradient>
+    <radialGradient id="halo">
+      <stop stop-color="#b9f350" stop-opacity=".13"/>
+      <stop offset="1" stop-color="#b9f350" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="58" height="58" patternUnits="userSpaceOnUse"><path d="M58 0H0V58" fill="none" stroke="#9fc8b7" stroke-opacity=".06"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+  <rect width="1200" height="760" fill="url(#grid)"/>
+  <circle cx="876" cy="389" r="335" fill="url(#halo)"/>
+  <g transform="translate(90 0)">
+  <g font-family="Arial, sans-serif">
+    <text x="68" y="101" fill="#f1eee3" font-size="27">ECO<tspan fill="#b9f350" font-weight="800">CAOS</tspan></text>
+    <text x="68" y="161" fill="#8fd3bb" font-size="12" letter-spacing="5">UMA DISSERTAÇÃO EM MOVIMENTO</text>
+  </g>
+  <g fill="#f3efe5" font-family="Georgia, serif">
+    <text x="68" y="274" font-size="69">Conhecimento</text>
+    <text x="68" y="349" font-size="69">é <tspan fill="#b9f350" font-style="italic">ecossistema.</tspan></text>
+  </g>
+  <text x="68" y="417" fill="#aebcb3" font-family="Arial, sans-serif" font-size="17">Atores, recursos, atividades, instituições</text>
+  <text x="68" y="446" fill="#aebcb3" font-family="Arial, sans-serif" font-size="17">e relações em um sistema vivo de conhecimento.</text>
+  </g>
+  <g transform="translate(-55 4)">
+    <circle cx="886" cy="376" r="221" fill="none" stroke="#a9c7b8" stroke-opacity=".29" stroke-width="2"/>
+    <circle cx="886" cy="376" r="135" fill="none" stroke="#a9c7b8" stroke-opacity=".23" stroke-width="2" stroke-dasharray="5 7"/>
+    <g fill="#0d261c" stroke="#648777" stroke-width="2">
+      <circle cx="886" cy="155" r="52"/><circle cx="1080" cy="270" r="49"/><circle cx="1031" cy="537" r="49"/>
+      <circle cx="733" cy="537" r="49"/><circle cx="692" cy="278" r="49"/>
+    </g>
+    <g fill="#b9f350" font-family="Georgia, serif" font-size="26" text-anchor="middle">
+      <text x="886" y="164">A</text><text x="1080" y="279">At</text><text x="1031" y="546">Re</text><text x="733" y="546">I</text><text x="692" y="287">R</text>
+    </g>
+    <circle cx="886" cy="376" r="83" fill="#b9f350" filter="url(#glow)"/>
+    <g fill="#102016" text-anchor="middle"><text x="886" y="369" font-family="Georgia, serif" font-size="42" font-weight="700">K</text><text x="886" y="399" font-family="Arial, sans-serif" font-size="13" letter-spacing="2">ECO</text></g>
+  </g>
+  <g transform="translate(90 0)" font-family="Arial, sans-serif" font-size="12" letter-spacing="3">
+    <text x="68" y="598" fill="#7ca595">METAMODELO CONCEITUAL</text>
+    <text x="68" y="631" fill="#f0eee5">UFSC · PPGEGC · 2024</text>
+    <text x="68" y="674" fill="#b9f350">E = { A, R, At, I, Re }</text>
+  </g>
+</svg>
