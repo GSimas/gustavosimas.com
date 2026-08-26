@@ -30,18 +30,17 @@ import {
   Music,
   Music2,
   Network,
-  Orbit,
   Palette,
   Search,
   Sparkles,
   Sun,
   Trophy,
-  Type,
   Volume2,
   X,
 } from "lucide-react";
 
 type Category = "Pesquisa" | "Tecnologia" | "Literatura" | "Música" | "Visual";
+type Language = "pt" | "en";
 
 interface Project {
   title: string;
@@ -189,50 +188,304 @@ const projects: Project[] = [
   },
 ];
 
+const projectTranslationsEn: Record<string, { title: string; description: string }> = {
+  "Tecnogonia: criando tecnologias que nos criam": {
+    title: "Technogony: creating technologies that create us",
+    description: "An essay on the technologies we create — and that, silently, also create us. Published by Editora Caravana.",
+  },
+  "E o que eu faço com isso?": {
+    title: "And what do I do with this?",
+    description: "A poetry collection of questions, affections and fragments about what we do with what moves through us. Editora Labrador.",
+  },
+  "ECO-CAOS": {
+    title: "ECO-CAOS",
+    description: "A conceptual metamodel for knowledge ecosystems and organizational learning cultures (PPGEGC/UFSC; winner of the SBGC Best Dissertation Award).",
+  },
+  "Rancho de Amor à Ilha": {
+    title: "Rancho de Amor à Ilha",
+    description: "An instrumental lo-fi reinterpretation of Florianópolis' official anthem, composed by Zininho, celebrating the centenary of the Hercílio Luz Bridge.",
+  },
+  Berimbrasil: {
+    title: "Berimbrasil",
+    description: "Curation and appreciation of Brazilian music through memory, listening and digital culture (@brasil.wav).",
+  },
+  "Tecnomágica": {
+    title: "Technomagic",
+    description: "A laboratory for promptography, artificial intelligence, visual experimentation and technical imagination (@tecnomagica).",
+  },
+  "Promptografia e Agência Criativa": {
+    title: "Promptography and Creative Agency",
+    description: "Research on human creative agency, authorship and visual practices mediated by generative AI (Brazilian Journal of STS Studies).",
+  },
+  "VI Mídia Produtora": {
+    title: "VI Mídia Production",
+    description: "Audio engineering, sound design and accessible phonographic production for education and entertainment, including audiobooks, audio description and assistive technology.",
+  },
+  Simetrics: {
+    title: "Simetrics",
+    description: "A bibliometric and scientometric intelligence platform that turns up to 10,000 documents into indicators, knowledge networks and thematic maps — processed locally in the browser.",
+  },
+  "LIFE∞ — Infinite Life Lab": {
+    title: "LIFE∞ — Infinite Life Lab",
+    description: "An interactive Conway's Game of Life laboratory on an infinite canvas for creating patterns, tracking metrics and exploring emergence, self-organization, complexity and artificial life.",
+  },
+  MDForge: {
+    title: "MDForge",
+    description: "A private converter for turning files and folders into editable Markdown. Multiple formats are processed entirely in the browser, with no server uploads or storage.",
+  },
+  DataVizLab: {
+    title: "DataVizLab",
+    description: "A platform with 78 methods, a recommender and a local studio for choosing, building, auditing and exporting clear, accessible visualizations suited to the analytical question.",
+  },
+  TokenLab: {
+    title: "TokenLab",
+    description: "A local analyzer for counting tokens, simulating chunking strategies and estimating load, overlap and requests before indexing knowledge bases in RAG pipelines.",
+  },
+};
+
+const categoryLabels: Record<Language, Record<"Todos" | Category, string>> = {
+  pt: { Todos: "Todos", Pesquisa: "Pesquisa", Tecnologia: "Tecnologia", Literatura: "Literatura", Música: "Música", Visual: "Visual" },
+  en: { Todos: "All", Pesquisa: "Research", Tecnologia: "Technology", Literatura: "Literature", Música: "Music", Visual: "Visual" },
+};
+
 const highlightPublications = [
   {
     title: "Promptography and the reconfiguration of human creative agency",
+    titleEn: "Promptography and the reconfiguration of human creative agency",
     source: "Revista Brasileira de Estudos CTS",
+    sourceEn: "Brazilian Journal of STS Studies",
     year: "2026",
     authors: "Da Silva, Gustavo Simas; Ulbricht, Vânia Ribas",
-    link: "https://revistabrasileiradeestudoscts.emnuvens.com.br/cts/article/view/100",
+    link: "https://revistabrasileiradeestudoscts.com/revista/article/view/37",
   },
   {
-    title: "Technonecromancy: Simulacra of Presence and the Politics of Death in the Age of Generative AI",
+    title: "Tecnonecromancia: Simulacros de presença e a política da morte na era da inteligência artificial generativa",
+    titleEn: "Technonecromancy: Simulacra of Presence and the Politics of Death in the Age of Generative AI",
     source: "Trilogía Ciencia Tecnología Sociedad",
+    sourceEn: "Trilogía Ciencia Tecnología Sociedad",
     year: "2026",
     authors: "Silva, Gustavo Simas da; Ulbricht, Vania Ribas",
-    link: "https://revistas.itm.edu.co/index.php/trilogia/article/view/3194",
+    link: "https://technonecromancy.gustavosimas.com/",
   },
   {
     title: "An ESG-AI Matrix for Innovation Ecosystems",
+    titleEn: "An ESG-AI Matrix for Innovation Ecosystems",
     source: "Sustainable Business International Journal",
+    sourceEn: "Sustainable Business International Journal",
     year: "2026",
     authors: "Silva, Gustavo Simas da; Ulbricht, V. R.",
-    link: "https://periodicos.uff.br/sbijournal/article/view/63124",
+    link: "https://periodicos.uff.br/sbijournal/article/view/69566",
   },
   {
     title: "A quantitative analysis of geographic, gender, and age distribution of Nobel Prize Laureates (1901-2025)",
+    titleEn: "A quantitative analysis of geographic, gender, and age distribution of Nobel Prize Laureates (1901-2025)",
     source: "International Journal of Knowledge Engineering and Management",
+    sourceEn: "International Journal of Knowledge Engineering and Management",
     year: "2025",
     authors: "Simas da Silva, Gustavo; Ribas Ulbricht, Vânia",
-    link: "https://ijkem.emnuvens.com.br/ijkem/article/view/287",
+    link: "https://periodicos.ufsc.br/index.php/ijkem/article/view/109317?articlesBySimilarityPage=1",
   },
   {
     title: "Ecossistema de Conhecimento Organizacional: GC e Cultura de Aprendizagem",
+    titleEn: "Organizational Knowledge Ecosystem: KM and Learning Culture",
     source: "Inteligência Empresarial e Economia dos Intangíveis",
+    sourceEn: "Inteligência Empresarial e Economia dos Intangíveis",
     year: "2023",
     authors: "Da Silva, Gustavo Simas; Lima, L. S.; Ferraz, M. Z.",
-    link: "https://repositorio.ufsc.br/handle/123456789/264422",
+    link: "https://inteligenciaempresarial.emnuvens.com.br/rie/article/view/115",
   },
   {
-    title: "Human-AI Interaction: Anthropomorphization and User Engagement in Conversational Agents",
+    title: "Interação Humano-IA: Antropomorfização & Engajamento no ChatGPT",
+    titleEn: "Human-AI Interaction: Anthropomorphization & User Engagement in ChatGPT",
     source: "IHSI 2024 · Palermo, Itália",
+    sourceEn: "IHSI 2024 · Palermo, Italy",
     year: "2024",
     authors: "Simas, Gustavo; Ribas Ulbricht, Vânia",
-    link: "https://orcid.org/0000-0003-3485-7910",
+    link: "https://ihsi2024.gustavosimas.com",
   },
 ];
+
+const portfolioCopy = {
+  pt: {
+    brandTagline: "Conhecimento · tecnologia · imaginação",
+    nav: ["Manifesto", "Eixos", "Portfólio", "Áudio", "Trajetória", "Publicações", "Currículo"],
+    header: {
+      brandAria: "Gustavo Simas — início",
+      navAria: "Navegação principal",
+      preferencesAria: "Preferências de visualização",
+      theme: "Alternar tema",
+      contrast: "Alto contraste",
+      decreaseText: "Diminuir tamanho do texto",
+      increaseText: "Aumentar tamanho do texto",
+      menu: "Abrir menu",
+      closeMenu: "Fechar menu",
+      language: "Mudar idioma para inglês",
+    },
+    hero: {
+      location: "Florianópolis · Brasil · 2026",
+      line1: "Pesquiso as",
+      emphasis: "tecnologias",
+      line3: "que nos criam.",
+      lede: "Engenheiro do conhecimento, pesquisador, escritor e artista. Minha prática atravessa inovação, ecologia do conhecimento, inteligência artificial, literatura e audiovisual.",
+      explore: "Explorar trabalhos",
+      cv: "Currículo completo",
+      index: ["Investigar", "Sistematizar", "Criar"],
+    },
+    manifesto: {
+      label: "Manifesto",
+      before: "Ciência e arte como modos de formular perguntas, revelar relações e ",
+      emphasis: "disputar o que o mundo pode ser",
+      first: "Meu trabalho parte de uma pergunta persistente: como as tecnologias, os conhecimentos e as culturas se transformam mutuamente?",
+      second: "Minha prática atravessa ecossistemas de inovação, ecologia do conhecimento, inteligência artificial, literatura e audiovisual. Transito entre pesquisa e criação porque algumas ideias pedem modelos conceituais; outras, poemas. Algumas se tornam sistemas e métodos, outras músicas, livros ou experiências sonoras.",
+      link: "Ver os três eixos",
+    },
+    axes: {
+      label: "Eixos de atuação",
+      title1: "Três verbos.",
+      title2: "Uma mesma visão intelectual.",
+      subtitle: "Os três verbos não funcionam como caixas isoladas. São movimentos complementares de uma mesma ecologia de pensamento e criação.",
+      cards: [
+        { title: "Investigar", description: "Produzir conceitos, perguntas e métodos para compreender conhecimento, inteligência artificial, aprendizagem e sociedade.", tags: ["Ecologia do conhecimento", "IA e sociedade", "Governança sociotécnica", "Pesquisa acadêmica"] },
+        { title: "Sistematizar", description: "Transformar pesquisa e estratégia em sistemas, modelos de dados, arquiteturas conceituais e metodologias de inovação úteis.", tags: ["Engenharia do conhecimento", "Governança de IA", "Metodologias de inovação", "Modelagem de dados"] },
+        { title: "Criar", description: "Explorar literatura, poesia, produção fonográfica e narrativas visuais como modos legítimos de conhecer e produzir mundo.", tags: ["Literatura e poesia", "Produção fonográfica", "Curadoria cultural", "Promptografia"] },
+      ],
+    },
+    portfolio: { label: "Portfólio de projetos", title1: "Portfólio de", title2: "projetos.", subtitle: "Alguns livros, pesquisas, plataformas, álbuns e experimentos conectados pelas perguntas que os originaram.", filterAria: "Filtrar trabalhos" },
+    audio: {
+      kicker: "Áudio como outra forma de pesquisa",
+      title1: "Escutar também",
+      title2: "é uma forma",
+      title3: "de conhecer.",
+      description: "Releituras instrumentais, paisagens sonoras, produção fonográfica e curadoria cultural fazem parte de uma prática que une técnica, memória, palavra e experimentação sonora.",
+      spotify: "Ouvir no Spotify",
+      berim: "Conhecer Berimbrasil",
+      projectsAria: "Projetos musicais",
+      ranchAlt: "Capa do single Rancho de Amor à Ilha",
+      berimAlt: "Capa do projeto Berimbrasil",
+      production: "Produção Fonográfica",
+    },
+    trajectory: {
+      label: "Trajetória",
+      title1: "Conhecimento é",
+      title2: "uma travessia.",
+      subtitle: "Uma trajetória interdisciplinar articulada entre universidades, organizações de inovação, territórios e projetos autorais.",
+      portraitAlt: "Retrato de Gustavo Simas",
+      location: "Florianópolis · SC",
+      badges: ["Analista de IA · Sebrae/SC", "Doutorando CAPES · PPGEGC/UFSC", "Mestre · Prêmio SBGC Melhor Dissertação", "Engenheiro Eletrônico · Produtor Fonográfico"],
+      timeline: [
+        { year: "2026 — Atual", title: "Inteligência Artificial no Sebrae/SC & Doutorado", text: "Atuação na estruturação da governança do Escritório de IA do Sebrae/SC, MLOps/LLMOps gerencial e conformidade, paralela à pesquisa de doutorado em ecologia do conhecimento na UFSC." },
+        { year: "2025", title: "Tecnogonia, Poesia e Prêmio SBGC", text: "Publicação de Tecnogonia (Editora Caravana) e do livro de poemas E o que eu faço com isso? (Editora Labrador). Conquista do Prêmio SBGC de Melhor Dissertação de Mestrado do Brasil." },
+        { year: "2025 — 2026", title: "MBA PUCRS", text: "MBA em Tecnologia para Negócios: AI, Data Science e Big Data na PUCRS, com foco em inteligência artificial aplicada a modelos de negócio, tomada de decisão estratégica e inovação orientada a dados." },
+        { year: "2023 — 2026", title: "Impact Hub & Metodologias de Inovação", text: "Analista de Inovação Sênior e de Dados, atuando no desenvolvimento e aplicação de metodologias de inovação territorial e ecossistêmica, incluindo Metodologia ELI, ALI Ecossistemas, ALI Produtividade e INDEI." },
+        { year: "2020 — 2024", title: "Releituras / VI Mídia & Produção de Áudio Acessível", text: "Cofundador e produtor fonográfico de conteúdos acessíveis (audiolivros, audiodescrição para público print disabled e síntese vocal com IA), com apoio do Programa Centelha (FAPESC)." },
+        { year: "2016 — 2021", title: "Engenharia Eletrônica & Robótica na UFSC", text: "Graduação em Engenharia Eletrônica com ênfase em Processamento Digital de Sinais (TCC em aparelhos auditivos) e pesquisa no Laboratório de Robótica Aplicada (LAR/UFSC)." },
+        { year: "2012 — 2016", title: "Curso técnico em eletrônica IFSC & FRC 5800 Magic Island Robotics", text: "Formação técnica em eletrônica no IFSC e mentoria na equipe FRC 5800 Magic Island Robotics, com participação e premiações em campeonatos internacionais de robótica FIRST Robotics Competition em Las Vegas, Orlando e China." },
+      ],
+    },
+    research: { label: "Pesquisa e publicação", title1: "Conhecer", title2: "em relação.", description: "Artigos científicos, livros e pesquisas em periódicos internacionais e anais de conferências sobre inteligência artificial, agência criativa, ecologia do conhecimento e inovação.", orcid: "Ver ORCID", lattes: "Ver Currículo Lattes", open: "Abrir pesquisa" },
+    capabilities: {
+      label: "Capacidades", title1: "O que posso", title2: "colocar em movimento.",
+      cards: [
+        { title: "Conhecimento e estratégia", items: ["Governança de Inteligência Artificial", "Ecologia e engenharia do conhecimento", "Modelagem conceitual e ontologias", "Ecossistemas de inovação e impacto", "Cultura de aprendizagem contínua"] },
+        { title: "Tecnologia e dados", items: ["MLOps e LLMOps gerencial", "Python, ciência de dados e BI", "TypeScript, React e aplicações web", "Processamento de sinais e áudio", "Prototipagem ágil de soluções"] },
+        { title: "Criação e cultura", items: ["Ensaios, literatura e poesia", "Produção fonográfica e som", "Curadoria musical e digital", "Promptografia e IA generativa", "Acessibilidade e audiodescrição"] },
+      ],
+    },
+    contact: { kicker: "Disponível para projetos, pesquisa e colaboração", title1: "Vamos imaginar", title2: "alguma coisa", title3: "juntos?", description: "Conhecimento, tecnologia, literatura, produção fonográfica e audiovisual para pensar o presente e inventar futuros." },
+    footer: { location: "Florianópolis · Brasil", text: "© 2026 · Conhecimento · tecnologia · imaginação", top: "Voltar ao topo" },
+    atlas: { aria: "Atlas dos três eixos", core: "Conhecimento", nodes: ["Investigar", "Sistematizar", "Criar"] },
+  },
+  en: {
+    brandTagline: "Knowledge · technology · imagination",
+    nav: ["Manifesto", "Axes", "Portfolio", "Audio", "Journey", "Publications", "CV"],
+    header: {
+      brandAria: "Gustavo Simas — home",
+      navAria: "Main navigation",
+      preferencesAria: "Display preferences",
+      theme: "Switch theme",
+      contrast: "High contrast",
+      decreaseText: "Decrease text size",
+      increaseText: "Increase text size",
+      menu: "Open menu",
+      closeMenu: "Close menu",
+      language: "Mudar idioma para português",
+    },
+    hero: {
+      location: "Florianópolis · Brazil · 2026",
+      line1: "I research the",
+      emphasis: "technologies",
+      line3: "that create us.",
+      lede: "Knowledge engineer, researcher, writer and artist. My practice spans innovation, knowledge ecology, artificial intelligence, literature and audiovisual media.",
+      explore: "Explore projects",
+      cv: "Full CV",
+      index: ["Investigate", "Systematize", "Create"],
+    },
+    manifesto: {
+      label: "Manifesto",
+      before: "Science and art as ways to formulate questions, reveal relationships and ",
+      emphasis: "contest what the world can become",
+      first: "My work begins with a persistent question: how do technologies, knowledge and cultures transform one another?",
+      second: "My practice spans innovation ecosystems, knowledge ecology, artificial intelligence, literature and audiovisual media. I move between research and creation because some ideas call for conceptual models; others, poems. Some become systems and methods, others music, books or sonic experiences.",
+      link: "See the three axes",
+    },
+    axes: {
+      label: "Fields of practice",
+      title1: "Three verbs.",
+      title2: "One intellectual vision.",
+      subtitle: "The three verbs are not isolated boxes. They are complementary movements within the same ecology of thought and creation.",
+      cards: [
+        { title: "Investigate", description: "Develop concepts, questions and methods to understand knowledge, artificial intelligence, learning and society.", tags: ["Knowledge ecology", "AI and society", "Sociotechnical governance", "Academic research"] },
+        { title: "Systematize", description: "Turn research and strategy into systems, data models, conceptual architectures and useful innovation methodologies.", tags: ["Knowledge engineering", "AI governance", "Innovation methodologies", "Data modeling"] },
+        { title: "Create", description: "Explore literature, poetry, phonographic production and visual narratives as legitimate ways of knowing and making worlds.", tags: ["Literature and poetry", "Phonographic production", "Cultural curation", "Promptography"] },
+      ],
+    },
+    portfolio: { label: "Project portfolio", title1: "Project", title2: "portfolio.", subtitle: "Books, research, platforms, albums and experiments connected by the questions that originated them.", filterAria: "Filter projects" },
+    audio: {
+      kicker: "Audio as another form of research",
+      title1: "Listening is also",
+      title2: "a way",
+      title3: "of knowing.",
+      description: "Instrumental reinterpretations, soundscapes, phonographic production and cultural curation are part of a practice joining technique, memory, language and sonic experimentation.",
+      spotify: "Listen on Spotify",
+      berim: "Discover Berimbrasil",
+      projectsAria: "Music projects",
+      ranchAlt: "Cover of the single Rancho de Amor à Ilha",
+      berimAlt: "Cover of the Berimbrasil project",
+      production: "Phonographic Production",
+    },
+    trajectory: {
+      label: "Journey", title1: "Knowledge is", title2: "a crossing.", subtitle: "An interdisciplinary journey articulated across universities, innovation organizations, territories and authorial projects.", portraitAlt: "Portrait of Gustavo Simas", location: "Florianópolis · SC",
+      badges: ["AI Analyst · Sebrae/SC", "CAPES PhD Researcher · PPGEGC/UFSC", "Master's · SBGC Best Dissertation Award", "Electronics Engineer · Music Producer"],
+      timeline: [
+        { year: "2026 — Present", title: "Artificial Intelligence at Sebrae/SC & PhD", text: "Work on structuring governance for Sebrae/SC's AI Office, managerial MLOps/LLMOps and compliance, alongside PhD research in knowledge ecology at UFSC." },
+        { year: "2025", title: "Technogony, Poetry and the SBGC Award", text: "Publication of Technogony (Editora Caravana) and the poetry book And what do I do with this? (Editora Labrador). Winner of Brazil's SBGC Best Master's Dissertation Award." },
+        { year: "2025 — 2026", title: "PUCRS MBA", text: "MBA in Technology for Business: AI, Data Science and Big Data at PUCRS, focused on AI applied to business models, strategic decision-making and data-driven innovation." },
+        { year: "2023 — 2026", title: "Impact Hub & Innovation Methodologies", text: "Senior Innovation and Data Analyst developing and applying territorial and ecosystem innovation methodologies, including ELI, ALI Ecosystems, ALI Productivity and INDEI." },
+        { year: "2020 — 2024", title: "Reinterpretations / VI Mídia & Accessible Audio Production", text: "Co-founder and music producer of accessible content — audiobooks, audio description for print-disabled audiences and AI voice synthesis — supported by the Centelha Program (FAPESC)." },
+        { year: "2016 — 2021", title: "Electronics Engineering & Robotics at UFSC", text: "Degree in Electronics Engineering focused on Digital Signal Processing, with a thesis on hearing aids and research at UFSC's Applied Robotics Laboratory." },
+        { year: "2012 — 2016", title: "Electronics at IFSC & FRC 5800 Magic Island Robotics", text: "Technical education in electronics at IFSC and mentoring for FRC 5800 Magic Island Robotics, with participation and awards in international FIRST Robotics Competition events in Las Vegas, Orlando and China." },
+      ],
+    },
+    research: { label: "Research and publication", title1: "Knowing", title2: "in relation.", description: "Scientific articles, books and research in international journals and conference proceedings on artificial intelligence, creative agency, knowledge ecology and innovation.", orcid: "View ORCID", lattes: "View Lattes CV", open: "Open research" },
+    capabilities: {
+      label: "Capabilities", title1: "What I can", title2: "set in motion.",
+      cards: [
+        { title: "Knowledge and strategy", items: ["Artificial Intelligence governance", "Knowledge ecology and engineering", "Conceptual modeling and ontologies", "Innovation and impact ecosystems", "Continuous learning culture"] },
+        { title: "Technology and data", items: ["Managerial MLOps and LLMOps", "Python, data science and BI", "TypeScript, React and web applications", "Signal and audio processing", "Agile solution prototyping"] },
+        { title: "Creation and culture", items: ["Essays, literature and poetry", "Phonographic production and sound", "Music and digital curation", "Promptography and generative AI", "Accessibility and audio description"] },
+      ],
+    },
+    contact: { kicker: "Available for projects, research and collaboration", title1: "Shall we imagine", title2: "something", title3: "together?", description: "Knowledge, technology, literature, phonographic production and audiovisual media to think through the present and invent futures." },
+    footer: { location: "Florianópolis · Brazil", text: "© 2026 · Knowledge · technology · imagination", top: "Back to top" },
+    atlas: { aria: "Atlas of the three axes", core: "Knowledge", nodes: ["Investigate", "Systematize", "Create"] },
+  },
+} as const;
+
+function getInitialLanguage(): Language {
+  const saved = localStorage.getItem("language");
+  if (saved === "pt" || saved === "en") return saved;
+  return navigator.language.toLowerCase().startsWith("pt") ? "pt" : "en";
+}
 
 // Dados completos e precisos extraídos do Lattes e LinkedIn
 const cvData = {
@@ -721,6 +974,7 @@ const cvData = {
 
 function App() {
   const [currentPath, setCurrentPath] = useState(() => window.location.pathname.replace(/\/$/, ""));
+  const [language, setLanguage] = useState<Language>(getInitialLanguage);
 
   useEffect(() => {
     const onLocationChange = () => {
@@ -730,6 +984,11 @@ function App() {
     return () => window.removeEventListener("popstate", onLocationChange);
   }, []);
 
+  useEffect(() => {
+    document.documentElement.lang = language === "pt" ? "pt-BR" : "en";
+    localStorage.setItem("language", language);
+  }, [language]);
+
   const navigate = (path: string) => {
     window.history.pushState({}, "", path);
     setCurrentPath(path.replace(/\/$/, ""));
@@ -738,24 +997,40 @@ function App() {
 
   const isCurriculum = currentPath === "/curriculo";
 
-  return isCurriculum ? <Curriculum navigate={navigate} /> : <Portfolio navigate={navigate} />;
+  return isCurriculum ? (
+    <Curriculum navigate={navigate} />
+  ) : (
+    <Portfolio navigate={navigate} language={language} setLanguage={setLanguage} />
+  );
 }
 
-function Portfolio({ navigate }: { navigate: (path: string) => void }) {
+function Portfolio({
+  navigate,
+  language,
+  setLanguage,
+}: {
+  navigate: (path: string) => void;
+  language: Language;
+  setLanguage: React.Dispatch<React.SetStateAction<Language>>;
+}) {
   const [theme, setTheme] = useState<"dark" | "light">(() => (localStorage.getItem("theme") as "dark" | "light") || "dark");
   const [contrast, setContrast] = useState(false);
-  const [fontSize, setFontSize] = useState(0);
-  const [reduceMotion, setReduceMotion] = useState(false);
+  const [fontSize, setFontSize] = useState(() => {
+    const storedStep = Number(localStorage.getItem("font-size-step"));
+    return Number.isInteger(storedStep) ? Math.min(3, Math.max(0, storedStep)) : 0;
+  });
   const [menu, setMenu] = useState(false);
   const [filter, setFilter] = useState<"Todos" | Category>("Todos");
+  const copy = portfolioCopy[language];
+  const isPt = language === "pt";
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     document.documentElement.classList.toggle("high-contrast", contrast);
-    document.documentElement.classList.toggle("reduce-motion", reduceMotion);
     document.documentElement.style.setProperty("--font-scale", String(1 + fontSize * 0.1));
     localStorage.setItem("theme", theme);
-  }, [theme, contrast, fontSize, reduceMotion]);
+    localStorage.setItem("font-size-step", String(fontSize));
+  }, [theme, contrast, fontSize]);
 
   const visibleProjects = useMemo(
     () => (filter === "Todos" ? projects : projects.filter((project) => project.category === filter)),
@@ -763,26 +1038,26 @@ function Portfolio({ navigate }: { navigate: (path: string) => void }) {
   );
 
   const navigation: Array<{ label: string; href: string; isRoute?: boolean }> = [
-    { label: "Manifesto", href: "#manifesto" },
-    { label: "Eixos", href: "#eixos" },
-    { label: "Portfólio", href: "#trabalhos" },
-    { label: "Áudio", href: "#musica" },
-    { label: "Trajetória", href: "#trajetoria" },
-    { label: "Publicações", href: "#publicacoes" },
-    { label: "Currículo", href: "/curriculo", isRoute: true },
+    { label: copy.nav[0], href: "#manifesto" },
+    { label: copy.nav[1], href: "#eixos" },
+    { label: copy.nav[2], href: "#trabalhos" },
+    { label: copy.nav[3], href: "#musica" },
+    { label: copy.nav[4], href: "#trajetoria" },
+    { label: copy.nav[5], href: "#publicacoes" },
+    { label: copy.nav[6], href: "/curriculo", isRoute: true },
   ];
 
   return (
     <div className="site-shell">
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="Gustavo Simas — início">
+        <a className="brand" href="#top" aria-label={copy.header.brandAria}>
           <span className="brand-mark">GS</span>
           <span>
             <strong>Gustavo Simas</strong>
-            <small>Conhecimento · tecnologia · imaginação</small>
+            <small>{copy.brandTagline}</small>
           </span>
         </a>
-        <nav className="desktop-nav" aria-label="Navegação principal">
+        <nav className="desktop-nav" aria-label={copy.header.navAria}>
           {navigation.map(({ label, href, isRoute }) =>
             isRoute ? (
               <a
@@ -803,25 +1078,42 @@ function Portfolio({ navigate }: { navigate: (path: string) => void }) {
             ),
           )}
         </nav>
-        <div className="header-actions" aria-label="Preferências de visualização">
-          <button className="icon-button" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label="Alternar tema">
+        <div className="header-actions" aria-label={copy.header.preferencesAria}>
+          <button className="icon-button" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label={copy.header.theme}>
             {theme === "dark" ? <Sun /> : <Moon />}
           </button>
-          <button className="icon-button" onClick={() => setContrast(!contrast)} aria-pressed={contrast} aria-label="Alto contraste">
+          <button className="icon-button" onClick={() => setContrast(!contrast)} aria-pressed={contrast} aria-label={copy.header.contrast}>
             <Contrast />
           </button>
-          <button className="icon-button" onClick={() => setFontSize((fontSize + 1) % 3)} aria-label="Aumentar fonte">
-            <Type />
+          <button
+            className="language-toggle"
+            onClick={() => setLanguage(isPt ? "en" : "pt")}
+            aria-label={copy.header.language}
+            title={copy.header.language}
+          >
+            <span className={isPt ? "active" : ""}>PT</span>
+            <span aria-hidden="true">/</span>
+            <span className={!isPt ? "active" : ""}>EN</span>
           </button>
           <button
-            className="icon-button desktop-motion"
-            onClick={() => setReduceMotion(!reduceMotion)}
-            aria-pressed={reduceMotion}
-            aria-label="Reduzir movimento"
+            className="icon-button text-size-button"
+            onClick={() => setFontSize((current) => Math.max(0, current - 1))}
+            disabled={fontSize === 0}
+            aria-label={copy.header.decreaseText}
+            title={copy.header.decreaseText}
           >
-            <Orbit />
+            -T
           </button>
-          <button className="icon-button mobile-menu-button" onClick={() => setMenu(!menu)} aria-label="Abrir menu">
+          <button
+            className="icon-button text-size-button"
+            onClick={() => setFontSize((current) => Math.min(3, current + 1))}
+            disabled={fontSize === 3}
+            aria-label={copy.header.increaseText}
+            title={copy.header.increaseText}
+          >
+            +T
+          </button>
+          <button className="icon-button mobile-menu-button" onClick={() => setMenu(!menu)} aria-label={menu ? copy.header.closeMenu : copy.header.menu}>
             {menu ? <X /> : <Menu />}
           </button>
         </div>
@@ -854,54 +1146,48 @@ function Portfolio({ navigate }: { navigate: (path: string) => void }) {
         <section className="hero section-wrap">
           <div className="hero-copy">
             <p className="eyebrow">
-              <span className="signal" /> Florianópolis · Brasil · 2026
+              <span className="signal" /> {copy.hero.location}
             </p>
             <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.75 }}>
-              Pesquiso as
+              {copy.hero.line1}
               <br />
-              <em>tecnologias</em>
+              <em>{copy.hero.emphasis}</em>
               <br />
-              que nos criam.
+              {copy.hero.line3}
             </motion.h1>
-            <p className="hero-lede">
-              Engenheiro do conhecimento, pesquisador, escritor, produtor fonográfico e artista multimídia. Minha prática atravessa ecossistemas de inovação, ecologia do conhecimento, inteligência artificial, literatura e audiovisual.
-            </p>
+            <p className="hero-lede">{copy.hero.lede}</p>
             <div className="hero-actions">
               <a className="button primary" href="#trabalhos">
-                Explorar trabalhos <ArrowDown size={16} />
+                {copy.hero.explore} <ArrowDown size={16} />
               </a>
               <button
                 className="button ghost"
                 onClick={() => navigate("/curriculo")}
               >
-                Currículo completo <ArrowUpRight size={16} />
+                {copy.hero.cv} <ArrowUpRight size={16} />
               </button>
             </div>
           </div>
-          <Atlas />
+          <Atlas copy={copy.atlas} />
           <div className="hero-index">
-            <span>01 — Investigar</span>
-            <span>02 — Sistematizar</span>
-            <span>03 — Criar</span>
+            {copy.hero.index.map((item, index) => (
+              <span key={item}>{String(index + 1).padStart(2, "0")} — {item}</span>
+            ))}
           </div>
         </section>
 
         {/* MANIFESTO SECTION */}
         <section id="manifesto" className="manifesto section-wrap section-spacing">
-          <SectionMarker number="01" label="Manifesto" />
+          <SectionMarker number="01" label={copy.manifesto.label} />
           <div className="manifesto-grid">
             <blockquote>
-              Ciência e arte como modos de formular perguntas, revelar relações e <em>disputar o que o mundo pode ser</em>.
+              {copy.manifesto.before}<em>{copy.manifesto.emphasis}</em>.
             </blockquote>
             <div>
-              <p>
-                Meu trabalho parte de uma pergunta persistente: como as tecnologias, os conhecimentos e as culturas se transformam mutuamente?
-              </p>
-              <p>
-                Minha prática atravessa ecossistemas de inovação, ecologia do conhecimento, inteligência artificial, literatura e audiovisual. Transito entre pesquisa e criação porque algumas ideias pedem modelos conceituais; outras, poemas. Algumas se tornam sistemas e métodos, outras músicas, livros ou experiências sonoras.
-              </p>
+              <p>{copy.manifesto.first}</p>
+              <p>{copy.manifesto.second}</p>
               <a href="#eixos" className="text-link">
-                Ver os três eixos <ArrowDown size={14} />
+                {copy.manifesto.link} <ArrowDown size={14} />
               </a>
             </div>
           </div>
@@ -911,38 +1197,36 @@ function Portfolio({ navigate }: { navigate: (path: string) => void }) {
         <section id="eixos" className="section-wrap section-spacing">
           <div className="section-heading">
             <div>
-              <SectionMarker number="02" label="Eixos de atuação" />
+              <SectionMarker number="02" label={copy.axes.label} />
               <h2>
-                Três verbos.
+                {copy.axes.title1}
                 <br />
-                <em>Uma mesma visão intelectual.</em>
+                <em>{copy.axes.title2}</em>
               </h2>
             </div>
-            <p>
-              Os três verbos não funcionam como caixas isoladas. São movimentos complementares de uma mesma ecologia de pensamento e criação.
-            </p>
+            <p>{copy.axes.subtitle}</p>
           </div>
           <div className="axis-grid">
             <AxisCard
               number="01"
               icon={<Search />}
-              title="Investigar"
-              description="Produzir conceitos, perguntas e métodos para compreender conhecimento, inteligência artificial, aprendizagem e sociedade."
-              tags={["Ecologia do conhecimento", "IA e sociedade", "Governança sociotécnica", "Pesquisa acadêmica"]}
+              title={copy.axes.cards[0].title}
+              description={copy.axes.cards[0].description}
+              tags={copy.axes.cards[0].tags}
             />
             <AxisCard
               number="02"
               icon={<BrainCircuit />}
-              title="Sistematizar"
-              description="Transformar pesquisa e estratégia em sistemas, modelos de dados, arquiteturas conceituais e metodologias de inovação úteis."
-              tags={["Engenharia do conhecimento", "Governança de IA", "Metodologias de inovação", "Modelagem de dados"]}
+              title={copy.axes.cards[1].title}
+              description={copy.axes.cards[1].description}
+              tags={copy.axes.cards[1].tags}
             />
             <AxisCard
               number="03"
               icon={<Sparkles />}
-              title="Criar"
-              description="Explorar literatura, poesia, produção fonográfica e narrativas visuais como modos legítimos de conhecer e produzir mundo."
-              tags={["Literatura e poesia", "Produção fonográfica", "Curadoria cultural", "Promptografia"]}
+              title={copy.axes.cards[2].title}
+              description={copy.axes.cards[2].description}
+              tags={copy.axes.cards[2].tags}
             />
           </div>
         </section>
@@ -952,28 +1236,26 @@ function Portfolio({ navigate }: { navigate: (path: string) => void }) {
           <div className="section-wrap">
             <div className="section-heading compact">
               <div>
-                <SectionMarker number="03" label="Portfólio de projetos" />
+                <SectionMarker number="03" label={copy.portfolio.label} />
                 <h2>
-                  Portfólio de
+                  {copy.portfolio.title1}
                   <br />
-                  <em>projetos.</em>
+                  <em>{copy.portfolio.title2}</em>
                 </h2>
               </div>
-              <p>
-                Alguns livros, pesquisas, plataformas, álbuns e experimentos conectados pelas perguntas que os originaram.
-              </p>
+              <p>{copy.portfolio.subtitle}</p>
             </div>
-            <div className="filters" role="group" aria-label="Filtrar trabalhos">
+            <div className="filters" role="group" aria-label={copy.portfolio.filterAria}>
               {(["Todos", "Pesquisa", "Tecnologia", "Literatura", "Música", "Visual"] as const).map((item) => (
                 <button key={item} className={filter === item ? "active" : ""} onClick={() => setFilter(item)}>
-                  {item}
+                  {categoryLabels[language][item]}
                 </button>
               ))}
             </div>
             <motion.div layout className="project-grid">
               <AnimatePresence mode="popLayout">
                 {visibleProjects.map((project) => (
-                  <ProjectCard key={project.title} project={project} />
+                  <ProjectCard key={project.title} project={project} language={language} />
                 ))}
               </AnimatePresence>
             </motion.div>
@@ -990,38 +1272,36 @@ function Portfolio({ navigate }: { navigate: (path: string) => void }) {
             </div>
             <div className="sound-content">
               <span className="eyebrow">
-                <Volume2 size={14} /> Áudio como outra forma de pesquisa
+                <Volume2 size={14} /> {copy.audio.kicker}
               </span>
               <h2>
-                Escutar também
+                {copy.audio.title1}
                 <br />
-                é uma forma
+                {copy.audio.title2}
                 <br />
-                <em>de conhecer.</em>
+                <em>{copy.audio.title3}</em>
               </h2>
-              <p>
-                Releituras instrumentais, paisagens sonoras, produção fonográfica e curadoria cultural fazem parte de uma prática que une técnica, memória, palavra e experimentação sonora.
-              </p>
+              <p>{copy.audio.description}</p>
               <div className="sound-links">
                 <a className="button primary" href="https://open.spotify.com/artist/6WjZVnEMXM9OzuqDhdrvUz" target="_blank" rel="noreferrer">
-                  Ouvir no Spotify <ArrowUpRight size={15} />
+                  {copy.audio.spotify} <ArrowUpRight size={15} />
                 </a>
                 <a className="button ghost" href="https://instagram.com/brasil.wav" target="_blank" rel="noreferrer">
-                  Conhecer Berimbrasil <ArrowUpRight size={15} />
+                  {copy.audio.berim} <ArrowUpRight size={15} />
                 </a>
               </div>
             </div>
-            <div className="album-stack" aria-label="Projetos musicais">
+            <div className="album-stack" aria-label={copy.audio.projectsAria}>
               <div className="album-card image" title="Rancho de Amor à Ilha">
-                <img src="/assets/ranchodoamor.jpg" alt="Capa do single Rancho de Amor à Ilha" />
+                <img src="/assets/ranchodoamor.jpg" alt={copy.audio.ranchAlt} />
                 <span className="album-tag-overlay">Rancho de Amor à Ilha</span>
               </div>
               <div className="album-card image-berim" title="Berimbrasil">
-                <img src="/assets/berimbrasil.jpg" alt="Capa do projeto Berimbrasil" />
+                <img src="/assets/berimbrasil.jpg" alt={copy.audio.berimAlt} />
                 <span className="album-tag-overlay">Berimbrasil</span>
               </div>
               <div className="album-card violet">
-                <small>Produção Fonográfica</small>
+                <small>{copy.audio.production}</small>
                 <strong>GS</strong>
                 <span>Gustavo Simas</span>
               </div>
@@ -1033,57 +1313,32 @@ function Portfolio({ navigate }: { navigate: (path: string) => void }) {
         <section id="trajetoria" className="section-wrap section-spacing">
           <div className="section-heading">
             <div>
-              <SectionMarker number="04" label="Trajetória" />
+              <SectionMarker number="04" label={copy.trajectory.label} />
               <h2>
-                Conhecimento é
+                {copy.trajectory.title1}
                 <br />
-                <em>uma travessia.</em>
+                <em>{copy.trajectory.title2}</em>
               </h2>
             </div>
-            <p>Uma trajetória interdisciplinar articulada entre universidades, organizações de inovação, territórios e projetos autorais.</p>
+            <p>{copy.trajectory.subtitle}</p>
           </div>
           <div className="trajectory-grid">
             <aside className="portrait-panel">
               <div className="portrait-frame">
-                <img src="/assets/fotoperf.jpeg" alt="Retrato de Gustavo Simas" />
+                <img src="/assets/fotoperf.jpeg" alt={copy.trajectory.portraitAlt} />
                 <div className="portrait-caption">
                   <span>Gustavo Simas</span>
-                  <span>Florianópolis · SC</span>
+                  <span>{copy.trajectory.location}</span>
                 </div>
               </div>
               <div className="credentials">
-                <span>Analista de IA · Sebrae/SC</span>
-                <span>Doutorando CAPES · PPGEGC/UFSC</span>
-                <span>Mestre · Prêmio SBGC Melhor Dissertação</span>
-                <span>Engenheiro Eletrônico · Produtor Fonográfico</span>
+                {copy.trajectory.badges.map((badge) => <span key={badge}>{badge}</span>)}
               </div>
             </aside>
             <div className="timeline">
-              <Timeline
-                year="2026 — Atual"
-                title="Inteligência Artificial no Sebrae/SC & Doutorado"
-                text="Atuação na estruturação da governança do Escritório de IA do Sebrae/SC, MLOps/LLMOps gerencial e conformidade, paralela à pesquisa de doutorado em ecologia do conhecimento na UFSC."
-              />
-              <Timeline
-                year="2025"
-                title="Tecnogonia, Poesia e Prêmio SBGC"
-                text="Publicação de Tecnogonia (Editora Caravana) e do livro de poemas E o que eu faço com isso? (Editora Labrador). Conquista do Prêmio SBGC de Melhor Dissertação de Mestrado do Brasil."
-              />
-              <Timeline
-                year="2023 — 2026"
-                title="Impact Hub Brasil & Metodologia ALI"
-                text="Analista de Inovação Sênior e de Dados, coautor da Metodologia ALI Ecossistemas para desenvolvimento territorial e avaliação de impacto socioambiental positivo."
-              />
-              <Timeline
-                year="2020 — 2024"
-                title="VI Mídia & Produção de Áudio Acessível"
-                text="Cofundador e produtor fonográfico de conteúdos acessíveis (audiolivros, audiodescrição para público print disabled e síntese vocal com IA), com apoio do Programa Centelha (FAPESC)."
-              />
-              <Timeline
-                year="2016 — 2021"
-                title="Engenharia Eletrônica & Robótica na UFSC"
-                text="Graduação em Engenharia Eletrônica com ênfase em Processamento Digital de Sinais (TCC em aparelhos auditivos) e pesquisa no Laboratório de Robótica Aplicada (LAR/UFSC)."
-              />
+              {copy.trajectory.timeline.map((item) => (
+                <Timeline key={`${item.year}-${item.title}`} year={item.year} title={item.title} text={item.text} />
+              ))}
             </div>
           </div>
         </section>
@@ -1092,45 +1347,47 @@ function Portfolio({ navigate }: { navigate: (path: string) => void }) {
         <section id="publicacoes" className="research-section section-spacing">
           <div className="section-wrap research-grid">
             <div className="research-intro">
-              <SectionMarker number="05" label="Pesquisa e publicação" />
+              <SectionMarker number="05" label={copy.research.label} />
               <h2>
-                Conhecer
+                {copy.research.title1}
                 <br />
-                em <em>relação.</em>
+                <em>{copy.research.title2}</em>
               </h2>
-              <p>
-                Artigos científicos, livros e pesquisas em periódicos internacionais e anais de conferências sobre inteligência artificial, agência criativa, ecologia do conhecimento e inovação.
-              </p>
+              <p>{copy.research.description}</p>
               <div className="research-links">
                 <a className="text-link" href="https://orcid.org/0000-0003-3485-7910" target="_blank" rel="noreferrer">
-                  Ver ORCID <ArrowUpRight size={14} />
+                  {copy.research.orcid} <ArrowUpRight size={14} />
                 </a>
                 <a className="text-link" href="http://lattes.cnpq.br/3423329196677574" target="_blank" rel="noreferrer">
-                  Ver Currículo Lattes <ArrowUpRight size={14} />
+                  {copy.research.lattes} <ArrowUpRight size={14} />
                 </a>
               </div>
             </div>
             <ol className="publication-list">
-              {highlightPublications.map((item, i) => (
-                <li key={item.title}>
+              {highlightPublications.map((item, i) => {
+                const title = isPt ? item.title : item.titleEn;
+                const source = isPt ? item.source : item.sourceEn;
+                return (
+                <li key={item.link}>
                   <a
                     href={item.link}
                     target="_blank"
                     rel="noreferrer"
                     className="publication-item-link"
-                    title={`Abrir pesquisa: ${item.title}`}
+                    title={`${copy.research.open}: ${title}`}
                   >
                     <span>{String(i + 1).padStart(2, "0")}</span>
                     <div>
-                      <p>{item.title}</p>
+                      <p>{title}</p>
                       <small className="pub-meta">
-                        {item.source} · {item.year}
+                        {source} · {item.year}
                       </small>
                     </div>
                     <ArrowUpRight size={16} />
                   </a>
                 </li>
-              ))}
+                );
+              })}
             </ol>
           </div>
         </section>
@@ -1139,48 +1396,23 @@ function Portfolio({ navigate }: { navigate: (path: string) => void }) {
         <section className="section-wrap section-spacing">
           <div className="section-heading compact">
             <div>
-              <SectionMarker number="06" label="Capacidades" />
+              <SectionMarker number="06" label={copy.capabilities.label} />
               <h2>
-                O que posso
+                {copy.capabilities.title1}
                 <br />
-                <em>colocar em movimento.</em>
+                <em>{copy.capabilities.title2}</em>
               </h2>
             </div>
           </div>
           <div className="capability-grid">
-            <Capability
-              number="01"
-              title="Conhecimento e estratégia"
-              items={[
-                "Governança de Inteligência Artificial",
-                "Ecologia e engenharia do conhecimento",
-                "Modelagem conceitual e ontologias",
-                "Ecossistemas de inovação e impacto",
-                "Cultura de aprendizagem contínua",
-              ]}
-            />
-            <Capability
-              number="02"
-              title="Tecnologia e dados"
-              items={[
-                "MLOps e LLMOps gerencial",
-                "Python, ciência de dados e BI",
-                "TypeScript, React e aplicações web",
-                "Processamento de sinais e áudio",
-                "Prototipagem ágil de soluções",
-              ]}
-            />
-            <Capability
-              number="03"
-              title="Criação e cultura"
-              items={[
-                "Ensaios, literatura e poesia",
-                "Produção fonográfica e som",
-                "Curadoria musical e digital",
-                "Promptografia e IA generativa",
-                "Acessibilidade e audiodescrição",
-              ]}
-            />
+            {copy.capabilities.cards.map((card, index) => (
+              <Capability
+                key={card.title}
+                number={String(index + 1).padStart(2, "0")}
+                title={card.title}
+                items={card.items}
+              />
+            ))}
           </div>
         </section>
 
@@ -1188,20 +1420,20 @@ function Portfolio({ navigate }: { navigate: (path: string) => void }) {
         <section id="contato" className="contact-section section-wrap section-spacing">
           <div className="contact-card">
             <span className="contact-kicker">
-              <span className="signal" /> Disponível para projetos, pesquisa e colaboração
+              <span className="signal" /> {copy.contact.kicker}
             </span>
             <h2>
-              Vamos imaginar
+              {copy.contact.title1}
               <br />
-              <em>alguma coisa</em>
+              <em>{copy.contact.title2}</em>
               <br />
-              juntos?
+              {copy.contact.title3}
             </h2>
             <a className="contact-email" href="mailto:gustavosimassilva@gmail.com">
               gustavosimassilva@gmail.com <ArrowUpRight />
             </a>
             <div className="contact-footer">
-              <p>Conhecimento, tecnologia, literatura, produção fonográfica e audiovisual para pensar o presente e inventar futuros.</p>
+              <p>{copy.contact.description}</p>
               <div className="social-links">
                 <a href="https://www.linkedin.com/in/simasgs/" target="_blank" rel="noreferrer">
                   <Linkedin /> LinkedIn
@@ -1232,38 +1464,38 @@ function Portfolio({ navigate }: { navigate: (path: string) => void }) {
           <span className="brand-mark">GS</span>
           <span>
             <strong>Gustavo Simas</strong>
-            <small>Florianópolis · Brasil</small>
+            <small>{copy.footer.location}</small>
           </span>
         </a>
-        <p>© 2026 · Conhecimento · tecnologia · imaginação</p>
+        <p>{copy.footer.text}</p>
         <a href="#top">
-          Voltar ao topo <ArrowUpRight size={13} />
+          {copy.footer.top} <ArrowUpRight size={13} />
         </a>
       </footer>
     </div>
   );
 }
 
-function Atlas() {
+function Atlas({ copy }: { copy: (typeof portfolioCopy)[Language]["atlas"] }) {
   return (
-    <motion.div className="hero-atlas" initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }} aria-label="Atlas dos três eixos">
+    <motion.div className="hero-atlas" initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }} aria-label={copy.aria}>
       <div className="atlas-orbit orbit-a" />
       <div className="atlas-orbit orbit-b" />
       <div className="atlas-core">
         <Network size={34} />
-        <span>Conhecimento</span>
+        <span>{copy.core}</span>
       </div>
       <div className="atlas-node node-a">
         <Search />
-        <span>Investigar</span>
+        <span>{copy.nodes[0]}</span>
       </div>
       <div className="atlas-node node-b">
         <BrainCircuit />
-        <span>Sistematizar</span>
+        <span>{copy.nodes[1]}</span>
       </div>
       <div className="atlas-node node-c">
         <Palette />
-        <span>Criar</span>
+        <span>{copy.nodes[2]}</span>
       </div>
       <span className="coordinate top">27°35&apos;S</span>
       <span className="coordinate bottom">48°32&apos;W</span>
@@ -1291,7 +1523,7 @@ function AxisCard({
   icon: React.ReactNode;
   title: string;
   description: string;
-  tags: string[];
+  tags: readonly string[];
 }) {
   return (
     <motion.article className="axis-card" whileHover={{ y: -8 }}>
@@ -1310,7 +1542,12 @@ function AxisCard({
   );
 }
 
-function ProjectCard({ project }: { project: Project }) {
+function ProjectCard({ project, language }: { project: Project; language: Language }) {
+  const translation = language === "en" ? projectTranslationsEn[project.title] : undefined;
+  const title = translation?.title ?? project.title;
+  const description = translation?.description ?? project.description;
+  const category = categoryLabels[language][project.category];
+
   return (
     <motion.a
       layout
@@ -1324,22 +1561,22 @@ function ProjectCard({ project }: { project: Project }) {
     >
       <div className={`project-visual visual-${project.visual}`}>
         {project.image ? (
-          <img src={project.image} alt={`Capa de ${project.title}`} />
+          <img src={project.image} alt={language === "pt" ? `Capa de ${title}` : `Cover of ${title}`} />
         ) : (
           <>
-            <span>{project.category}</span>
-            <strong>{project.title}</strong>
+            <span>{category}</span>
+            <strong>{title}</strong>
           </>
         )}
         <ExternalLink className="project-arrow" />
       </div>
       <div className="project-body">
         <div>
-          <span>{project.category}</span>
+          <span>{category}</span>
           <span>{project.year}</span>
         </div>
-        <h3>{project.title}</h3>
-        <p>{project.description}</p>
+        <h3>{title}</h3>
+        <p>{description}</p>
       </div>
     </motion.a>
   );
@@ -1357,7 +1594,7 @@ function Timeline({ year, title, text }: { year: string; title: string; text: st
   );
 }
 
-function Capability({ number, title, items }: { number: string; title: string; items: string[] }) {
+function Capability({ number, title, items }: { number: string; title: string; items: readonly string[] }) {
   return (
     <article className="capability-card">
       <span>{number}</span>
