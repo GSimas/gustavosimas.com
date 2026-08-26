@@ -972,6 +972,338 @@ const cvData = {
   },
 };
 
+const cvDataEn = {
+  ...cvData,
+  profile: {
+    ...cvData.profile,
+    titles: "PhD Candidate and Master in Knowledge Engineering and Management (UFSC) · Electronics Engineer (UFSC)",
+    role: "Technical Analyst II — Artificial Intelligence at Sebrae/SC · CAPES Doctoral Research Fellow (LaMiD/UFSC) · Writer and Record Producer",
+    location: "Florianópolis, Santa Catarina, Brazil",
+    bio: "Energizing knowledge, reducing the unknown and advancing transformative innovation. His work approaches complexity by managing chaos and order through Knowledge Engineering, Management and Media, Innovation, Technology and Art. He is currently an AI Analyst at Sebrae/SC, a CAPES doctoral research fellow at the Media Laboratory (LaMiD/PPGEGC/UFSC), a writer and a record producer.",
+  },
+  experience: [
+    {
+      period: "06/2026 — Present",
+      role: "Technical Analyst II — Artificial Intelligence",
+      company: "Sebrae Santa Catarina",
+      location: "Florianópolis, SC",
+      bullets: [
+        "Structuring and operating the governance of Sebrae/SC's AI Office.",
+        "Monitoring, analyzing and validating corporate AI projects across technical and support areas, ensuring methodological compliance and quality.",
+        "Supporting teams in developing AI project plans, risk matrices, schedules, indicators and expected results.",
+        "Monitoring strategic nationwide AI projects aligned with Sebrae Nacional.",
+        "Leading technical and compliance assessments of AI use cases and standardizing the solution lifecycle from pilot to production.",
+        "Implementing AI performance metrics and monitoring (management-level MLOps/LLMOps) and coordinating training for institutional adoption.",
+      ],
+    },
+    {
+      period: "03/2025 — Present",
+      role: "CAPES Doctoral Research Fellow",
+      company: "Federal University of Santa Catarina (UFSC)",
+      location: "Florianópolis, SC",
+      bullets: [
+        "CAPES research fellow at the Media Laboratory (LaMiD) within UFSC's Graduate Program in Knowledge Engineering, Management and Media (PPGEGC).",
+        "Advanced research in knowledge ecology, network science, scientometrics, artificial intelligence and technology governance.",
+        "Research on sociotechnical aspects of networked knowledge, including the structure and impact of technologies such as AI in organizational and academic settings.",
+      ],
+    },
+    {
+      period: "03/2025 — Present",
+      role: "Scientific Reviewer",
+      company: "Science Publishing Group",
+      location: "International",
+      bullets: ["Critical peer review of leading scientific papers in technology, artificial intelligence and knowledge management."],
+    },
+    {
+      period: "01/2024 — 06/2026",
+      role: "Innovation, Data and Governance Consultant",
+      company: "Independent Consulting / Business",
+      location: "Florianópolis, SC",
+      bullets: [
+        "Consulting in innovation, data, artificial intelligence, knowledge management and technology governance.",
+        "Applying methodologies for organizational assessment and planning, indicator monitoring and change management.",
+      ],
+    },
+    {
+      period: "08/2023 — 04/2026",
+      role: "Senior Innovation Analyst",
+      company: "Impact Hub Brazil",
+      location: "Florianópolis, SC",
+      bullets: [
+        "Research, Development and Innovation (R&D&I) for positive social and environmental impact.",
+        "Development and implementation of methodologies for Local Innovation and Impact Ecosystems, including co-authorship of the ALI Ecosystems Methodology.",
+        "Business intelligence and research on trends and emerging technologies.",
+        "Assessment and monitoring of social and environmental impact through systems thinking and executive reporting.",
+        "Knowledge management and engineering to capture, share and disseminate organizational practices.",
+      ],
+    },
+    {
+      period: "12/2021 — 08/2023",
+      role: "Data Analyst",
+      company: "Impact Hub Brazil",
+      location: "Florianópolis, SC",
+      bullets: [
+        "Data analysis for innovation ecosystems and social and environmental impact.",
+        "Design of analytical pipelines, business intelligence, organizational information governance and learning culture.",
+      ],
+    },
+    {
+      period: "04/2020 — 01/2024",
+      role: "Co-founder, Record Producer and Audio Engineer",
+      company: "VI Mídia Produtora (Visão Inclusiva)",
+      location: "Florianópolis, SC",
+      bullets: [
+        "Co-founder and record producer of accessible educational and entertainment content.",
+        "Production of audiobooks, audio description for print-disabled audiences and AI-assisted voice synthesis.",
+        "Audio engineering, sound design and digital processing of voice signals.",
+        "Owner of a service trademark registered with Brazil's National Institute of Industrial Property (INPI).",
+      ],
+    },
+    {
+      period: "04/2020 — 01/2021",
+      role: "Literary Editor and Proofreader",
+      company: "Noveland Publishing",
+      location: "Florianópolis, SC",
+      bullets: ["Textual and literary editing, manuscript assessment, editorial coordination and brand management."],
+    },
+    {
+      period: "07/2018 — 02/2020",
+      role: "Undergraduate Research Fellow (Robotics R&D)",
+      company: "Applied Robotics Laboratory (LAR/UFSC)",
+      location: "Florianópolis, SC",
+      bullets: [
+        "R&D of a robotic inspection system for electric power distribution lines through a Celesc/Mechanical Engineering Department partnership.",
+        "Systematic literature review, CAD/SolidWorks modeling, patents, scientific papers and web interface/application development.",
+      ],
+    },
+    {
+      period: "01/2017 — 02/2018",
+      role: "Engineering Intern",
+      company: "CIASC — Santa Catarina Center for Information Technology and Automation",
+      location: "Florianópolis, SC",
+      bullets: [
+        "Development of a predictive monitoring system for a data center.",
+        "Sensing and alerts for critical variables such as temperature, humidity, flooding and fire using Zabbix, Arduino and Computational Fluid Dynamics (CFD).",
+      ],
+    },
+    {
+      period: "02/2015 — 07/2015",
+      role: "Clinical Engineering Intern",
+      company: "Institute of Biomedical Engineering (IEB-UFSC / Carmela Dutra)",
+      location: "Florianópolis, SC",
+      bullets: ["Healthcare Technology Management, quality control, corrective and preventive maintenance, and technical training."],
+    },
+  ],
+  education: [
+    {
+      period: "01/2025 — 03/2029 (In progress)",
+      degree: "PhD in Knowledge Engineering, Management and Media",
+      institution: "Federal University of Santa Catarina (UFSC)",
+      details: "CAPES fellow. Advisor: Prof. Vânia Ribas Ulbricht, PhD. Focus on Knowledge Ecology, Network Science, Scientometrics, Artificial Intelligence and Sociotechnical Governance.",
+    },
+    {
+      period: "01/2025 — 03/2026 (In progress)",
+      degree: "MBA in Technology for Business: AI, Data Science and Big Data",
+      institution: "Pontifical Catholic University of Rio Grande do Sul (PUCRS)",
+      details: "Executive specialization (364 hours) in artificial intelligence applied to business models, Big Data and strategic decision-making.",
+    },
+    {
+      period: "02/2023 — 02/2025 (Completed)",
+      degree: "Master's in Knowledge Engineering and Management",
+      institution: "Federal University of Santa Catarina (UFSC)",
+      details: "Thesis: 'ECO-CAOS: a conceptual metamodel for knowledge ecosystems and organizational learning cultures.' CAPES fellow. Advisor: Vânia Ribas Ulbricht, PhD. Winner of the SBGC Award for Brazil's Best Master's Thesis.",
+    },
+    {
+      period: "02/2016 — 12/2021 (Completed)",
+      degree: "Bachelor's in Electronics Engineering",
+      institution: "Federal University of Santa Catarina (UFSC)",
+      details: "Undergraduate thesis: 'Adaptive Algorithm for Noise Reduction and Preservation of Binaural Acoustic Cues for Hearing Aids.' Advisor: Prof. Márcio Holsbach Costa, PhD. Emphasis on Digital Signal and Audio Processing.",
+    },
+    {
+      period: "2012 — 2016 (Completed)",
+      degree: "Technical Diploma in Electronics",
+      institution: "Federal Institute of Santa Catarina (IFSC)",
+      details: "Integrated secondary-level technical education grounded in circuits, instrumentation and embedded systems.",
+    },
+  ],
+  certifications: [
+    { name: "Data Product Manager Nanodegree", issuer: "Udacity", year: "2021-2022", hours: "160h" },
+    { name: "Deep Learning Specialization", issuer: "Coursera / deeplearning.ai", year: "2018", hours: "300h" },
+    { name: "Python Programming", issuer: "Coursera", year: "2018", hours: "300h" },
+    { name: "Introduction to Linear Models and Matrix Algebra", issuer: "edX / HarvardX", year: "2023" },
+    { name: "Digital Marketing Channels: Planning", issuer: "Coursera", year: "2018", hours: "300h" },
+    { name: "KM Brazil — Knowledge Management", issuer: "SBGC", year: "2023" },
+  ],
+  awards: [
+    { year: "2025", title: "SBGC Award — Best Master's Thesis", entity: "Brazilian Society for Knowledge Management (SBGC)", description: "National recognition for the ECO-CAOS thesis on knowledge ecosystems and learning culture." },
+    { year: "2022", title: "Selected for the 'Everyday Stories' Series", entity: "University Library (BU/UFSC)", description: "Literary work selected for the institutional collection and cultural outreach." },
+    { year: "2020", title: "Selected for the Centelha Program", entity: "FAPESC / MCTI / Finep", description: "Government grant and support for VI Mídia's technology innovation and entrepreneurship." },
+    { year: "2020", title: "Selected for the Documentary Photography Competition", entity: "Floripa Anônima", description: "Documentary record of the urban landscape and social memory of Santa Catarina Island." },
+    { year: "2016", title: "1st IFSC Literature Award — Photography Selection", entity: "Federal Institute of Santa Catarina (IFSC)", description: "Award for an original visual and photographic essay." },
+    { year: "2015", title: "Fragmentos do Medo Literary Competition Award", entity: "Três Macacos Premiações", description: "Publication in a nationally distributed flash-fiction anthology." },
+    { year: "2014", title: "1st IFSC Short Story Competition Award", entity: "Federal Institute of Santa Catarina (IFSC)", description: "First place and honorable mention in the fiction prose category." },
+    { year: "2015 — 2018", title: "Inspiration Award & Rookie All-Star Award", entity: "FIRST Robotics Competition (FRC Team 5800 Magic Island Robotics)", description: "Awards for leadership, communication and community impact in robotics engineering." },
+    { year: "2009, 2010, 2011", title: "Three Consecutive Honorable Mentions", entity: "Brazilian Public School Mathematics Olympiad (OBMEP)", description: "Academic distinction in logical reasoning and mathematical problem-solving." },
+  ],
+  allPublications: cvData.allPublications,
+  artisticProduction: [
+    {
+      category: "Music & Record Production",
+      items: [
+        "Rancho de Amor à Ilha (2026) — Instrumental lo-fi reinterpretation of Florianópolis's official anthem (original composition by Zininho), celebrating the 100th anniversary of the Hercílio Luz Bridge.",
+        "Berimbrasil (@brasil.wav) — A project for curating, promoting and sharing Brazilian music in digital culture.",
+        "Albums and Recordings (2020–2024): ColoRio, CacofonIA, CacofonIA 2, Days, Slop, SinfonIA, Data! Data! Data!, Violando, Ruído, Marginal, Centauro, Radiola, Espectros, BON VIVANT, Frutaria, Rizomas, Ludic Dreams, Themes Songbook, Músicas Beta, Músicas Alfa, Quartos.",
+        "Original Soundtracks (2021): Heart of Darkness, 1984, O Marinheiro, Boats Against the Current, Triste Fim de Policarpo Quaresma, Hágil (with Gilberto Gil).",
+      ],
+    },
+    {
+      category: "Audiobooks & Inclusion",
+      items: [
+        "A Mecânica das Palavras (2022) — Accessible audiobook.",
+        "Retrato do Artista Quando Coisa (Manoel de Barros, 2021) — Accessible audio adaptation.",
+        "O Guardador de Rebanhos & O Marinheiro & Mensagem (Fernando Pessoa, 2020–2021) — Audiobook and audio-description production.",
+        "The Great Gatsby (F. Scott Fitzgerald, 2021) — Immersive-audio audiobook.",
+      ],
+    },
+    {
+      category: "Visual Arts & Photography",
+      items: [
+        "Nemotom (2021) — Audiovisual work and experimental video.",
+        "Floripa Anônima (2020) — Documentary photography essay.",
+        "1st IFSC Literature Award (2017) — Award-winning photography series.",
+      ],
+    },
+  ],
+  projectsAndMethods: [
+    { title: "Media and Digital Inclusion Laboratory (LaMiD / UFSC)", period: "2023 — Present", role: "Researcher / Member", description: "Surveying, analyzing and systematizing research on digital accessibility and knowledge media as mediators of sociotechnical inclusion for people with disabilities." },
+    { title: "ALI Ecosystems Methodology", period: "2022", role: "Co-author / Developer", description: "Technical methodology for diagnosing, governing and activating Local Innovation Ecosystems in Brazil, adopted by Sebrae and the Impact Hub network." },
+    { title: "Robotic System for Power Grid Inspection (Celesc / LAR-UFSC)", period: "2018 — 2020", role: "Undergraduate Research Fellow", description: "Conceptual design, prototyping, patents and web interface for a robot that inspects electric power distribution lines." },
+    { title: "Healthcare Technology Management (CELEC / IEB-UFSC)", period: "2015", role: "Engineering Intern", description: "Comparative study and management of fetal heartbeat detectors at Carmela Dutra Maternity Hospital." },
+  ],
+  skills: {
+    governanceAndKnowledge: [
+      "Artificial Intelligence Governance",
+      "Knowledge Engineering",
+      "Knowledge Ecology",
+      "Conceptual Systems Modeling",
+      "Organizational Learning Culture",
+      "Local Innovation Ecosystems (ELI)",
+      "Social and Environmental Impact Management",
+    ],
+    technical: [
+      "MLOps and LLMOps (management and lifecycle level)",
+      "Python (Pandas, NumPy, Scikit-Learn, PyTorch)",
+      "TypeScript, React, Vite, Node.js",
+      "Digital Signal Processing (audio/voice DSP)",
+      "Data Modeling and Business Intelligence (BI)",
+      "Assistive Technology and Digital Accessibility",
+      "Prompt Engineering (Promptography)",
+    ],
+    languages: [
+      { language: "Portuguese", level: "Native" },
+      { language: "English", level: "Advanced / Fluent" },
+      { language: "Spanish", level: "Professional" },
+      { language: "Italian", level: "Intermediate" },
+      { language: "French", level: "Basic / Reading" },
+    ],
+  },
+};
+
+const cvCopy = {
+  pt: {
+    back: "Voltar ao atlas",
+    languageAria: "Mudar idioma para inglês",
+    lattes: "Currículo Lattes",
+    print: "Salvar / Imprimir PDF",
+    kicker: "Curriculum Vitae Acadêmico e Profissional · 2026",
+    tabsAria: "Seções do currículo",
+    tabs: [
+      { id: "tudo", label: "Visão Geral Completa" },
+      { id: "experiencia", label: "Experiência Profissional" },
+      { id: "formacao", label: "Formação & Títulos" },
+      { id: "premios", label: "Prêmios & Distinções" },
+      { id: "publicacoes", label: "Produção Bibliográfica" },
+      { id: "arte", label: "Produção Fonográfica & Cultural" },
+      { id: "projetos", label: "Projetos de P&D" },
+    ],
+    summary: "Resumo / Perfil",
+    experience: "Atuação Profissional",
+    education: "Formação Acadêmica & Titulação",
+    awards: "Prêmios, Títulos e Reconhecimentos",
+    publications: "Produção Bibliográfica",
+    publicationFilters: [
+      { value: "Todos", label: "Todos" },
+      { value: "Livro", label: "Livro" },
+      { value: "Artigo Periódico", label: "Artigo Periódico" },
+      { value: "Capítulo", label: "Capítulo" },
+      { value: "Congresso", label: "Congresso" },
+    ],
+    publicationTypes: { Todos: "Todos", Livro: "Livro", "Artigo Periódico": "Artigo Periódico", Capítulo: "Capítulo", Congresso: "Congresso" } as Record<string, string>,
+    searchPlaceholder: "Pesquisar publicações, periódicos ou termos...",
+    searchAria: "Pesquisar publicações",
+    openPublication: "Acessar publicação",
+    artisticProduction: "Produção Artística, Fonográfica e Acessibilidade",
+    projects: "Projetos de Pesquisa & Inovação Metodológica",
+    publishedBooks: "Livros Publicados",
+    books: ["Tecnogonia (Caravana, 2025)", "E o que eu faço com isso? (Labrador, 2025)", "Antologia Pandemias (Noveland, 2021)"],
+    governanceSkills: "Especialidades em Governança & IA",
+    technologies: "Tecnologias & Metodologias",
+    certifications: "Formação Complementar",
+    languages: "Idiomas",
+    intellectualProperty: "Propriedade Intelectual",
+    trademark: "Marca Registrada no Instituto Nacional da Propriedade Industrial (INPI), processo 922745829.",
+    footerTitle: "Gustavo Simas da Silva — Curriculum Vitae",
+    footerAreas: "Engenharia do Conhecimento · IA · Arte e Literatura",
+    footerUpdated: "Atualizado em 2026 · Florianópolis/SC",
+  },
+  en: {
+    back: "Back to the atlas",
+    languageAria: "Change language to Portuguese",
+    lattes: "Lattes CV",
+    print: "Save / Print PDF",
+    kicker: "Academic and Professional Curriculum Vitae · 2026",
+    tabsAria: "Curriculum vitae sections",
+    tabs: [
+      { id: "tudo", label: "Complete Overview" },
+      { id: "experiencia", label: "Professional Experience" },
+      { id: "formacao", label: "Education & Degrees" },
+      { id: "premios", label: "Awards & Distinctions" },
+      { id: "publicacoes", label: "Publications" },
+      { id: "arte", label: "Music & Cultural Production" },
+      { id: "projetos", label: "R&D Projects" },
+    ],
+    summary: "Summary / Profile",
+    experience: "Professional Experience",
+    education: "Education & Academic Degrees",
+    awards: "Awards, Honors and Recognition",
+    publications: "Publications",
+    publicationFilters: [
+      { value: "Todos", label: "All" },
+      { value: "Livro", label: "Book" },
+      { value: "Artigo Periódico", label: "Journal Article" },
+      { value: "Capítulo", label: "Chapter" },
+      { value: "Congresso", label: "Conference" },
+    ],
+    publicationTypes: { Todos: "All", Livro: "Book", "Artigo Periódico": "Journal Article", Capítulo: "Chapter", Congresso: "Conference" } as Record<string, string>,
+    searchPlaceholder: "Search publications, journals or terms...",
+    searchAria: "Search publications",
+    openPublication: "Open publication",
+    artisticProduction: "Artistic Production, Record Production & Accessibility",
+    projects: "Research Projects & Methodological Innovation",
+    publishedBooks: "Published Books",
+    books: ["Technogony (Caravana, 2025)", "And What Do I Do with This? (Labrador, 2025)", "Pandemics Anthology (Noveland, 2021)"],
+    governanceSkills: "Governance & AI Expertise",
+    technologies: "Technologies & Methodologies",
+    certifications: "Additional Education",
+    languages: "Languages",
+    intellectualProperty: "Intellectual Property",
+    trademark: "Service trademark registered with Brazil's National Institute of Industrial Property (INPI), application 922745829.",
+    footerTitle: "Gustavo Simas da Silva — Curriculum Vitae",
+    footerAreas: "Knowledge Engineering · AI · Art and Literature",
+    footerUpdated: "Updated in 2026 · Florianópolis/SC",
+  },
+};
+
 function App() {
   const [currentPath, setCurrentPath] = useState(() => window.location.pathname.replace(/\/$/, ""));
   const [language, setLanguage] = useState<Language>(getInitialLanguage);
@@ -998,7 +1330,7 @@ function App() {
   const isCurriculum = currentPath === "/curriculo";
 
   return isCurriculum ? (
-    <Curriculum navigate={navigate} />
+    <Curriculum navigate={navigate} language={language} setLanguage={setLanguage} />
   ) : (
     <Portfolio navigate={navigate} language={language} setLanguage={setLanguage} />
   );
@@ -1616,13 +1948,24 @@ function Capability({ number, title, items }: { number: string; title: string; i
 // --------------------------------------------------------------------------
 type CvTab = "tudo" | "experiencia" | "formacao" | "premios" | "publicacoes" | "arte" | "projetos";
 
-function Curriculum({ navigate }: { navigate: (path: string) => void }) {
+function Curriculum({
+  navigate,
+  language,
+  setLanguage,
+}: {
+  navigate: (path: string) => void;
+  language: Language;
+  setLanguage: React.Dispatch<React.SetStateAction<Language>>;
+}) {
   const [activeTab, setActiveTab] = useState<CvTab>("tudo");
   const [searchQuery, setSearchQuery] = useState("");
   const [pubFilter, setPubFilter] = useState<string>("Todos");
+  const isPt = language === "pt";
+  const data = isPt ? cvData : cvDataEn;
+  const copy = cvCopy[language];
 
   const filteredPublications = useMemo(() => {
-    return cvData.allPublications.filter((pub) => {
+    return data.allPublications.filter((pub) => {
       const matchesType = pubFilter === "Todos" || pub.type === pubFilter;
       const matchesQuery =
         searchQuery === "" ||
@@ -1631,23 +1974,33 @@ function Curriculum({ navigate }: { navigate: (path: string) => void }) {
         pub.year.includes(searchQuery);
       return matchesType && matchesQuery;
     });
-  }, [pubFilter, searchQuery]);
+  }, [data.allPublications, pubFilter, searchQuery]);
 
   return (
     <main className="cv-page">
       <nav className="cv-toolbar">
         <button className="cv-back-button" onClick={() => navigate("/")}>
-          <ArrowLeft size={16} /> Voltar ao atlas
+          <ArrowLeft size={16} /> {copy.back}
         </button>
         <div className="cv-toolbar-right">
-          <a className="cv-link-button" href={cvData.profile.lattesUrl} target="_blank" rel="noreferrer">
-            <Library size={14} /> Currículo Lattes
+          <button
+            className="cv-language-toggle"
+            onClick={() => setLanguage(isPt ? "en" : "pt")}
+            aria-label={copy.languageAria}
+            title={copy.languageAria}
+          >
+            <span className={!isPt ? "active" : ""}>EN</span>
+            <span aria-hidden="true">/</span>
+            <span className={isPt ? "active" : ""}>PT</span>
+          </button>
+          <a className="cv-link-button" href={data.profile.lattesUrl} target="_blank" rel="noreferrer">
+            <Library size={14} /> {copy.lattes}
           </a>
-          <a className="cv-link-button" href={cvData.profile.orcidUrl} target="_blank" rel="noreferrer">
+          <a className="cv-link-button" href={data.profile.orcidUrl} target="_blank" rel="noreferrer">
             <Globe size={14} /> ORCID
           </a>
           <button className="cv-print-button" onClick={() => window.print()}>
-            <Download size={16} /> Salvar / Imprimir PDF
+            <Download size={16} /> {copy.print}
           </button>
         </div>
       </nav>
@@ -1656,44 +2009,36 @@ function Curriculum({ navigate }: { navigate: (path: string) => void }) {
         {/* HEADER */}
         <header className="cv-header">
           <div className="cv-header-main">
-            <span className="cv-kicker">Curriculum Vitae Acadêmico e Profissional · 2026</span>
-            <h1>{cvData.profile.name}</h1>
-            <p className="cv-headline">{cvData.profile.titles}</p>
-            <p className="cv-role-sub">{cvData.profile.role}</p>
+            <span className="cv-kicker">{copy.kicker}</span>
+            <h1>{data.profile.name}</h1>
+            <p className="cv-headline">{data.profile.titles}</p>
+            <p className="cv-role-sub">{data.profile.role}</p>
           </div>
           <div className="cv-contact">
-            <a href={`mailto:${cvData.profile.email}`}>
-              <Mail size={14} /> {cvData.profile.email}
+            <a href={`mailto:${data.profile.email}`}>
+              <Mail size={14} /> {data.profile.email}
             </a>
             <span>
-              <MapPin size={14} /> {cvData.profile.location}
+              <MapPin size={14} /> {data.profile.location}
             </span>
-            <a href={cvData.profile.lattesUrl} target="_blank" rel="noreferrer">
-              <Library size={14} /> ID Lattes: {cvData.profile.lattesId}
+            <a href={data.profile.lattesUrl} target="_blank" rel="noreferrer">
+              <Library size={14} /> Lattes ID: {data.profile.lattesId}
             </a>
-            <a href={cvData.profile.orcidUrl} target="_blank" rel="noreferrer">
-              <Globe size={14} /> ORCID: {cvData.profile.orcidId}
+            <a href={data.profile.orcidUrl} target="_blank" rel="noreferrer">
+              <Globe size={14} /> ORCID: {data.profile.orcidId}
             </a>
-            <a href={cvData.profile.linkedinUrl} target="_blank" rel="noreferrer">
+            <a href={data.profile.linkedinUrl} target="_blank" rel="noreferrer">
               <Linkedin size={14} /> LinkedIn: /in/simasgs
             </a>
-            <a href={cvData.profile.spotifyUrl} target="_blank" rel="noreferrer">
+            <a href={data.profile.spotifyUrl} target="_blank" rel="noreferrer">
               <Music2 size={14} /> Spotify Artist
             </a>
           </div>
         </header>
 
         {/* INTERACTIVE NAVIGATION TABS */}
-        <div className="cv-interactive-tabs" role="tablist" aria-label="Seções do currículo">
-          {[
-            { id: "tudo", label: "Visão Geral Completa" },
-            { id: "experiencia", label: "Experiência Profissional" },
-            { id: "formacao", label: "Formação & Títulos" },
-            { id: "premios", label: "Prêmios & Distinções" },
-            { id: "publicacoes", label: "Produção Bibliográfica" },
-            { id: "arte", label: "Produção Fonográfica & Cultural" },
-            { id: "projetos", label: "Projetos de P&D" },
-          ].map((tab) => (
+        <div className="cv-interactive-tabs" role="tablist" aria-label={copy.tabsAria}>
+          {copy.tabs.map((tab) => (
             <button
               key={tab.id}
               role="tab"
@@ -1711,8 +2056,8 @@ function Curriculum({ navigate }: { navigate: (path: string) => void }) {
           <section className="cv-summary">
             <span>01</span>
             <div>
-              <h2>Resumo / Perfil</h2>
-              <p>{cvData.profile.bio}</p>
+              <h2>{copy.summary}</h2>
+              <p>{data.profile.bio}</p>
             </div>
           </section>
         )}
@@ -1724,10 +2069,10 @@ function Curriculum({ navigate }: { navigate: (path: string) => void }) {
               <section className="cv-section">
                 <div className="cv-section-title">
                   <span>02</span>
-                  <h2>Atuação Profissional</h2>
+                  <h2>{copy.experience}</h2>
                 </div>
                 <div className="cv-item-list">
-                  {cvData.experience.map((item, idx) => (
+                  {data.experience.map((item, idx) => (
                     <article className="cv-item" key={idx}>
                       <span className="cv-item-period">{item.period}</span>
                       <div className="cv-item-content">
@@ -1752,10 +2097,10 @@ function Curriculum({ navigate }: { navigate: (path: string) => void }) {
               <section className="cv-section">
                 <div className="cv-section-title">
                   <span>03</span>
-                  <h2>Formação Acadêmica & Titulação</h2>
+                  <h2>{copy.education}</h2>
                 </div>
                 <div className="cv-item-list">
-                  {cvData.education.map((edu, idx) => (
+                  {data.education.map((edu, idx) => (
                     <article className="cv-item" key={idx}>
                       <span className="cv-item-period">{edu.period}</span>
                       <div className="cv-item-content">
@@ -1774,10 +2119,10 @@ function Curriculum({ navigate }: { navigate: (path: string) => void }) {
               <section className="cv-section">
                 <div className="cv-section-title">
                   <span>04</span>
-                  <h2>Prêmios, Títulos e Reconhecimentos</h2>
+                  <h2>{copy.awards}</h2>
                 </div>
                 <div className="cv-awards-grid">
-                  {cvData.awards.map((award, idx) => (
+                  {data.awards.map((award, idx) => (
                     <div className="cv-award-card" key={idx}>
                       <div className="cv-award-header">
                         <Trophy size={16} className="cv-award-icon" />
@@ -1797,19 +2142,19 @@ function Curriculum({ navigate }: { navigate: (path: string) => void }) {
               <section className="cv-section">
                 <div className="cv-section-title">
                   <span>05</span>
-                  <h2>Produção Bibliográfica</h2>
+                  <h2>{copy.publications}</h2>
                 </div>
 
                 {/* Filtro de publicações */}
                 <div className="cv-pub-controls">
                   <div className="cv-pub-filters">
-                    {["Todos", "Livro", "Artigo Periódico", "Capítulo", "Congresso"].map((type) => (
+                    {copy.publicationFilters.map((filter) => (
                       <button
-                        key={type}
-                        className={`cv-pub-filter-btn ${pubFilter === type ? "active" : ""}`}
-                        onClick={() => setPubFilter(type)}
+                        key={filter.value}
+                        className={`cv-pub-filter-btn ${pubFilter === filter.value ? "active" : ""}`}
+                        onClick={() => setPubFilter(filter.value)}
                       >
-                        {type}
+                        {filter.label}
                       </button>
                     ))}
                   </div>
@@ -1817,7 +2162,8 @@ function Curriculum({ navigate }: { navigate: (path: string) => void }) {
                     <Search size={14} />
                     <input
                       type="text"
-                      placeholder="Pesquisar publicações, periódicos ou termos..."
+                      placeholder={copy.searchPlaceholder}
+                      aria-label={copy.searchAria}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -1835,13 +2181,13 @@ function Curriculum({ navigate }: { navigate: (path: string) => void }) {
                       <span className="cv-pub-index">{String(i + 1).padStart(2, "0")}</span>
                       <div className="cv-pub-body">
                         <div className="cv-pub-tag-row">
-                          <span className={`cv-pub-tag ${item.type.toLowerCase().replace(/\s+/g, "-")}`}>{item.type}</span>
+                          <span className={`cv-pub-tag ${item.type.toLowerCase().replace(/\s+/g, "-")}`}>{copy.publicationTypes[item.type]}</span>
                           <span className="cv-pub-year">{item.year}</span>
                         </div>
                         <p>{item.citation}</p>
                         {item.link && (
                           <a href={item.link} target="_blank" rel="noreferrer" className="cv-pub-link">
-                            Acessar publicação <ArrowUpRight size={12} />
+                            {copy.openPublication} <ArrowUpRight size={12} />
                           </a>
                         )}
                       </div>
@@ -1856,10 +2202,10 @@ function Curriculum({ navigate }: { navigate: (path: string) => void }) {
               <section className="cv-section">
                 <div className="cv-section-title">
                   <span>06</span>
-                  <h2>Produção Artística, Fonográfica e Acessibilidade</h2>
+                  <h2>{copy.artisticProduction}</h2>
                 </div>
                 <div className="cv-art-blocks">
-                  {cvData.artisticProduction.map((art, idx) => (
+                  {data.artisticProduction.map((art, idx) => (
                     <div className="cv-art-group" key={idx}>
                       <h3>{art.category}</h3>
                       <ul>
@@ -1878,10 +2224,10 @@ function Curriculum({ navigate }: { navigate: (path: string) => void }) {
               <section className="cv-section">
                 <div className="cv-section-title">
                   <span>07</span>
-                  <h2>Projetos de Pesquisa & Inovação Metodológica</h2>
+                  <h2>{copy.projects}</h2>
                 </div>
                 <div className="cv-item-list">
-                  {cvData.projectsAndMethods.map((proj, idx) => (
+                  {data.projectsAndMethods.map((proj, idx) => (
                     <article className="cv-item" key={idx}>
                       <span className="cv-item-period">{proj.period}</span>
                       <div className="cv-item-content">
@@ -1898,23 +2244,23 @@ function Curriculum({ navigate }: { navigate: (path: string) => void }) {
 
           {/* SIDEBAR */}
           <aside className="cv-side">
-            <CvSide label="Livros Publicados" items={["Tecnogonia (Caravana, 2025)", "E o que eu faço com isso? (Labrador, 2025)", "Antologia Pandemias (Noveland, 2021)"]} />
+            <CvSide label={copy.publishedBooks} items={copy.books} />
             <CvSide
-              label="Especialidades em Governança & IA"
-              items={cvData.skills.governanceAndKnowledge}
+              label={copy.governanceSkills}
+              items={data.skills.governanceAndKnowledge}
             />
             <CvSide
-              label="Tecnologias & Metodologias"
-              items={cvData.skills.technical}
+              label={copy.technologies}
+              items={data.skills.technical}
             />
             <CvSide
-              label="Formação Complementar"
-              items={cvData.certifications.map((c) => `${c.name} (${c.issuer}, ${c.year})`)}
+              label={copy.certifications}
+              items={data.certifications.map((c) => `${c.name} (${c.issuer}, ${c.year})`)}
             />
             <section className="cv-side-section">
-              <span className="cv-side-label">Idiomas</span>
+              <span className="cv-side-label">{copy.languages}</span>
               <ul className="cv-lang-list">
-                {cvData.skills.languages.map((l) => (
+                {data.skills.languages.map((l) => (
                   <li key={l.language}>
                     <strong>{l.language}:</strong> <span>{l.level}</span>
                   </li>
@@ -1922,18 +2268,18 @@ function Curriculum({ navigate }: { navigate: (path: string) => void }) {
               </ul>
             </section>
             <section className="cv-side-section">
-              <span className="cv-side-label">Propriedade Intelectual</span>
+              <span className="cv-side-label">{copy.intellectualProperty}</span>
               <p className="cv-side-note">
-                <strong>VI Mídia</strong> — Marca Registrada no Instituto Nacional da Propriedade Industrial (INPI), processo 922745829.
+                <strong>VI Mídia</strong> — {copy.trademark}
               </p>
             </section>
           </aside>
         </div>
 
         <footer className="cv-document-footer">
-          <span>Gustavo Simas da Silva — Currículo Vitae</span>
-          <span>Engenharia do Conhecimento · IA · Arte e Literatura</span>
-          <span>Atualizado em 2026 · Florianópolis/SC</span>
+          <span>{copy.footerTitle}</span>
+          <span>{copy.footerAreas}</span>
+          <span>{copy.footerUpdated}</span>
         </footer>
       </article>
     </main>

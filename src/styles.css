@@ -1605,7 +1605,8 @@ img {
 
 .cv-back-button,
 .cv-link-button,
-.cv-print-button {
+.cv-print-button,
+.cv-language-toggle {
   min-height: 42px;
   padding: 0 16px;
   display: inline-flex;
@@ -1623,10 +1624,23 @@ img {
 
 .cv-back-button:hover,
 .cv-link-button:hover,
-.cv-print-button:hover {
+.cv-print-button:hover,
+.cv-language-toggle:hover,
+.cv-language-toggle:focus-visible {
   background: #fff;
   border-color: #19201b;
   transform: translateY(-1px);
+}
+
+.cv-language-toggle {
+  justify-content: center;
+  min-width: 72px;
+  color: #737c75;
+}
+
+.cv-language-toggle .active {
+  color: #3b7012;
+  font-weight: 700;
 }
 
 .cv-toolbar-right {
