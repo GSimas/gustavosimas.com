@@ -162,7 +162,7 @@ const projects: Project[] = [
     year: "2026",
     description:
       "Conversor privado de arquivos e pastas para Markdown editável. Processa documentos em múltiplos formatos inteiramente no navegador, sem uploads ou armazenamento em servidores.",
-    href: "https://mdforge.gustavosimas.com/",
+    href: "https://mdforge.scientata.com/",
     visual: "mdforge",
     image: "/assets/mdforge-cover.svg",
   },
@@ -172,7 +172,7 @@ const projects: Project[] = [
     year: "2026",
     description:
       "Plataforma com 78 métodos, recomendador e estúdio local para escolher, construir, auditar e exportar visualizações de dados claras, acessíveis e adequadas à pergunta analítica.",
-    href: "https://datavizlab.gustavosimas.com/",
+    href: "https://datavizlab.scientata.com/",
     visual: "datavizlab",
     image: "/assets/datavizlab-cover.svg",
   },
@@ -182,7 +182,7 @@ const projects: Project[] = [
     year: "2026",
     description:
       "Analisador local para contar tokens, simular estratégias de chunking e estimar carga, sobreposição e requisições antes de indexar bases de conhecimento em pipelines de RAG.",
-    href: "https://tokenlab.gustavosimas.com/",
+    href: "https://tokenlab.scientata.com/",
     visual: "tokenlab",
     image: "/assets/tokenlab-cover.svg",
   },
@@ -494,7 +494,7 @@ const cvData = {
     titles: "Doutorando e Mestre em Engenharia e Gestão do Conhecimento (UFSC) · Engenheiro Eletrônico (UFSC)",
     role: "Analista Técnico II - Inteligência Artificial no Sebrae/SC · Pesquisador Bolsista CAPES (LaMiD/UFSC) · Escritor e Produtor Fonográfico",
     location: "Florianópolis, Santa Catarina, Brasil",
-    email: "gustavosimassilva@gmail.com",
+    email: "contato@gustavosimas.com",
     lattesUrl: "http://lattes.cnpq.br/3423329196677574",
     lattesId: "3423329196677574",
     orcidUrl: "https://orcid.org/0000-0003-3485-7910",
@@ -1761,8 +1761,8 @@ function Portfolio({
               <br />
               {copy.contact.title3}
             </h2>
-            <a className="contact-email" href="mailto:gustavosimassilva@gmail.com">
-              gustavosimassilva@gmail.com <ArrowUpRight />
+            <a className="contact-email" href="mailto:contato@gustavosimas.com">
+              contato@gustavosimas.com <ArrowUpRight />
             </a>
             <div className="contact-footer">
               <p>{copy.contact.description}</p>
