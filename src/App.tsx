@@ -60,7 +60,7 @@ const projects: Project[] = [
     year: "2025",
     description:
       "Ensaio sobre as tecnologias que criamos — e que, silenciosamente, também nos criam. Publicado pela Editora Caravana.",
-    href: "https://caravanagrupoeditorial.com/livros/tecnogonia-criando-tecnologias-que-nos-criam/?v=2d3615d82bb9",
+    href: "https://tecnogonia.gustavosimas.com",
     visual: "tecnogonia",
     image: "/assets/tecnogonia.jpeg",
     featured: true,
@@ -71,7 +71,7 @@ const projects: Project[] = [
     year: "2025",
     description:
       "Livro de poesia: uma coleção de perguntas, afetos e fragmentos sobre o que fazemos com aquilo que nos atravessa. Editora Labrador.",
-    href: "https://www.instagram.com/tudoemsimas/",
+    href: "https://eoqueeufacocomisso.gustavosimas.com",
     visual: "poesia",
     image: "/assets/eoqueeufacocomisso.jpg",
     featured: true,
