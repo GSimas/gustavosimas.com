@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   ArrowDown,
   ArrowLeft,
@@ -31,6 +31,7 @@ import {
   Music2,
   Network,
   Palette,
+  Play,
   Search,
   Sparkles,
   Sun,
@@ -305,10 +306,362 @@ const highlightPublications = [
   },
 ];
 
+interface Poem {
+  slug: string;
+  title: string;
+  titleEn: string;
+  year: string;
+  media: "video" | "image";
+  ratio: string;
+  words: string;
+  note: string;
+  noteEn: string;
+}
+
+const poems: Poem[] = [
+  {
+    slug: "pos-estruturalismo",
+    title: "Pós-Estruturalismo",
+    titleEn: "Post-Structuralism",
+    year: "2025",
+    media: "video",
+    ratio: "1 / 1",
+    words: "pós-estruturalismo",
+    note: "A palavra é erguida como estrutura empilhada e depois desaba. As sílabas caem, se acumulam no chão e continuam legíveis em ruína: a demolição não apaga o sentido.",
+    noteEn: "The word is raised as a stacked structure and then collapses. The syllables fall, pile up on the floor and remain legible in ruin: the demolition does not erase the meaning.",
+  },
+  {
+    slug: "balance-sua-bandeira",
+    title: "Balance Sua Bandeira",
+    titleEn: "Wave Your Flag",
+    year: "2025",
+    media: "video",
+    ratio: "1000 / 624",
+    words: "balance sua bandeira",
+    note: "A frase, repetida em faixas, é o próprio tecido de uma bandeira que tremula ao vento. O verso não descreve a bandeira — ele é a bandeira.",
+    noteEn: "The phrase, repeated in stripes, is the very fabric of a flag rippling in the wind. The line does not describe the flag — it is the flag.",
+  },
+  {
+    slug: "o-rio-e-o-movimento",
+    title: "O Rio e o Movimento",
+    titleEn: "The River and the Movement",
+    year: "2025",
+    media: "video",
+    ratio: "1000 / 624",
+    words: "o rio existe por conta do movimento\no movimento existe por conta do tempo",
+    note: "Os dois versos escorrem em coluna sobre o azul chapado, num fluxo que não chega ao fim. O texto se comporta exatamente como aquilo que enuncia.",
+    noteEn: "The two lines pour down a column over flat blue, in a flow that never reaches an end. The text behaves exactly like what it states.",
+  },
+  {
+    slug: "tudo-o-que-eu-queria-te-dizer",
+    title: "Tudo o Que Eu Queria Te Dizer",
+    titleEn: "Everything I Wanted to Tell You",
+    year: "2025",
+    media: "video",
+    ratio: "1 / 1",
+    words: "tudo o que eu queria te dizer",
+    note: "A frase começa em serifa nítida e se decompõe em ruído da esquerda para a direita. Sobra o começo; o resto nunca chega inteiro.",
+    noteEn: "The sentence begins in crisp serif and decomposes into noise from left to right. The beginning survives; the rest never arrives intact.",
+  },
+  {
+    slug: "eu-senhor-do-meu-fim",
+    title: "Eu Senhor do Meu Fim",
+    titleEn: "I, Master of My End",
+    year: "2025",
+    media: "video",
+    ratio: "1 / 1",
+    words: "eu senhor do meu fim",
+    note: "A frase é impressa em fitas coloridas que se entrelaçam num trançado. Ler exige seguir cada tira até onde ela desaparece por baixo da outra: o domínio anunciado depende de uma trama que nunca se vê inteira.",
+    noteEn: "The phrase is printed on coloured ribbons woven into a braid. Reading it means following each strip to where it vanishes beneath the next: the mastery announced depends on a weave never seen whole.",
+  },
+  {
+    slug: "a-gente-se-cruza-na-estrada",
+    title: "A Gente Se Cruza na Estrada",
+    titleEn: "We Cross Paths on the Road",
+    year: "2025",
+    media: "video",
+    ratio: "1 / 1",
+    words: "a gente se cruza na estrada",
+    note: "A frase percorre um nó que se dobra sobre si mesmo. As linhas se cruzam, se sobrepõem e retornam — o encontro anunciado no verso acontece na geometria.",
+    noteEn: "The phrase travels along a knot folding over itself. The lines cross, overlap and return — the encounter announced in the line happens in the geometry.",
+  },
+  {
+    slug: "tudo-por-agua-abaixo",
+    title: "Tudo Por Água Abaixo",
+    titleEn: "All Down the Drain",
+    year: "2025",
+    media: "video",
+    ratio: "1 / 1",
+    words: "tudo por água abaixo",
+    note: "A frase desce em espiral por um funil sem fundo, encolhendo até o limite da legibilidade e recomeçando na borda.",
+    noteEn: "The phrase spirals down a bottomless funnel, shrinking to the edge of legibility and starting over at the rim.",
+  },
+  {
+    slug: "regenere",
+    title: "Regenere",
+    titleEn: "Regenerate",
+    year: "2025",
+    media: "video",
+    ratio: "1 / 1",
+    words: "regenere",
+    note: "As letras giram num cilindro sem emenda nem começo. O fim da palavra já é o seu recomeço, e o eixo nunca aparece.",
+    noteEn: "The letters revolve on a cylinder with no seam and no beginning. The end of the word is already its restart, and the axis never appears.",
+  },
+  {
+    slug: "rodar-e-rodar",
+    title: "Rodar e Rodar",
+    titleEn: "Spin and Spin",
+    year: "2025",
+    media: "video",
+    ratio: "1 / 1",
+    words: "rodar e rodar",
+    note: "Anéis concêntricos de texto branco e vermelho giram em sentidos opostos e produzem moiré. O olho não encontra ponto de repouso.",
+    noteEn: "Concentric rings of white and red text spin in opposite directions and produce moiré. The eye finds no place to rest.",
+  },
+  {
+    slug: "poesia-ou-design",
+    title: "Poesia ou Design?",
+    titleEn: "Poetry or Design?",
+    year: "2025",
+    media: "video",
+    ratio: "1 / 1",
+    words: "poesia ou design?",
+    note: "A pergunta se repete em linhas finíssimas que giram no espaço, ora legíveis, ora comprimidas até virar pura textura. Meta-poema da série: a mesma matéria oscila entre as duas respostas.",
+    noteEn: "The question repeats in hairline rows turning in space, now legible, now compressed into pure texture. The series' meta-poem: the same matter oscillates between both answers.",
+  },
+  {
+    slug: "o-futuro-e-imenso",
+    title: "O Futuro é Imenso",
+    titleEn: "The Future Is Immense",
+    year: "2025",
+    media: "video",
+    ratio: "384 / 734",
+    words: "o futuro é imenso",
+    note: "A frase se estilhaça em cópias vermelhas, verdes e azuis que se afastam do centro e voltam a coincidir. A separação dos canais de cor vira medida de amplitude.",
+    noteEn: "The phrase shatters into red, green and blue copies that drift from the centre and fall back into register. Colour-channel separation becomes a measure of magnitude.",
+  },
+  {
+    slug: "o-todo-e-muita-coisa",
+    title: "O Todo é Muita Coisa",
+    titleEn: "The Whole Is a Lot",
+    year: "2025",
+    media: "video",
+    ratio: "384 / 734",
+    words: "o todo é muita coisa",
+    note: "Raios de luz irradiam de dentro das letras, ora ofuscando a frase, ora devolvendo-a à leitura. O excesso é o assunto e também a técnica.",
+    noteEn: "Rays of light radiate from inside the letters, now blinding the phrase, now handing it back to be read. Excess is both the subject and the technique.",
+  },
+  {
+    slug: "meu-sonho-meu-pesadelo",
+    title: "O Meu Sonho Também é Meu Pesadelo",
+    titleEn: "My Dream Is Also My Nightmare",
+    year: "2025",
+    media: "image",
+    ratio: "1400 / 876",
+    words: "o meu sonho também é meu pesadelo",
+    note: "Imagem fixa. Metade da frase permanece em serifa estável; a outra metade é corroída por glitch. A imagem se parte exatamente onde a frase se inverte.",
+    noteEn: "A still image. Half the sentence stays in stable serif; the other half is eaten by glitch. The image breaks exactly where the sentence turns on itself.",
+  },
+  {
+    slug: "nome-proprio-i",
+    title: "Nome Próprio I",
+    titleEn: "Proper Noun I",
+    year: "2025",
+    media: "video",
+    ratio: "1000 / 624",
+    words: "gustavo simas",
+    note: "Primeira das quatro variações sobre o próprio nome. Blocos alternados de preto e branco formam um tabuleiro que uma onda atravessa, deslocando as letras sem nunca desfazer a grade.",
+    noteEn: "First of four variations on the artist's own name. Alternating black and white blocks form a board crossed by a wave that shifts the letters without ever undoing the grid.",
+  },
+  {
+    slug: "nome-proprio-ii",
+    title: "Nome Próprio II",
+    titleEn: "Proper Noun II",
+    year: "2025",
+    media: "video",
+    ratio: "1000 / 626",
+    words: "gustavo simas",
+    note: "Milhares de repetições em escala decrescente comprimem o nome até virar moiré. Quando as camadas se afastam, o nome volta a ser apenas um nome.",
+    noteEn: "Thousands of repetitions at decreasing scale compress the name into moiré. As the layers pull apart, the name becomes just a name again.",
+  },
+  {
+    slug: "nome-proprio-iii",
+    title: "Nome Próprio III",
+    titleEn: "Proper Noun III",
+    year: "2025",
+    media: "video",
+    ratio: "1000 / 624",
+    words: "gustavo simas",
+    note: "A mesma grade da primeira variação, agora em vermelho, azul e branco sobre amarelo saturado. A ondulação que era sombra vira cor.",
+    noteEn: "The same grid as the first variation, now in red, blue and white on saturated yellow. The ripple that was shadow becomes colour.",
+  },
+  {
+    slug: "nome-proprio-iv",
+    title: "Nome Próprio IV",
+    titleEn: "Proper Noun IV",
+    year: "2025",
+    media: "video",
+    ratio: "1000 / 626",
+    words: "gustavo simas",
+    note: "Última variação: o nome ocupa a tela inteira em pesos, inclinações e recortes que se substituem, alternando positivo e negativo até esgotar as formas possíveis.",
+    noteEn: "Final variation: the name fills the whole frame in weights, slants and crops that replace one another, alternating positive and negative until the possible forms run out.",
+  },
+];
+
+const creationExperiments = [
+  {
+    title: "LIFE∞ — Infinite Life Lab",
+    titleEn: "LIFE∞ — Infinite Life Lab",
+    description: "Um laboratório do Jogo da Vida de Conway em tela infinita, para desenhar padrões, acompanhar métricas e observar emergência, auto-organização e vida artificial acontecerem sozinhas.",
+    descriptionEn: "A Conway's Game of Life laboratory on an infinite canvas, for drawing patterns, tracking metrics and watching emergence, self-organization and artificial life happen on their own.",
+    tag: "Vida artificial",
+    tagEn: "Artificial life",
+    href: "https://gameoflife.gustavosimas.com/",
+  },
+  {
+    title: "Tecnomágica",
+    titleEn: "Tecnomágica",
+    description: "Laboratório aberto de promptografia e imaginação técnica: imagens feitas com IA generativa tratadas como escrita.",
+    descriptionEn: "An open lab of promptography and technical imagination: images made with generative AI treated as writing.",
+    tag: "Imagem e IA",
+    tagEn: "Image and AI",
+    href: "https://instagram.com/tecnomagica",
+  },
+];
+
+const creationsCopy = {
+  pt: {
+    back: "Voltar ao site",
+    themeAria: "Alternar tema",
+    languageAria: "Mudar idioma para inglês",
+    kicker: "Laboratório",
+    title: "Criações",
+    lede: "O que não cabe exatamente no currículo. Experimentos, poemas visuais, brinquedos computacionais e ideias que existem porque eu quis ver como ficariam. Uma pesquisa contínua das possibilidades de expressão em diferentes mídias.",
+    poems: {
+      number: "02",
+      label: "Poemas visuais animados",
+      title1: "A palavra",
+      title2: "como matéria.",
+      subtitle: "Série de poemas digitais em que a frase deixa de ser suporte do sentido e vira corpo: bandeira, relógio, rio, estrutura que desaba. Clique em qualquer peça para vê-la inteira, com o texto e uma nota sobre o procedimento.",
+      open: "Abrir peça",
+      close: "Fechar",
+      words: "Texto",
+      about: "Procedimento",
+      play: "Reproduzir",
+      still: "Imagem fixa",
+      galleryAria: "Galeria de poemas visuais",
+    },
+    interactive: {
+      number: "01",
+      label: "Poemas interativos",
+      title1: "Dois poemas",
+      title2: "que respondem.",
+      subtitle: "Um relógio que marca o horário de Brasília em tempo real, com as letras sendo arrastadas pelo tempo, e uma bandeira que balança a sua frase.",
+      clockTitle: "O Tempo Não Para",
+      clockNote: "O tempo arrasta as palavras. “Não sei o que é o tempo. Não sei qual a verdadeira medida que ele tem, se tem alguma. A do relógio sei que é falsa: divide o tempo espacialmente, por fora” — Fernando Pessoa. Relógio no horário de Brasília.",
+      clockLabel: "Horário de Brasília",
+      clockAria: "Relógio em tempo real com as letras da frase o tempo não para sendo arrastadas pelo ponteiro dos segundos",
+      flagTitle: "Balance Sua Bandeira",
+      flagNote: "As palavras texto e tecido vêm da mesma raiz em latim, texere, que significa “tecer”, “entrelaçar” ou “construir”. Seu texto tremulando ao vento.",
+      flagInput: "Escreva a sua palavra",
+      flagHint: "Até 42 caracteres. Deixe em branco para ver a frase original.",
+      flagLight: "Faixa clara",
+      flagDark: "Faixa escura",
+      flagBackground: "Fundo",
+      flagReset: "Restaurar",
+      flagExport: "Baixar a sua bandeira",
+      flagExporting: "Gerando o arquivo…",
+      flagAria: "Bandeira animada feita com a frase digitada pelo visitante",
+    },
+    experiments: {
+      number: "03",
+      label: "Experimentos e laboratórios",
+      title1: "Coisas que",
+      title2: "exploram sentidos",
+      subtitle: "Peças que funcionam operando algo que não estava previsto.",
+      open: "Abrir experimento",
+      openTitle: "Em aberto",
+      openText: "Este espaço continua sendo escrito. Novos experimentos entram aqui conforme saem do papel.",
+    },
+    zine: {
+      number: "04",
+      label: "Publicação experimental",
+      title: "Reciclopédia Concreta",
+      text: "Um caderno de poesia visual reunindo peças tipográficas em página fixa, uma versão impressa de investigação similar a que aqui se move.",
+      open: "Em breve...",
+      alt: "Capa da Reciclopédia Concreta",
+    },
+    footer: "Criações · experimentos · poemas visuais",
+  },
+  en: {
+    back: "Back to site",
+    themeAria: "Switch theme",
+    languageAria: "Mudar idioma para português",
+    kicker: "Laboratory",
+    title: "Creations",
+    lede: "What doesn't quite fit in a CV. Experiments, visual poems, computational toys and ideas that exist because I wanted to see how they would turn out. A continuous investigation into the possibilities of expression across different media.",
+    poems: {
+      number: "02",
+      label: "Animated visual poems",
+      title1: "The word",
+      title2: "as matter.",
+      subtitle: "A series of digital poems in which the sentence stops carrying meaning and becomes a body: a flag, a clock, a river, a structure that collapses. Click any piece to see it whole, with its text and a note on the procedure.",
+      open: "Open piece",
+      close: "Close",
+      words: "Text",
+      about: "Procedure",
+      play: "Play",
+      still: "Still image",
+      galleryAria: "Visual poems gallery",
+    },
+    interactive: {
+      number: "01",
+      label: "Interactive poems",
+      title1: "Two poems",
+      title2: "that answer back.",
+      subtitle: "A clock running on real Brasília time, its letters dragged along by time itself, and a flag that waves your own words.",
+      clockTitle: "O Tempo Não Para",
+      clockNote: "Time drags the words along. “I do not know what time is. I do not know its true measure, if it has one. The clock’s I know to be false: it divides time spatially, from the outside” — Fernando Pessoa. A clock running on Brasília time.",
+      clockLabel: "Brasília time",
+      clockAria: "Real-time clock with the letters of the phrase o tempo não para dragged along by the second hand",
+      flagTitle: "Balance Sua Bandeira",
+      flagNote: "The words text and textile share the same Latin root, texere: to weave, to interlace, to build. Your text, rippling in the wind.",
+      flagInput: "Write your own words",
+      flagHint: "Up to 42 characters. Leave it empty for the original phrase.",
+      flagLight: "Light stripe",
+      flagDark: "Dark stripe",
+      flagBackground: "Background",
+      flagReset: "Reset",
+      flagExport: "Download your flag",
+      flagExporting: "Building the file…",
+      flagAria: "Animated flag built from the phrase typed by the visitor",
+    },
+    experiments: {
+      number: "03",
+      label: "Experiments and labs",
+      title1: "Things that",
+      title2: "explore the senses",
+      subtitle: "Pieces that work by setting in motion something that was not foreseen.",
+      open: "Open experiment",
+      openTitle: "Open-ended",
+      openText: "This space is still being written. New experiments land here as they leave the drawing board.",
+    },
+    zine: {
+      number: "04",
+      label: "Experimental publication",
+      title: "Reciclopédia Concreta",
+      text: "A visual poetry notebook gathering typographic pieces on the fixed page, a printed version of an investigation similar to the one that moves here.",
+      open: "Coming soon...",
+      alt: "Cover of Reciclopédia Concreta",
+    },
+    footer: "Creations · experiments · visual poems",
+  },
+};
+
 const portfolioCopy = {
   pt: {
     brandTagline: "Conhecimento · tecnologia · imaginação",
-    nav: ["Manifesto", "Portfólio", "Trajetória", "Publicações", "Currículo"],
+    nav: ["Manifesto", "Portfólio", "Trajetória", "Publicações", "Currículo", "Criações"],
     header: {
       brandAria: "Gustavo Simas — início",
       navAria: "Navegação principal",
@@ -406,7 +759,7 @@ const portfolioCopy = {
   },
   en: {
     brandTagline: "Knowledge · technology · imagination",
-    nav: ["Manifesto", "Portfolio", "Journey", "Publications", "CV"],
+    nav: ["Manifesto", "Portfolio", "Journey", "Publications", "CV", "Creations"],
     header: {
       brandAria: "Gustavo Simas — home",
       navAria: "Main navigation",
@@ -1347,13 +1700,15 @@ function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const isCurriculum = currentPath === "/curriculo";
+  if (currentPath === "/curriculo") {
+    return <Curriculum navigate={navigate} language={language} setLanguage={setLanguage} />;
+  }
 
-  return isCurriculum ? (
-    <Curriculum navigate={navigate} language={language} setLanguage={setLanguage} />
-  ) : (
-    <Portfolio navigate={navigate} language={language} setLanguage={setLanguage} />
-  );
+  if (currentPath === "/criacoes") {
+    return <Creations navigate={navigate} language={language} setLanguage={setLanguage} />;
+  }
+
+  return <Portfolio navigate={navigate} language={language} setLanguage={setLanguage} />;
 }
 
 function Portfolio({
@@ -1416,6 +1771,7 @@ function Portfolio({
     { label: copy.nav[2], href: "#trajetoria" },
     { label: copy.nav[3], href: "#publicacoes" },
     { label: copy.nav[4], href: "/curriculo", isRoute: true },
+    { label: copy.nav[5], href: "/criacoes", isRoute: true },
   ];
 
   return (
@@ -2386,6 +2742,982 @@ function CvSide({ label, items }: { label: string; items: string[] }) {
         ))}
       </ul>
     </section>
+  );
+}
+
+// --------------------------------------------------------------------------
+// CREATIONS PAGE COMPONENT
+// --------------------------------------------------------------------------
+function Creations({
+  navigate,
+  language,
+  setLanguage,
+}: {
+  navigate: (path: string) => void;
+  language: Language;
+  setLanguage: React.Dispatch<React.SetStateAction<Language>>;
+}) {
+  const [theme, setTheme] = useState<"dark" | "light">(() => (localStorage.getItem("theme") as "dark" | "light") || "dark");
+  const [active, setActive] = useState<Poem | null>(null);
+  const reduceMotion = useReducedMotion();
+  const copy = creationsCopy[language];
+  const isPt = language === "pt";
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  useEffect(() => {
+    if (!active) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setActive(null);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [active]);
+
+  const activeTitle = active ? (isPt ? active.title : active.titleEn) : "";
+
+  return (
+    <main className="cr-page">
+      <nav className="cv-toolbar cr-toolbar">
+        <button className="cv-back-button" onClick={() => navigate("/")}>
+          <ArrowLeft size={16} /> {copy.back}
+        </button>
+        <div className="cv-toolbar-right">
+          <button
+            className="cv-theme-toggle"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            aria-label={copy.themeAria}
+            title={copy.themeAria}
+          >
+            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+          <button
+            className="cv-language-toggle"
+            onClick={() => setLanguage(isPt ? "en" : "pt")}
+            aria-label={copy.languageAria}
+            title={copy.languageAria}
+          >
+            <span className={!isPt ? "active" : ""}>EN</span>
+            <span aria-hidden="true">/</span>
+            <span className={isPt ? "active" : ""}>PT</span>
+          </button>
+        </div>
+      </nav>
+
+      <header className="cr-header">
+        <p className="eyebrow">
+          <span className="signal" /> {copy.kicker}
+        </p>
+        <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+          {copy.title}
+        </motion.h1>
+        <p className="cr-lede">{copy.lede}</p>
+      </header>
+
+      {/* POEMAS INTERATIVOS */}
+      <section className="cr-section">
+        <SectionMarker number={copy.interactive.number} label={copy.interactive.label} />
+        <div className="cr-section-head">
+          <h2>
+            {copy.interactive.title1}
+            <br />
+            <em>{copy.interactive.title2}</em>
+          </h2>
+          <p>{copy.interactive.subtitle}</p>
+        </div>
+        <div className="cr-live">
+          <article className="cr-live-piece">
+            <ClockPoem label={copy.interactive.clockLabel} aria={copy.interactive.clockAria} />
+            <div className="cr-live-body">
+              <h3>{copy.interactive.clockTitle}</h3>
+              <p>{copy.interactive.clockNote}</p>
+            </div>
+          </article>
+          <article className="cr-live-piece">
+            <FlagPoem placeholder="balance sua bandeira" copy={copy.interactive} />
+            <div className="cr-live-body">
+              <h3>{copy.interactive.flagTitle}</h3>
+              <p>{copy.interactive.flagNote}</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      {/* POEMAS VISUAIS */}
+      <section className="cr-section">
+        <SectionMarker number={copy.poems.number} label={copy.poems.label} />
+        <div className="cr-section-head">
+          <h2>
+            {copy.poems.title1}
+            <br />
+            <em>{copy.poems.title2}</em>
+          </h2>
+          <p>{copy.poems.subtitle}</p>
+        </div>
+        <div className="poem-gallery" aria-label={copy.poems.galleryAria}>
+          {poems.map((poem) => {
+            const title = isPt ? poem.title : poem.titleEn;
+            return (
+              <button
+                key={poem.slug}
+                type="button"
+                className="poem-card"
+                onClick={() => setActive(poem)}
+                aria-label={`${copy.poems.open}: ${title}`}
+              >
+                <span className="poem-frame" style={{ aspectRatio: poem.ratio }}>
+                  <PoemMedia poem={poem} play={!reduceMotion && poem.media === "video"} />
+                  {poem.media === "video" && reduceMotion ? (
+                    <span className="poem-play" aria-hidden="true">
+                      <Play size={16} />
+                    </span>
+                  ) : null}
+                </span>
+                <span className="poem-caption">
+                  <strong>{title}</strong>
+                  <span>{poem.media === "image" ? copy.poems.still : poem.year}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* EXPERIMENTOS E LABORATÓRIOS */}
+      <section className="cr-section">
+        <SectionMarker number={copy.experiments.number} label={copy.experiments.label} />
+        <div className="cr-section-head">
+          <h2>
+            {copy.experiments.title1}
+            <br />
+            <em>{copy.experiments.title2}</em>
+          </h2>
+          <p>{copy.experiments.subtitle}</p>
+        </div>
+        <div className="cr-experiments">
+          {creationExperiments.map((experiment) => (
+            <motion.a
+              key={experiment.href}
+              className="cr-experiment"
+              href={experiment.href}
+              target="_blank"
+              rel="noreferrer"
+              whileHover={{ y: -6 }}
+            >
+              <span className="cr-experiment-tag">{isPt ? experiment.tag : experiment.tagEn}</span>
+              <h3>{isPt ? experiment.title : experiment.titleEn}</h3>
+              <p>{isPt ? experiment.description : experiment.descriptionEn}</p>
+              <span className="cr-experiment-link">
+                {copy.experiments.open} <ArrowUpRight size={14} />
+              </span>
+            </motion.a>
+          ))}
+          <article className="cr-experiment is-open">
+            <span className="cr-experiment-tag">∞</span>
+            <h3>{copy.experiments.openTitle}</h3>
+            <p>{copy.experiments.openText}</p>
+          </article>
+        </div>
+      </section>
+
+      {/* RECICLOPÉDIA CONCRETA */}
+      <section className="cr-section">
+        <SectionMarker number={copy.zine.number} label={copy.zine.label} />
+        <div className="cr-zine">
+          <div className="cr-zine-cover">
+            <img src="/assets/poemas/reciclopedia-concreta.jpg" alt={copy.zine.alt} loading="lazy" />
+          </div>
+          <div className="cr-zine-body">
+            <h2>{copy.zine.title}</h2>
+            <p>{copy.zine.text}</p>
+            <button className="button primary" type="button" disabled>
+              {copy.zine.open} <FileText size={16} />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <footer className="cr-footer">
+        <span>Gustavo Simas</span>
+        <span>{copy.footer}</span>
+      </footer>
+
+      <AnimatePresence>
+        {active ? (
+          <motion.div
+            className="poem-lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={activeTitle}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setActive(null)}
+          >
+            <motion.div
+              className="poem-lightbox-inner"
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.25 }}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <button className="poem-close" onClick={() => setActive(null)} aria-label={copy.poems.close} autoFocus>
+                <X size={18} />
+              </button>
+              <div className="poem-lightbox-media" style={{ aspectRatio: active.ratio }}>
+                {active.media === "image" ? (
+                  <img src={`/assets/poemas/${active.slug}.jpg`} alt={isPt ? active.note : active.noteEn} />
+                ) : (
+                  <video
+                    key={active.slug}
+                    src={`/assets/poemas/${active.slug}.mp4`}
+                    poster={`/assets/poemas/${active.slug}.jpg`}
+                    autoPlay={!reduceMotion}
+                    controls={!!reduceMotion}
+                    muted
+                    loop
+                    playsInline
+                  />
+                )}
+              </div>
+              <div className="poem-lightbox-body">
+                <span className="poem-lightbox-year">{active.year}</span>
+                <h2>{activeTitle}</h2>
+                <span className="poem-lightbox-label">{copy.poems.words}</span>
+                <p className="poem-lightbox-words">
+                  {active.words.split("\n").map((line) => (
+                    <span key={line}>{line}</span>
+                  ))}
+                </p>
+                <span className="poem-lightbox-label">{copy.poems.about}</span>
+                <p className="poem-lightbox-note">{isPt ? active.note : active.noteEn}</p>
+              </div>
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </main>
+  );
+}
+
+// The poster is always painted; the video is only mounted once the card comes
+// near the viewport, so a gallery of seventeen loops never downloads at once.
+function PoemMedia({ poem, play }: { poem: Poem; play: boolean }) {
+  const frameRef = useRef<HTMLSpanElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    if (!play) return;
+    const element = frameRef.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const video = videoRef.current;
+        if (entry.isIntersecting) {
+          setMounted(true);
+          if (video) void video.play().catch(() => {});
+        } else if (video) {
+          video.pause();
+        }
+      },
+      { rootMargin: "300px 0px", threshold: 0.01 },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [play]);
+
+  return (
+    <span className="poem-layers" ref={frameRef}>
+      <img className="poem-media" src={`/assets/poemas/${poem.slug}.jpg`} alt="" loading="lazy" />
+      {play && mounted ? (
+        <video
+          ref={videoRef}
+          className="poem-media is-video"
+          src={`/assets/poemas/${poem.slug}.mp4`}
+          poster={`/assets/poemas/${poem.slug}.jpg`}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+          tabIndex={-1}
+        />
+      ) : null}
+    </span>
+  );
+}
+
+// --------------------------------------------------------------------------
+// INTERACTIVE POEMS (LIVE CANVAS PIECES)
+// --------------------------------------------------------------------------
+
+// Letter placement traced from the original "O Tempo Não Para" video: a loose,
+// hand-composed ring where radius and size vary letter by letter. Angles are
+// degrees clockwise from twelve; radius and size are fractions of the dial.
+const clockLayout = [
+  { ch: "o", angle: 285.0, radius: 0.9, size: 0.4 },
+  { ch: "t", angle: 303.5, radius: 0.79, size: 0.34 },
+  { ch: "e", angle: 328.7, radius: 0.82, size: 0.33 },
+  { ch: "m", angle: 342.8, radius: 0.61, size: 0.38 },
+  { ch: "o", angle: 29.4, radius: 0.37, size: 0.3 },
+  { ch: "p", angle: 83.2, radius: 0.77, size: 0.37 },
+  { ch: "a", angle: 93.8, radius: 0.3, size: 0.32 },
+  { ch: "r", angle: 141.6, radius: 0.37, size: 0.3 },
+  { ch: "a", angle: 163.2, radius: 0.56, size: 0.33 },
+  { ch: "p", angle: 189.6, radius: 0.85, size: 0.37 },
+  { ch: "o", angle: 232.1, radius: 0.87, size: 0.33 },
+  { ch: "ã", angle: 240.3, radius: 0.49, size: 0.32 },
+  { ch: "n", angle: 249.7, radius: 0.79, size: 0.35 },
+];
+
+interface ClockLetter {
+  ch: string;
+  homeAngle: number;
+  homeRadius: number;
+  size: number;
+  angle: number;
+  radius: number;
+  lead: number;
+  pushArc: number;
+  pushed: boolean;
+  pushedFrom: number;
+  caughtRevolution: number;
+}
+
+function createClockLetters(): ClockLetter[] {
+  return clockLayout.map((letter, index) => ({
+    ch: letter.ch,
+    homeAngle: letter.angle,
+    homeRadius: letter.radius,
+    size: letter.size,
+    angle: letter.angle,
+    radius: letter.radius,
+    lead: 4 + (index % 5) * 2.6,
+    pushArc: 40 + (index % 7) * 7,
+    pushed: false,
+    pushedFrom: 0,
+    caughtRevolution: -1,
+  }));
+}
+
+// Signed shortest angular distance, in degrees, within (-180, 180].
+function angleDelta(from: number, to: number): number {
+  return ((((to - from) % 360) + 540) % 360) - 180;
+}
+
+// Brasília wall clock as an offset applied to the epoch, so the rest of the
+// drawing code can read the shifted date with plain UTC getters.
+function brasiliaOffset(): number {
+  const now = Date.now();
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Sao_Paulo",
+    hour12: false,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+  const parts: Record<string, string> = {};
+  for (const part of formatter.formatToParts(new Date(now))) {
+    if (part.type !== "literal") parts[part.type] = part.value;
+  }
+  const asUtc = Date.UTC(
+    Number(parts.year),
+    Number(parts.month) - 1,
+    Number(parts.day),
+    Number(parts.hour) % 24,
+    Number(parts.minute),
+    Number(parts.second),
+  );
+  return asUtc - Math.floor(now / 1000) * 1000;
+}
+
+function ClockPoem({ label, aria }: { label: string; aria: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [readout, setReadout] = useState("--:--:--");
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    const letters = createClockLetters();
+    let offset = brasiliaOffset();
+    let offsetCheckedAt = Date.now();
+    let frame = 0;
+    let visible = true;
+    let lastSecond = -1;
+
+    const resize = () => {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.max(1, Math.round(rect.width * ratio));
+      canvas.height = Math.max(1, Math.round(rect.height * ratio));
+    };
+    resize();
+
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvas);
+
+    const visibility = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+      },
+      { rootMargin: "150px 0px" },
+    );
+    visibility.observe(canvas);
+
+    const draw = () => {
+      frame = requestAnimationFrame(draw);
+      if (!visible) return;
+
+      const now = Date.now();
+      if (now - offsetCheckedAt > 60000) {
+        offset = brasiliaOffset();
+        offsetCheckedAt = now;
+      }
+
+      const shifted = now + offset;
+      const secondOfDay = (shifted % 86400000) / 1000;
+      const seconds = reduceMotion ? Math.floor(secondOfDay % 60) : secondOfDay % 60;
+      const minutes = Math.floor(secondOfDay / 60) % 60;
+      const hours = Math.floor(secondOfDay / 3600) % 24;
+      const wholeSecond = Math.floor(secondOfDay);
+
+      if (wholeSecond !== lastSecond) {
+        lastSecond = wholeSecond;
+        setReadout(
+          `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(Math.floor(seconds)).padStart(2, "0")}`,
+        );
+      } else if (reduceMotion) {
+        return;
+      }
+
+      const secondAngle = seconds * 6;
+      const minuteAngle = (minutes + seconds / 60) * 6;
+      const hourAngle = ((hours % 12) + minutes / 60) * 30;
+      const revolution = Math.floor(secondOfDay / 60);
+
+      if (!reduceMotion) {
+        for (const letter of letters) {
+          if (!letter.pushed) {
+            const delta = angleDelta(secondAngle, letter.angle);
+            if (letter.caughtRevolution !== revolution && delta <= 0.5 && delta > -14) {
+              letter.pushed = true;
+              letter.pushedFrom = secondAngle;
+              letter.caughtRevolution = revolution;
+            }
+          }
+
+          if (letter.pushed) {
+            letter.angle = (secondAngle + letter.lead) % 360;
+            letter.radius += (letter.homeRadius * 0.74 - letter.radius) * 0.04;
+            const swept = (((secondAngle - letter.pushedFrom) % 360) + 360) % 360;
+            if (swept > letter.pushArc) letter.pushed = false;
+          } else {
+            letter.angle = (letter.angle + angleDelta(letter.angle, letter.homeAngle) * 0.014 + 360) % 360;
+            letter.radius += (letter.homeRadius - letter.radius) * 0.02;
+          }
+        }
+      }
+
+      const width = canvas.width;
+      const height = canvas.height;
+      const centreX = width / 2;
+      const centreY = height / 2;
+      const radius = Math.min(width, height) * 0.46;
+
+      context.fillStyle = "#000000";
+      context.fillRect(0, 0, width, height);
+
+      context.beginPath();
+      context.arc(centreX, centreY, radius, 0, Math.PI * 2);
+      context.fillStyle = "#ffffff";
+      context.fill();
+
+      context.save();
+      context.clip();
+      context.fillStyle = "#000000";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      for (const letter of letters) {
+        const theta = (letter.angle * Math.PI) / 180;
+        const distance = letter.radius * radius;
+        context.font = `900 ${letter.size * radius}px "Playfair Display", Georgia, serif`;
+        context.fillText(letter.ch, centreX + Math.sin(theta) * distance, centreY - Math.cos(theta) * distance);
+      }
+      context.restore();
+
+      const hand = (angle: number, length: number, thickness: number, colour: string, tail = 0) => {
+        const theta = (angle * Math.PI) / 180;
+        context.beginPath();
+        context.moveTo(centreX - Math.sin(theta) * radius * tail, centreY + Math.cos(theta) * radius * tail);
+        context.lineTo(centreX + Math.sin(theta) * radius * length, centreY - Math.cos(theta) * radius * length);
+        context.lineWidth = radius * thickness;
+        context.strokeStyle = colour;
+        context.lineCap = "butt";
+        context.stroke();
+      };
+
+      hand(hourAngle, 0.51, 0.044, "#000000");
+      hand(minuteAngle, 0.78, 0.016, "#000000");
+      hand(secondAngle, 0.87, 0.014, "#e10600", 0.11);
+
+      context.beginPath();
+      context.arc(centreX, centreY, radius * 0.042, 0, Math.PI * 2);
+      context.fillStyle = "#000000";
+      context.fill();
+      context.beginPath();
+      context.arc(centreX, centreY, radius * 0.018, 0, Math.PI * 2);
+      context.fillStyle = "#e10600";
+      context.fill();
+    };
+
+    let fontsReady = true;
+    void document.fonts?.load('900 40px "Playfair Display"').catch(() => {
+      fontsReady = false;
+    });
+    void fontsReady;
+
+    frame = requestAnimationFrame(draw);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      visibility.disconnect();
+    };
+  }, [reduceMotion]);
+
+  return (
+    <figure className="live-poem">
+      <canvas ref={canvasRef} className="live-canvas is-clock" role="img" aria-label={aria} />
+      <figcaption className="live-readout">
+        <span>{label}</span>
+        <strong>{readout}</strong>
+      </figcaption>
+    </figure>
+  );
+}
+
+const flagStripes = 7;
+// One full pass of the wave, so exported loops close on themselves.
+const flagPeriod = (Math.PI * 2) / 2.1;
+
+interface FlagScene {
+  texture: HTMLCanvasElement;
+  length: number;
+  cloth: number;
+  background: string;
+}
+
+// The cloth is drawn flat into an offscreen canvas, then sampled column by
+// column so the wave can bend it without distorting the letterforms.
+function createFlagScene(
+  width: number,
+  height: number,
+  text: string,
+  light: string,
+  dark: string,
+  background: string,
+): FlagScene {
+  const shortest = Math.min(width, height);
+  const length = shortest * 0.98;
+  const cloth = length * 0.36;
+
+  const sheet = document.createElement("canvas");
+  sheet.width = Math.max(1, Math.round(length));
+  sheet.height = Math.max(1, Math.round(cloth));
+  const paint = sheet.getContext("2d");
+  if (!paint) return { texture: sheet, length, cloth, background };
+
+  const rowHeight = sheet.height / flagStripes;
+  const fontSize = rowHeight * 0.6;
+  const spaced = paint as CanvasRenderingContext2D & { letterSpacing?: string };
+  paint.font = `600 ${fontSize}px Inter, ui-sans-serif, system-ui, sans-serif`;
+  spaced.letterSpacing = `${fontSize * 0.16}px`;
+  paint.textBaseline = "middle";
+
+  const unit = `${text.toUpperCase()}    `;
+  const unitWidth = Math.max(paint.measureText(unit).width, 1);
+
+  for (let row = 0; row < flagStripes; row += 1) {
+    const top = row * rowHeight;
+    const inverted = row % 2 === 1;
+    paint.fillStyle = inverted ? dark : light;
+    paint.fillRect(0, top, sheet.width, rowHeight + 1);
+    paint.fillStyle = inverted ? light : dark;
+    const start = -(((row * unitWidth) / 3) % unitWidth);
+    for (let x = start; x < sheet.width; x += unitWidth) {
+      paint.fillText(unit, x, top + rowHeight / 2);
+    }
+  }
+
+  return { texture: sheet, length, cloth, background };
+}
+
+function paintFlag(context: CanvasRenderingContext2D, width: number, height: number, time: number, scene: FlagScene) {
+  const { texture, length, cloth, background } = scene;
+
+  context.fillStyle = background;
+  context.fillRect(0, 0, width, height);
+
+  // Edges of the cloth at a given point along its length.
+  const edgesAt = (x: number) => {
+    const phase = (x / length) * Math.PI * 3.1 - time * 2.1;
+    const damping = 0.18 + 0.82 * (x / length);
+    const shift = Math.sin(phase) * cloth * 0.34 * damping;
+    const drawn = cloth * (1 + Math.cos(phase) * 0.24 * damping);
+    return { top: -drawn / 2 + shift, bottom: drawn / 2 + shift };
+  };
+
+  context.save();
+  context.translate(width / 2, height / 2);
+  context.rotate(-0.85);
+
+  // The silhouette is clipped to the true envelope so the outline stays smooth
+  // against any background; the column slices only have to cover it.
+  const outline = 360;
+  context.beginPath();
+  for (let i = 0; i <= outline; i += 1) {
+    const x = (i / outline) * length;
+    const { top } = edgesAt(x);
+    if (i === 0) context.moveTo(x - length / 2, top);
+    else context.lineTo(x - length / 2, top);
+  }
+  for (let i = outline; i >= 0; i -= 1) {
+    const x = (i / outline) * length;
+    context.lineTo(x - length / 2, edgesAt(x).bottom);
+  }
+  context.closePath();
+  context.clip();
+
+  // A fixed slice count keeps the cost constant across screen densities;
+  // the wave is low-frequency, so 240 samples read as a smooth cloth.
+  const step = length / 240;
+  for (let x = 0; x < length; x += step) {
+    const near = edgesAt(x);
+    const far = edgesAt(Math.min(x + step, length));
+    const top = Math.min(near.top, far.top);
+    const bottom = Math.max(near.bottom, far.bottom);
+    context.drawImage(texture, x, 0, step, texture.height, x - length / 2, top, step + 0.8, bottom - top);
+  }
+
+  context.restore();
+}
+
+function flagFileName(text: string) {
+  const slug = text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")
+    .slice(0, 40);
+  return `bandeira-${slug || "sem-titulo"}`;
+}
+
+function saveBlob(blob: Blob, name: string) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = name;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+function supportedVideoType(): string | null {
+  if (typeof MediaRecorder === "undefined") return null;
+  const candidates = [
+    'video/mp4;codecs="avc1.42E01E"',
+    "video/mp4",
+    'video/webm;codecs="vp9"',
+    "video/webm",
+  ];
+  return candidates.find((type) => MediaRecorder.isTypeSupported(type)) ?? null;
+}
+
+type FlagExport = "png" | "jpg" | "gif" | "video";
+
+function FlagPoem({
+  placeholder,
+  copy,
+}: {
+  placeholder: string;
+  copy: (typeof creationsCopy)["pt"]["interactive"];
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [phrase, setPhrase] = useState("");
+  const [light, setLight] = useState("#ffffff");
+  const [dark, setDark] = useState("#000000");
+  const [background, setBackground] = useState("#ffffff");
+  const [busy, setBusy] = useState<FlagExport | null>(null);
+  const styleRef = useRef({ phrase, light, dark, background });
+  const reduceMotion = useReducedMotion();
+  const videoType = useMemo(supportedVideoType, []);
+  const videoExtension = videoType?.startsWith("video/mp4") ? "mp4" : "webm";
+
+  useEffect(() => {
+    styleRef.current = { phrase, light, dark, background };
+  }, [phrase, light, dark, background]);
+
+  const currentText = () => (styleRef.current.phrase.trim() || placeholder).slice(0, 42);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    let scene: FlagScene | null = null;
+    let sceneKey = "";
+    let frame = 0;
+    let visible = true;
+
+    const resize = () => {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.max(1, Math.round(rect.width * ratio));
+      canvas.height = Math.max(1, Math.round(rect.height * ratio));
+    };
+    resize();
+
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvas);
+
+    const visibility = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+      },
+      { rootMargin: "150px 0px" },
+    );
+    visibility.observe(canvas);
+
+    const draw = () => {
+      frame = requestAnimationFrame(draw);
+      if (!visible) return;
+
+      const { light: lightNow, dark: darkNow, background: backgroundNow } = styleRef.current;
+      const text = currentText();
+      const key = `${text}|${lightNow}|${darkNow}|${backgroundNow}|${canvas.width}x${canvas.height}`;
+      if (key !== sceneKey) {
+        scene = createFlagScene(canvas.width, canvas.height, text, lightNow, darkNow, backgroundNow);
+        sceneKey = key;
+      }
+      if (!scene) return;
+
+      paintFlag(context, canvas.width, canvas.height, reduceMotion ? 1.15 : performance.now() / 1000, scene);
+    };
+
+    frame = requestAnimationFrame(draw);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      visibility.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [placeholder, reduceMotion]);
+
+  const exportStill = async (kind: "png" | "jpg") => {
+    const width = 1600;
+    const height = 1400;
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+    const { light: lightNow, dark: darkNow, background: backgroundNow } = styleRef.current;
+    const text = currentText();
+    paintFlag(context, width, height, 1.15, createFlagScene(width, height, text, lightNow, darkNow, backgroundNow));
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, kind === "png" ? "image/png" : "image/jpeg", 0.92),
+    );
+    if (blob) saveBlob(blob, `${flagFileName(text)}.${kind}`);
+  };
+
+  const exportGif = async () => {
+    const { GIFEncoder, quantize, applyPalette } = await import("gifenc");
+    const width = 560;
+    const height = 490;
+    const fps = 16;
+    const total = Math.round(flagPeriod * fps);
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) return;
+
+    const { light: lightNow, dark: darkNow, background: backgroundNow } = styleRef.current;
+    const text = currentText();
+    const scene = createFlagScene(width, height, text, lightNow, darkNow, backgroundNow);
+    const encoder = GIFEncoder();
+    const delay = Math.round(1000 / fps);
+    let palette: number[][] | null = null;
+
+    for (let index = 0; index < total; index += 1) {
+      paintFlag(context, width, height, (index / total) * flagPeriod, scene);
+      const { data } = context.getImageData(0, 0, width, height);
+      if (!palette) palette = quantize(data, 32);
+      encoder.writeFrame(applyPalette(data, palette), width, height, {
+        palette,
+        delay,
+        ...(index === 0 ? { repeat: 0 } : {}),
+      });
+      if (index % 6 === 5) await new Promise((resolve) => window.setTimeout(resolve, 0));
+    }
+
+    encoder.finish();
+    saveBlob(new Blob([encoder.bytes() as BlobPart], { type: "image/gif" }), `${flagFileName(text)}.gif`);
+  };
+
+  const exportVideo = async () => {
+    if (!videoType) return;
+    const width = 800;
+    const height = 700;
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    const { light: lightNow, dark: darkNow, background: backgroundNow } = styleRef.current;
+    const text = currentText();
+    const scene = createFlagScene(width, height, text, lightNow, darkNow, backgroundNow);
+    paintFlag(context, width, height, 0, scene);
+
+    const stream = canvas.captureStream(30);
+    const recorder = new MediaRecorder(stream, { mimeType: videoType, videoBitsPerSecond: 6000000 });
+    const chunks: BlobPart[] = [];
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) chunks.push(event.data);
+    };
+    const finished = new Promise<Blob>((resolve) => {
+      recorder.onstop = () => resolve(new Blob(chunks, { type: videoType }));
+    });
+
+    recorder.start();
+    const startedAt = performance.now();
+    await new Promise<void>((resolve) => {
+      let settled = false;
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(watchdog);
+        resolve();
+      };
+      // requestAnimationFrame stops in a backgrounded tab, so a wall-clock
+      // watchdog guarantees the recorder is always released.
+      const watchdog = window.setTimeout(finish, flagPeriod * 1000 + 2500);
+      const tick = () => {
+        const elapsed = (performance.now() - startedAt) / 1000;
+        paintFlag(context, width, height, elapsed, scene);
+        if (elapsed < flagPeriod) requestAnimationFrame(tick);
+        else finish();
+      };
+      requestAnimationFrame(tick);
+    });
+    if (recorder.state !== "inactive") recorder.stop();
+    stream.getTracks().forEach((track) => track.stop());
+    saveBlob(await finished, `${flagFileName(text)}.${videoExtension}`);
+  };
+
+  const runExport = async (kind: FlagExport) => {
+    if (busy) return;
+    setBusy(kind);
+    try {
+      if (kind === "png" || kind === "jpg") await exportStill(kind);
+      else if (kind === "gif") await exportGif();
+      else await exportVideo();
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const exports: Array<{ kind: FlagExport; label: string }> = [
+    { kind: "png", label: "PNG" },
+    { kind: "jpg", label: "JPG" },
+    { kind: "gif", label: "GIF" },
+    ...(videoType ? [{ kind: "video" as FlagExport, label: videoExtension.toUpperCase() }] : []),
+  ];
+
+  return (
+    <figure className="live-poem">
+      <canvas ref={canvasRef} className="live-canvas is-flag" role="img" aria-label={copy.flagAria} />
+      <figcaption className="live-controls">
+        <div className="live-field">
+          <label htmlFor="flag-phrase">{copy.flagInput}</label>
+          <input
+            id="flag-phrase"
+            type="text"
+            value={phrase}
+            maxLength={42}
+            placeholder={placeholder}
+            autoComplete="off"
+            spellCheck={false}
+            onChange={(event) => setPhrase(event.target.value)}
+          />
+        </div>
+
+        <div className="live-colours">
+          <label>
+            <input type="color" value={light} onChange={(event) => setLight(event.target.value)} />
+            <span>{copy.flagLight}</span>
+          </label>
+          <label>
+            <input type="color" value={dark} onChange={(event) => setDark(event.target.value)} />
+            <span>{copy.flagDark}</span>
+          </label>
+          <label>
+            <input type="color" value={background} onChange={(event) => setBackground(event.target.value)} />
+            <span>{copy.flagBackground}</span>
+          </label>
+          <button
+            type="button"
+            className="live-reset"
+            onClick={() => {
+              setLight("#ffffff");
+              setDark("#000000");
+              setBackground("#ffffff");
+            }}
+          >
+            {copy.flagReset}
+          </button>
+        </div>
+
+        <div className="live-exports">
+          <span className="live-exports-label">{busy ? copy.flagExporting : copy.flagExport}</span>
+          <div className="live-exports-row">
+            {exports.map(({ kind, label }) => (
+              <button
+                key={kind}
+                type="button"
+                disabled={busy !== null}
+                className={`live-export-button ${busy === kind ? "is-busy" : ""}`}
+                onClick={() => void runExport(kind)}
+              >
+                <Download size={13} /> {label}
+              </button>
+            ))}
+          </div>
+          <small>{copy.flagHint}</small>
+        </div>
+      </figcaption>
+    </figure>
   );
 }
 

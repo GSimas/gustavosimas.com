@@ -4,3 +4,6 @@ dist
 .env.*
 .DS_Store
 *.log
+
+# Masters de mídia (originais pesados; a versão web fica em public/assets/poemas)
+docs/

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://gustavo-simas.simas-gustavo.chatgpt.site/</loc><priority>1.0</priority></url>
-  <url><loc>https://gustavo-simas.simas-gustavo.chatgpt.site/curriculo</loc><priority>0.9</priority></url>
+  <url><loc>https://gustavosimas.com/</loc><priority>1.0</priority></url>
+  <url><loc>https://gustavosimas.com/curriculo</loc><priority>0.9</priority></url>
+  <url><loc>https://gustavosimas.com/criacoes</loc><priority>0.8</priority></url>
 </urlset>
