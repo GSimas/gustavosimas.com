@@ -308,7 +308,7 @@ const highlightPublications = [
 const portfolioCopy = {
   pt: {
     brandTagline: "Conhecimento · tecnologia · imaginação",
-    nav: ["Manifesto", "Eixos", "Portfólio", "Áudio", "Trajetória", "Publicações", "Currículo"],
+    nav: ["Manifesto", "Eixos", "Portfólio", "Trajetória", "Publicações", "Currículo"],
     header: {
       brandAria: "Gustavo Simas — início",
       navAria: "Navegação principal",
@@ -350,7 +350,16 @@ const portfolioCopy = {
         { title: "Criar", description: "Explorar literatura, poesia, produção fonográfica e narrativas visuais como modos legítimos de conhecer e produzir mundo.", tags: ["Literatura e poesia", "Produção fonográfica", "Curadoria cultural", "Promptografia"] },
       ],
     },
-    portfolio: { label: "Portfólio de projetos", title1: "Portfólio de", title2: "projetos.", subtitle: "Alguns livros, pesquisas, plataformas, álbuns e experimentos conectados pelas perguntas que os originaram.", filterAria: "Filtrar trabalhos" },
+    portfolio: {
+      label: "Portfólio de projetos",
+      title1: "Portfólio de",
+      title2: "projetos.",
+      subtitle: "Alguns livros, pesquisas, plataformas, álbuns e experimentos conectados pelas perguntas que os originaram.",
+      filterAria: "Filtrar trabalhos",
+      searchPlaceholder: "Pesquisar projetos, tecnologias ou termos...",
+      searchAria: "Pesquisar no portfólio",
+      noResults: "Nenhum projeto encontrado para esta busca.",
+    },
     audio: {
       kicker: "Áudio como outra forma de pesquisa",
       title1: "Escutar também",
@@ -397,7 +406,7 @@ const portfolioCopy = {
   },
   en: {
     brandTagline: "Knowledge · technology · imagination",
-    nav: ["Manifesto", "Axes", "Portfolio", "Audio", "Journey", "Publications", "CV"],
+    nav: ["Manifesto", "Axes", "Portfolio", "Journey", "Publications", "CV"],
     header: {
       brandAria: "Gustavo Simas — home",
       navAria: "Main navigation",
@@ -439,7 +448,16 @@ const portfolioCopy = {
         { title: "Create", description: "Explore literature, poetry, phonographic production and visual narratives as legitimate ways of knowing and making worlds.", tags: ["Literature and poetry", "Phonographic production", "Cultural curation", "Promptography"] },
       ],
     },
-    portfolio: { label: "Project portfolio", title1: "Project", title2: "portfolio.", subtitle: "Books, research, platforms, albums and experiments connected by the questions that originated them.", filterAria: "Filter projects" },
+    portfolio: {
+      label: "Project portfolio",
+      title1: "Project",
+      title2: "portfolio.",
+      subtitle: "Books, research, platforms, albums and experiments connected by the questions that originated them.",
+      filterAria: "Filter projects",
+      searchPlaceholder: "Search projects, technologies or terms...",
+      searchAria: "Search portfolio",
+      noResults: "No projects found matching this search.",
+    },
     audio: {
       kicker: "Audio as another form of research",
       title1: "Listening is also",
@@ -1353,6 +1371,7 @@ function Portfolio({
   });
   const [menu, setMenu] = useState(false);
   const [filter, setFilter] = useState<"Todos" | Category>("Todos");
+  const [projectSearch, setProjectSearch] = useState("");
   const copy = portfolioCopy[language];
   const isPt = language === "pt";
 
@@ -1364,113 +1383,134 @@ function Portfolio({
     localStorage.setItem("font-size-step", String(fontSize));
   }, [theme, contrast, fontSize]);
 
-  const visibleProjects = useMemo(
-    () => (filter === "Todos" ? projects : projects.filter((project) => project.category === filter)),
-    [filter],
-  );
+  const visibleProjects = useMemo(() => {
+    const q = projectSearch.trim().toLowerCase();
+    return projects.filter((project) => {
+      const matchesCategory = filter === "Todos" || project.category === filter;
+      if (!matchesCategory) return false;
+      if (!q) return true;
+
+      const trans = language === "en" ? projectTranslationsEn[project.title] : undefined;
+      const title = trans?.title || project.title;
+      const desc = trans?.description || project.description;
+      const cat = categoryLabels[language][project.category];
+      const origCat = project.category;
+
+      return (
+        title.toLowerCase().includes(q) ||
+        desc.toLowerCase().includes(q) ||
+        project.title.toLowerCase().includes(q) ||
+        project.description.toLowerCase().includes(q) ||
+        project.year.toLowerCase().includes(q) ||
+        cat.toLowerCase().includes(q) ||
+        origCat.toLowerCase().includes(q)
+      );
+    });
+  }, [filter, projectSearch, language]);
 
   const navigation: Array<{ label: string; href: string; isRoute?: boolean }> = [
     { label: copy.nav[0], href: "#manifesto" },
     { label: copy.nav[1], href: "#eixos" },
     { label: copy.nav[2], href: "#trabalhos" },
-    { label: copy.nav[3], href: "#musica" },
-    { label: copy.nav[4], href: "#trajetoria" },
-    { label: copy.nav[5], href: "#publicacoes" },
-    { label: copy.nav[6], href: "/curriculo", isRoute: true },
+    { label: copy.nav[3], href: "#trajetoria" },
+    { label: copy.nav[4], href: "#publicacoes" },
+    { label: copy.nav[5], href: "/curriculo", isRoute: true },
   ];
 
   return (
     <div className="site-shell">
       <header className="site-header">
-        <a className="brand" href="#top" aria-label={copy.header.brandAria}>
-          <span className="brand-mark">GS</span>
-          <span>
-            <strong>Gustavo Simas</strong>
-            <small>{copy.brandTagline}</small>
-          </span>
-        </a>
-        <nav className="desktop-nav" aria-label={copy.header.navAria}>
-          {navigation.map(({ label, href, isRoute }) =>
-            isRoute ? (
-              <a
-                key={href}
-                href={href}
-                className="nav-highlight"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate(href);
-                }}
-              >
-                {label}
-              </a>
-            ) : (
-              <a key={href} href={href}>
-                {label}
-              </a>
-            ),
-          )}
-        </nav>
-        <div className="header-actions" aria-label={copy.header.preferencesAria}>
-          <button className="icon-button" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label={copy.header.theme}>
-            {theme === "dark" ? <Sun /> : <Moon />}
-          </button>
-          <button className="icon-button" onClick={() => setContrast(!contrast)} aria-pressed={contrast} aria-label={copy.header.contrast}>
-            <Contrast />
-          </button>
-          <button
-            className="language-toggle"
-            onClick={() => setLanguage(isPt ? "en" : "pt")}
-            aria-label={copy.header.language}
-            title={copy.header.language}
-          >
-            <span className={isPt ? "active" : ""}>PT</span>
-            <span aria-hidden="true">/</span>
-            <span className={!isPt ? "active" : ""}>EN</span>
-          </button>
-          <button
-            className="icon-button text-size-button"
-            onClick={() => setFontSize((current) => Math.max(0, current - 1))}
-            disabled={fontSize === 0}
-            aria-label={copy.header.decreaseText}
-            title={copy.header.decreaseText}
-          >
-            -T
-          </button>
-          <button
-            className="icon-button text-size-button"
-            onClick={() => setFontSize((current) => Math.min(3, current + 1))}
-            disabled={fontSize === 3}
-            aria-label={copy.header.increaseText}
-            title={copy.header.increaseText}
-          >
-            +T
-          </button>
-          <button className="icon-button mobile-menu-button" onClick={() => setMenu(!menu)} aria-label={menu ? copy.header.closeMenu : copy.header.menu}>
-            {menu ? <X /> : <Menu />}
-          </button>
-        </div>
-        <AnimatePresence>
-          {menu && (
-            <motion.nav className="mobile-nav" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-              {navigation.map(({ label, href, isRoute }) => (
+        <div className="site-header-inner">
+          <a className="brand" href="#top" aria-label={copy.header.brandAria}>
+            <span className="brand-mark">GS</span>
+            <span>
+              <strong>Gustavo Simas</strong>
+              <small>{copy.brandTagline}</small>
+            </span>
+          </a>
+          <nav className="desktop-nav" aria-label={copy.header.navAria}>
+            {navigation.map(({ label, href, isRoute }) =>
+              isRoute ? (
                 <a
                   key={href}
                   href={href}
+                  className="nav-highlight"
                   onClick={(e) => {
-                    setMenu(false);
-                    if (isRoute) {
-                      e.preventDefault();
-                      navigate(href);
-                    }
+                    e.preventDefault();
+                    navigate(href);
                   }}
                 >
                   {label}
-                  <ArrowUpRight size={14} />
                 </a>
-              ))}
-            </motion.nav>
-          )}
-        </AnimatePresence>
+              ) : (
+                <a key={href} href={href}>
+                  {label}
+                </a>
+              ),
+            )}
+          </nav>
+          <div className="header-actions" aria-label={copy.header.preferencesAria}>
+            <button className="icon-button" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label={copy.header.theme}>
+              {theme === "dark" ? <Sun /> : <Moon />}
+            </button>
+            <button className="icon-button" onClick={() => setContrast(!contrast)} aria-pressed={contrast} aria-label={copy.header.contrast}>
+              <Contrast />
+            </button>
+            <button
+              className="language-toggle"
+              onClick={() => setLanguage(isPt ? "en" : "pt")}
+              aria-label={copy.header.language}
+              title={copy.header.language}
+            >
+              <span className={isPt ? "active" : ""}>PT</span>
+              <span aria-hidden="true">/</span>
+              <span className={!isPt ? "active" : ""}>EN</span>
+            </button>
+            <button
+              className="icon-button text-size-button"
+              onClick={() => setFontSize((current) => Math.max(0, current - 1))}
+              disabled={fontSize === 0}
+              aria-label={copy.header.decreaseText}
+              title={copy.header.decreaseText}
+            >
+              -T
+            </button>
+            <button
+              className="icon-button text-size-button"
+              onClick={() => setFontSize((current) => Math.min(3, current + 1))}
+              disabled={fontSize === 3}
+              aria-label={copy.header.increaseText}
+              title={copy.header.increaseText}
+            >
+              +T
+            </button>
+            <button className="icon-button mobile-menu-button" onClick={() => setMenu(!menu)} aria-label={menu ? copy.header.closeMenu : copy.header.menu}>
+              {menu ? <X /> : <Menu />}
+            </button>
+          </div>
+          <AnimatePresence>
+            {menu && (
+              <motion.nav className="mobile-nav" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
+                {navigation.map(({ label, href, isRoute }) => (
+                  <a
+                    key={href}
+                    href={href}
+                    onClick={(e) => {
+                      setMenu(false);
+                      if (isRoute) {
+                        e.preventDefault();
+                        navigate(href);
+                      }
+                    }}
+                  >
+                    {label}
+                    <ArrowUpRight size={14} />
+                  </a>
+                ))}
+              </motion.nav>
+            )}
+          </AnimatePresence>
+        </div>
       </header>
 
       <main id="top">
@@ -1577,20 +1617,56 @@ function Portfolio({
               </div>
               <p>{copy.portfolio.subtitle}</p>
             </div>
-            <div className="filters" role="group" aria-label={copy.portfolio.filterAria}>
-              {(["Todos", "Pesquisa", "Tecnologia", "Literatura", "Música", "Visual"] as const).map((item) => (
-                <button key={item} className={filter === item ? "active" : ""} onClick={() => setFilter(item)}>
-                  {categoryLabels[language][item]}
-                </button>
-              ))}
+            <div className="portfolio-controls">
+              <div className="filters" role="group" aria-label={copy.portfolio.filterAria}>
+                {(["Todos", "Pesquisa", "Tecnologia", "Literatura", "Música", "Visual"] as const).map((item) => (
+                  <button key={item} className={filter === item ? "active" : ""} onClick={() => setFilter(item)}>
+                    {categoryLabels[language][item]}
+                  </button>
+                ))}
+              </div>
+              <div className="project-search-box">
+                <Search size={14} />
+                <input
+                  type="text"
+                  placeholder={copy.portfolio.searchPlaceholder}
+                  aria-label={copy.portfolio.searchAria}
+                  value={projectSearch}
+                  onChange={(e) => setProjectSearch(e.target.value)}
+                />
+                {projectSearch && (
+                  <button
+                    className="project-search-clear"
+                    onClick={() => setProjectSearch("")}
+                    aria-label={isPt ? "Limpar busca" : "Clear search"}
+                  >
+                    <X size={12} />
+                  </button>
+                )}
+              </div>
             </div>
-            <motion.div layout className="project-grid">
-              <AnimatePresence mode="popLayout">
+            <div className="project-grid">
+              <AnimatePresence>
                 {visibleProjects.map((project) => (
                   <ProjectCard key={project.title} project={project} language={language} />
                 ))}
               </AnimatePresence>
-            </motion.div>
+              {visibleProjects.length === 0 && (
+                <div className="portfolio-empty-state">
+                  <p>{copy.portfolio.noResults}</p>
+                  <button
+                    type="button"
+                    className="button ghost"
+                    onClick={() => {
+                      setFilter("Todos");
+                      setProjectSearch("");
+                    }}
+                  >
+                    {isPt ? "Limpar filtros e busca" : "Clear filters and search"}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </section>
 
@@ -1882,10 +1958,10 @@ function ProjectCard({ project, language }: { project: Project; language: Langua
 
   return (
     <motion.a
-      layout
-      initial={{ opacity: 0, scale: 0.97 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.97 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
       className={`project-card ${project.featured ? "is-featured" : ""}`}
       href={project.href}
       target="_blank"

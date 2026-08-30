@@ -134,6 +134,16 @@ img {
    HEADER & NAVIGATION
    ========================================================================== */
 .site-header {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: blur(18px);
+}
+
+.site-header-inner {
   width: min(1380px, calc(100% - clamp(28px, 5vw, 72px)));
   max-width: 100%;
   height: 88px;
@@ -142,12 +152,7 @@ img {
   align-items: center;
   justify-content: space-between;
   gap: 30px;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  border-bottom: 1px solid var(--line);
-  background: color-mix(in srgb, var(--bg) 86%, transparent);
-  backdrop-filter: blur(18px);
+  position: relative;
 }
 
 .brand {
@@ -819,8 +824,20 @@ img {
   background: var(--bg-soft);
 }
 
-.filters {
+.portfolio-controls {
   margin: 50px 0 30px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.portfolio-controls .filters {
+  margin: 0;
+}
+
+.filters {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -843,6 +860,68 @@ img {
   border-color: var(--green);
   background: var(--green);
   font-weight: 500;
+}
+
+.project-search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--muted);
+  min-width: 280px;
+  max-width: 100%;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.project-search-box:focus-within {
+  border-color: var(--green);
+  box-shadow: 0 0 0 1px var(--green);
+}
+
+.project-search-box input {
+  border: none;
+  outline: none;
+  font-size: var(--minimum-text-size);
+  width: 100%;
+  font-family: var(--mono);
+  background: transparent;
+  color: var(--text);
+}
+
+.project-search-box input::placeholder {
+  color: var(--faint);
+}
+
+.project-search-clear {
+  background: none;
+  border: none;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.project-search-clear:hover {
+  color: var(--green);
+}
+
+.portfolio-empty-state {
+  grid-column: 1 / -1;
+  padding: 64px 24px;
+  text-align: center;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 
 .project-grid {
@@ -2263,7 +2342,6 @@ img {
   .publication-item-link:hover {
     opacity: 1;
     background: rgba(255, 255, 255, 0.13);
-    box-shadow: inset 4px 0 0 rgba(11, 19, 7, 0.55);
   }
 
   .capability-card:hover {
@@ -2348,7 +2426,7 @@ img {
 
 @media (max-width: 1100px) {
   .section-wrap,
-  .site-header,
+  .site-header-inner,
   .site-footer {
     width: min(100% - 44px, 1380px);
   }
@@ -2382,16 +2460,20 @@ img {
 
 @media (max-width: 820px) {
   .section-wrap,
-  .site-header,
+  .site-header-inner,
   .site-footer {
     width: min(100% - 28px, 1380px);
   }
   .section-spacing {
     padding-top: 90px;
   }
-  .site-header {
+  .site-header-inner {
     height: 76px;
     gap: 10px;
+  }
+  .project-search-box {
+    width: 100%;
+    min-width: 0;
   }
   .brand small {
     display: none;
@@ -2501,7 +2583,7 @@ img {
 }
 
 @media (max-width: 480px) {
-  .site-header {
+  .site-header-inner {
     height: auto;
     min-height: 76px;
     padding-block: 8px;
