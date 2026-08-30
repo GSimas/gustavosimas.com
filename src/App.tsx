@@ -122,7 +122,7 @@ const projects: Project[] = [
     year: "2026",
     description:
       "Investigação sobre agência criativa humana, autoria e práticas visuais mediadas por IA generativa (Revista Brasileira de Estudos CTS).",
-    href: "https://promptografia.gustavosimas.com/",
+    href: "https://promptografia.scientata.com/",
     visual: "agency",
     image: "/assets/promptografia-cover.svg",
   },
@@ -308,7 +308,7 @@ const highlightPublications = [
 const portfolioCopy = {
   pt: {
     brandTagline: "Conhecimento · tecnologia · imaginação",
-    nav: ["Manifesto", "Eixos", "Portfólio", "Trajetória", "Publicações", "Currículo"],
+    nav: ["Manifesto", "Portfólio", "Trajetória", "Publicações", "Currículo"],
     header: {
       brandAria: "Gustavo Simas — início",
       navAria: "Navegação principal",
@@ -406,7 +406,7 @@ const portfolioCopy = {
   },
   en: {
     brandTagline: "Knowledge · technology · imagination",
-    nav: ["Manifesto", "Axes", "Portfolio", "Journey", "Publications", "CV"],
+    nav: ["Manifesto", "Portfolio", "Journey", "Publications", "CV"],
     header: {
       brandAria: "Gustavo Simas — home",
       navAria: "Main navigation",
@@ -1229,7 +1229,8 @@ const cvDataEn = {
 
 const cvCopy = {
   pt: {
-    back: "Voltar ao atlas",
+    back: "Voltar ao geral",
+    themeAria: "Alternar tema",
     languageAria: "Mudar idioma para inglês",
     lattes: "Currículo Lattes",
     print: "Salvar / Imprimir PDF",
@@ -1275,7 +1276,8 @@ const cvCopy = {
     footerUpdated: "Atualizado em 2026 · Florianópolis/SC",
   },
   en: {
-    back: "Back to the atlas",
+    back: "Back to overview",
+    themeAria: "Toggle theme",
     languageAria: "Change language to Portuguese",
     lattes: "Lattes CV",
     print: "Save / Print PDF",
@@ -1410,11 +1412,10 @@ function Portfolio({
 
   const navigation: Array<{ label: string; href: string; isRoute?: boolean }> = [
     { label: copy.nav[0], href: "#manifesto" },
-    { label: copy.nav[1], href: "#eixos" },
-    { label: copy.nav[2], href: "#trabalhos" },
-    { label: copy.nav[3], href: "#trajetoria" },
-    { label: copy.nav[4], href: "#publicacoes" },
-    { label: copy.nav[5], href: "/curriculo", isRoute: true },
+    { label: copy.nav[1], href: "#trabalhos" },
+    { label: copy.nav[2], href: "#trajetoria" },
+    { label: copy.nav[3], href: "#publicacoes" },
+    { label: copy.nav[4], href: "/curriculo", isRoute: true },
   ];
 
   return (
@@ -2036,9 +2037,14 @@ function Curriculum({
   const [activeTab, setActiveTab] = useState<CvTab>("tudo");
   const [searchQuery, setSearchQuery] = useState("");
   const [pubFilter, setPubFilter] = useState<string>("Todos");
+  const [theme, setTheme] = useState<"dark" | "light">(() => (localStorage.getItem("theme") as "dark" | "light") || "dark");
   const isPt = language === "pt";
   const data = isPt ? cvData : cvDataEn;
   const copy = cvCopy[language];
+
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   const filteredPublications = useMemo(() => {
     return data.allPublications.filter((pub) => {
@@ -2053,12 +2059,20 @@ function Curriculum({
   }, [data.allPublications, pubFilter, searchQuery]);
 
   return (
-    <main className="cv-page">
+    <main className="cv-page" data-theme={theme}>
       <nav className="cv-toolbar">
         <button className="cv-back-button" onClick={() => navigate("/")}>
           <ArrowLeft size={16} /> {copy.back}
         </button>
         <div className="cv-toolbar-right">
+          <button
+            className="cv-theme-toggle"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            aria-label={copy.themeAria}
+            title={copy.themeAria}
+          >
+            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
           <button
             className="cv-language-toggle"
             onClick={() => setLanguage(isPt ? "en" : "pt")}
