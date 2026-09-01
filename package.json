@@ -10,7 +10,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "snapshot": "node scripts/build-flight-snapshot.mjs"
   },
   "dependencies": {
     "gifenc": "^1.0.3",

@@ -2889,8 +2889,130 @@ img {
 }
 
 /* GALLERY -------------------------------------------------------------- */
+.poem-search {
+  margin-top: 48px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.poem-search-field {
+  flex: 1 1 320px;
+  min-height: 44px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-soft);
+  color: var(--faint);
+  transition: border-color 0.2s ease;
+}
+
+.poem-search-field:focus-within {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.poem-search-field input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 0.95rem;
+}
+
+.poem-search-field input:focus-visible {
+  outline: none;
+}
+
+.poem-search-field input::placeholder {
+  color: var(--faint);
+}
+
+.poem-search-field input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.poem-search-field button {
+  display: inline-flex;
+  padding: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--faint);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.poem-search-field button:hover {
+  color: var(--green);
+}
+
+.poem-search-count {
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: var(--minimum-text-size);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.poem-empty {
+  margin: 56px 0 0;
+  padding: 40px 0;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.97rem;
+}
+
+.poem-pager {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.poem-pager button {
+  min-height: 34px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  background: transparent;
+  font-family: var(--mono);
+  font-size: var(--minimum-text-size);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.poem-pager button:not(:disabled):hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.poem-pager button:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
+.poem-pager span {
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: var(--minimum-text-size);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
 .poem-gallery {
-  margin-top: 56px;
+  margin-top: 32px;
   columns: 3;
   column-gap: 22px;
 }

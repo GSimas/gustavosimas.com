@@ -9,6 +9,8 @@ import {
   BookOpen,
   BrainCircuit,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   Compass,
   Contrast,
   Download,
@@ -509,6 +511,15 @@ const poems: Poem[] = [
   },
 ];
 
+const POEMS_PER_PAGE = 6;
+
+// Diacritic-insensitive compare, so "pos-estruturalismo" finds "Pós-Estruturalismo".
+const fold = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase();
+
 const creationExperiments = [
   {
     title: "LIFE∞ — Infinite Life Lab",
@@ -520,13 +531,13 @@ const creationExperiments = [
     href: "https://gameoflife.gustavosimas.com/",
   },
   {
-    title: "Tecnomágica",
-    titleEn: "Tecnomágica",
-    description: "Laboratório aberto de promptografia e imaginação técnica: imagens feitas com IA generativa tratadas como escrita.",
-    descriptionEn: "An open lab of promptography and technical imagination: images made with generative AI treated as writing.",
-    tag: "Imagem e IA",
-    tagEn: "Image and AI",
-    href: "https://instagram.com/tecnomagica",
+    title: "LENIA∞ — Continuous Life Lab",
+    titleEn: "LENIA∞ — Continuous Life Lab",
+    description: "Um laboratório de Lenia e SmoothLife, autômatos celulares contínuos em 2D e 3D: kernel de anel, função de crescimento, câmera livre e renderização volumétrica para ver a vida emergir sem grade nem passo discreto.",
+    descriptionEn: "A laboratory of Lenia and SmoothLife, continuous cellular automata in 2D and 3D: ring kernel, growth function, free camera and volumetric rendering to watch life emerge with no grid and no discrete step.",
+    tag: "Vida artificial",
+    tagEn: "Artificial life",
+    href: "https://smoothlife.gustavosimas.com/",
   },
 ];
 
@@ -551,6 +562,18 @@ const creationsCopy = {
       play: "Reproduzir",
       still: "Imagem fixa",
       galleryAria: "Galeria de poemas visuais",
+      searchLabel: "Buscar",
+      searchPlaceholder: "Título, texto ou ano",
+      searchAria: "Buscar poemas visuais",
+      searchClear: "Limpar busca",
+      counter: "peças",
+      counterOne: "peça",
+      empty: "Nenhuma peça encontrada para esta busca.",
+      previous: "Anteriores",
+      next: "Próximas",
+      page: "Página",
+      pageOf: "de",
+      pagerAria: "Paginação da galeria de poemas",
     },
     interactive: {
       number: "01",
@@ -584,8 +607,8 @@ const creationsCopy = {
     experiments: {
       number: "03",
       label: "Experimentos e laboratórios",
-      title1: "Coisas que",
-      title2: "exploram sentidos",
+      title1: "Experimentos de",
+      title2: "vida artificial",
       subtitle: "Peças que funcionam operando algo que não estava previsto.",
       open: "Abrir experimento",
       openTitle: "Em aberto",
@@ -621,6 +644,18 @@ const creationsCopy = {
       play: "Play",
       still: "Still image",
       galleryAria: "Visual poems gallery",
+      searchLabel: "Search",
+      searchPlaceholder: "Title, text or year",
+      searchAria: "Search visual poems",
+      searchClear: "Clear search",
+      counter: "pieces",
+      counterOne: "piece",
+      empty: "No piece matches this search.",
+      previous: "Previous",
+      next: "Next",
+      page: "Page",
+      pageOf: "of",
+      pagerAria: "Poem gallery pagination",
     },
     interactive: {
       number: "01",
@@ -654,8 +689,8 @@ const creationsCopy = {
     experiments: {
       number: "03",
       label: "Experiments and labs",
-      title1: "Things that",
-      title2: "explore the senses",
+      title1: "Experiments in",
+      title2: "artificial life",
       subtitle: "Pieces that work by setting in motion something that was not foreseen.",
       open: "Open experiment",
       openTitle: "Open-ended",
@@ -2774,9 +2809,29 @@ function Creations({
 }) {
   const [theme, setTheme] = useState<"dark" | "light">(() => (localStorage.getItem("theme") as "dark" | "light") || "dark");
   const [active, setActive] = useState<Poem | null>(null);
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(0);
   const reduceMotion = useReducedMotion();
   const copy = creationsCopy[language];
   const isPt = language === "pt";
+
+  const matches = useMemo(() => {
+    const term = fold(query.trim());
+    if (!term) return poems;
+    return poems.filter((poem) =>
+      fold([poem.title, poem.titleEn, poem.words, poem.year, isPt ? poem.note : poem.noteEn].join(" ")).includes(term),
+    );
+  }, [query, isPt]);
+
+  const pageCount = Math.max(1, Math.ceil(matches.length / POEMS_PER_PAGE));
+  // Clamp while rendering as well as in the effect below: the effect only runs
+  // after paint, and a shrinking result set must never show an empty page.
+  const currentPage = Math.min(page, pageCount - 1);
+  const visiblePoems = matches.slice(currentPage * POEMS_PER_PAGE, (currentPage + 1) * POEMS_PER_PAGE);
+
+  useEffect(() => {
+    setPage(0);
+  }, [query]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -2883,33 +2938,76 @@ function Creations({
           </h2>
           <p>{copy.poems.subtitle}</p>
         </div>
-        <div className="poem-gallery" aria-label={copy.poems.galleryAria}>
-          {poems.map((poem) => {
-            const title = isPt ? poem.title : poem.titleEn;
-            return (
-              <button
-                key={poem.slug}
-                type="button"
-                className="poem-card"
-                onClick={() => setActive(poem)}
-                aria-label={`${copy.poems.open}: ${title}`}
-              >
-                <span className="poem-frame" style={{ aspectRatio: poem.ratio }}>
-                  <PoemMedia poem={poem} play={!reduceMotion && poem.media === "video"} />
-                  {poem.media === "video" && reduceMotion ? (
-                    <span className="poem-play" aria-hidden="true">
-                      <Play size={16} />
-                    </span>
-                  ) : null}
-                </span>
-                <span className="poem-caption">
-                  <strong>{title}</strong>
-                  <span>{poem.media === "image" ? copy.poems.still : poem.year}</span>
-                </span>
+        <div className="poem-search">
+          <div className="poem-search-field">
+            <Search size={15} aria-hidden="true" />
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={copy.poems.searchPlaceholder}
+              aria-label={copy.poems.searchAria}
+            />
+            {query ? (
+              <button type="button" onClick={() => setQuery("")} aria-label={copy.poems.searchClear}>
+                <X size={14} />
               </button>
-            );
-          })}
+            ) : null}
+          </div>
+          <span className="poem-search-count" aria-live="polite">
+            {matches.length} {matches.length === 1 ? copy.poems.counterOne : copy.poems.counter}
+          </span>
         </div>
+        {visiblePoems.length ? (
+          <div className="poem-gallery" aria-label={copy.poems.galleryAria}>
+            {visiblePoems.map((poem) => {
+              const title = isPt ? poem.title : poem.titleEn;
+              return (
+                <button
+                  key={poem.slug}
+                  type="button"
+                  className="poem-card"
+                  onClick={() => setActive(poem)}
+                  aria-label={`${copy.poems.open}: ${title}`}
+                >
+                  <span className="poem-frame" style={{ aspectRatio: poem.ratio }}>
+                    <PoemMedia poem={poem} play={!reduceMotion && poem.media === "video"} />
+                    {poem.media === "video" && reduceMotion ? (
+                      <span className="poem-play" aria-hidden="true">
+                        <Play size={16} />
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="poem-caption">
+                    <strong>{title}</strong>
+                    <span>{poem.media === "image" ? copy.poems.still : poem.year}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="poem-empty">{copy.poems.empty}</p>
+        )}
+        {pageCount > 1 ? (
+          <nav className="poem-pager" aria-label={copy.poems.pagerAria}>
+            <button type="button" onClick={() => setPage(currentPage - 1)} disabled={currentPage === 0}>
+              <ChevronLeft size={14} aria-hidden="true" />
+              {copy.poems.previous}
+            </button>
+            <span aria-live="polite">
+              {copy.poems.page} {currentPage + 1} {copy.poems.pageOf} {pageCount}
+            </span>
+            <button
+              type="button"
+              onClick={() => setPage(currentPage + 1)}
+              disabled={currentPage >= pageCount - 1}
+            >
+              {copy.poems.next}
+              <ChevronRight size={14} aria-hidden="true" />
+            </button>
+          </nav>
+        ) : null}
       </section>
 
       {/* EXPERIMENTOS E LABORATÓRIOS */}
@@ -3442,28 +3540,60 @@ function GlobePoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive"]
     }, { rootMargin: "150px 0px" });
     visibility.observe(canvas);
 
+    type FlightRow = [string, number, number, number, number, number];
+
+    const adopt = (rows: FlightRow[]) => {
+      flights = rows.map(([id, lon, lat, alt, track, speed]) => ({
+        id,
+        lon,
+        lat,
+        alt,
+        track,
+        speed,
+        ch: letterFor(id),
+      }));
+      setCount(flights.length);
+    };
+
+    // Read a sky off the wire, refusing anything that is not really JSON —
+    // in dev there is no function behind this path and the SPA fallback
+    // answers every request with index.html.
+    const skyFrom = async (url: string, timeout: number) => {
+      const response = await fetch(url, { signal: AbortSignal.timeout(timeout) });
+      if (!response.ok) throw new Error(String(response.status));
+      if (!response.headers.get("content-type")?.includes("application/json")) {
+        throw new Error("not json");
+      }
+      return (await response.json()) as { flights: FlightRow[]; source?: string };
+    };
+
+    // The globe should never be an empty ball waiting on a network round trip:
+    // draw the shipped snapshot first, then let live traffic replace it.
+    const seed = async () => {
+      if (flights.length) return;
+      try {
+        const data = await skyFrom("/assets/flights-snapshot.json", 8000);
+        if (!alive || flights.length) return;
+        adopt(data.flights);
+        setStatus((current) => (current === "live" ? current : "offline"));
+      } catch {
+        // Nothing to seed with; poll() is still on its way.
+      }
+    };
+
     const poll = async () => {
       try {
-        const response = await fetch("/.netlify/functions/opensky");
-        if (!response.ok) throw new Error(String(response.status));
-        const data = (await response.json()) as { flights: [string, number, number, number, number, number][] };
+        const data = await skyFrom("/.netlify/functions/opensky", 9000);
         if (!alive) return;
-        flights = data.flights.map(([id, lon, lat, alt, track, speed]) => ({
-          id,
-          lon,
-          lat,
-          alt,
-          track,
-          speed,
-          ch: letterFor(id),
-        }));
-        setCount(flights.length);
-        setStatus("live");
+        if (!data.flights.length) throw new Error(data.source ?? "empty");
+        adopt(data.flights);
+        setStatus(data.source === "live" ? "live" : "offline");
       } catch {
         // The snapshot we already have keeps flying on its own vectors.
         if (alive) setStatus(flights.length ? "offline" : "loading");
       }
     };
+    void seed();
     void poll();
     const timer = window.setInterval(() => {
       if (visible) void poll();
