@@ -3096,19 +3096,29 @@ interface ClockLetter {
 }
 
 function createClockLetters(): ClockLetter[] {
-  return clockLayout.map((letter, index) => ({
-    ch: letter.ch,
-    homeAngle: letter.angle,
-    homeRadius: letter.radius,
-    size: letter.size,
-    angle: letter.angle,
-    radius: letter.radius,
-    lead: 4 + (index % 5) * 2.6,
-    pushArc: 40 + (index % 7) * 7,
-    pushed: false,
-    pushedFrom: 0,
-    caughtRevolution: -1,
-  }));
+  return clockLayout.map((letter, index) => {
+    let wf = 0.55;
+    if (letter.ch === "m") wf = 0.8;
+    else if (letter.ch === "t" || letter.ch === "r") wf = 0.4;
+    else if (letter.ch === "o" || letter.ch === "n") wf = 0.6;
+    
+    // Calculate angular half-width in degrees to use as lead
+    const angularHalfWidth = (letter.size * wf * 0.5 / letter.radius) * (180 / Math.PI);
+
+    return {
+      ch: letter.ch,
+      homeAngle: letter.angle,
+      homeRadius: letter.radius,
+      size: letter.size,
+      angle: letter.angle,
+      radius: letter.radius,
+      lead: angularHalfWidth,
+      pushArc: 40 + (index % 7) * 7,
+      pushed: false,
+      pushedFrom: 0,
+      caughtRevolution: -1,
+    };
+  });
 }
 
 // Signed shortest angular distance, in degrees, within (-180, 180].
@@ -3217,7 +3227,7 @@ function ClockPoem({ label, aria }: { label: string; aria: string }) {
         for (const letter of letters) {
           if (!letter.pushed) {
             const delta = angleDelta(secondAngle, letter.angle);
-            if (letter.caughtRevolution !== revolution && delta <= 0.5 && delta > -14) {
+            if (letter.caughtRevolution !== revolution && delta <= letter.lead && delta > -30) {
               letter.pushed = true;
               letter.pushedFrom = secondAngle;
               letter.caughtRevolution = revolution;
@@ -3252,17 +3262,6 @@ function ClockPoem({ label, aria }: { label: string; aria: string }) {
 
       context.save();
       context.clip();
-      context.fillStyle = "#000000";
-      context.textAlign = "center";
-      context.textBaseline = "middle";
-      for (const letter of letters) {
-        const theta = (letter.angle * Math.PI) / 180;
-        const distance = letter.radius * radius;
-        context.font = `900 ${letter.size * radius}px "Playfair Display", Georgia, serif`;
-        context.fillText(letter.ch, centreX + Math.sin(theta) * distance, centreY - Math.cos(theta) * distance);
-      }
-      context.restore();
-
       const hand = (angle: number, length: number, thickness: number, colour: string, tail = 0) => {
         const theta = (angle * Math.PI) / 180;
         context.beginPath();
@@ -3277,6 +3276,17 @@ function ClockPoem({ label, aria }: { label: string; aria: string }) {
       hand(hourAngle, 0.51, 0.044, "#000000");
       hand(minuteAngle, 0.78, 0.016, "#000000");
       hand(secondAngle, 0.87, 0.014, "#e10600", 0.11);
+
+      context.fillStyle = "#000000";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      for (const letter of letters) {
+        const theta = (letter.angle * Math.PI) / 180;
+        const distance = letter.radius * radius;
+        context.font = `900 ${letter.size * radius}px "Playfair Display", Georgia, serif`;
+        context.fillText(letter.ch, centreX + Math.sin(theta) * distance, centreY - Math.cos(theta) * distance);
+      }
+      context.restore();
 
       context.beginPath();
       context.arc(centreX, centreY, radius * 0.042, 0, Math.PI * 2);
