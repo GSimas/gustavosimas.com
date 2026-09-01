@@ -3092,6 +3092,10 @@ img {
   background: var(--panel);
 }
 
+.cr-live-piece.is-wide {
+  grid-column: 1 / -1;
+}
+
 .live-poem {
   margin: 0;
 }
@@ -3110,6 +3114,17 @@ img {
 .live-canvas.is-flag {
   aspect-ratio: 8 / 7;
   background: #fff;
+}
+
+.live-canvas.is-globe {
+  aspect-ratio: 16 / 9;
+  background: #000;
+  touch-action: none;
+  cursor: grab;
+}
+
+.live-canvas.is-globe:active {
+  cursor: grabbing;
 }
 
 .live-readout {

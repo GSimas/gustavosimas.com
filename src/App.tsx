@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { landOutline } from "./land";
 import {
   ArrowDown,
   ArrowLeft,
@@ -554,9 +555,9 @@ const creationsCopy = {
     interactive: {
       number: "01",
       label: "Poemas interativos",
-      title1: "Dois poemas",
+      title1: "Três poemas",
       title2: "que respondem.",
-      subtitle: "Um relógio que marca o horário de Brasília em tempo real, com as letras sendo arrastadas pelo tempo, e uma bandeira que balança a sua frase.",
+      subtitle: "Um relógio que marca o horário de Brasília em tempo real, com as letras sendo arrastadas pelo tempo, uma bandeira que balança a sua frase e um globo onde cada avião no ar carrega uma letra.",
       clockTitle: "O Tempo Não Para",
       clockNote: "O tempo arrasta as palavras. “Não sei o que é o tempo. Não sei qual a verdadeira medida que ele tem, se tem alguma. A do relógio sei que é falsa: divide o tempo espacialmente, por fora” — Fernando Pessoa. Relógio no horário de Brasília.",
       clockLabel: "Horário de Brasília",
@@ -572,6 +573,13 @@ const creationsCopy = {
       flagExport: "Baixar a sua bandeira",
       flagExporting: "Gerando o arquivo…",
       flagAria: "Bandeira animada feita com a frase digitada pelo visitante",
+      globeTitle: "O Céu É Um Alfabeto",
+      globeNote: "Cada letra é um avião de verdade, agora, no ar. Posição, altitude e rumo vêm da OpenSky Network e chegam a cada minuto; entre uma atualização e outra as letras seguem voando pelo próprio vetor. Ninguém escolhe onde elas caem: o alfabeto se redistribui pelo mundo, e os continentes acabam desenhados pelo tráfego. Arraste para girar o globo, role ou pince para aproximar.",
+      globeHint: "Arraste para girar · role para aproximar",
+      globeUnit: "letras no ar",
+      globeLoading: "procurando aviões…",
+      globeOffline: "sem sinal — voando de memória",
+      globeAria: "Globo terrestre em tempo real que pode ser girado e ampliado, com uma letra sobre cada avião no ar",
     },
     experiments: {
       number: "03",
@@ -617,9 +625,9 @@ const creationsCopy = {
     interactive: {
       number: "01",
       label: "Interactive poems",
-      title1: "Two poems",
+      title1: "Three poems",
       title2: "that answer back.",
-      subtitle: "A clock running on real Brasília time, its letters dragged along by time itself, and a flag that waves your own words.",
+      subtitle: "A clock running on real Brasília time, its letters dragged along by time itself, a flag that waves your own words, and a globe where every aircraft in the air carries a letter.",
       clockTitle: "O Tempo Não Para",
       clockNote: "Time drags the words along. “I do not know what time is. I do not know its true measure, if it has one. The clock’s I know to be false: it divides time spatially, from the outside” — Fernando Pessoa. A clock running on Brasília time.",
       clockLabel: "Brasília time",
@@ -635,6 +643,13 @@ const creationsCopy = {
       flagExport: "Download your flag",
       flagExporting: "Building the file…",
       flagAria: "Animated flag built from the phrase typed by the visitor",
+      globeTitle: "O Céu É Um Alfabeto",
+      globeNote: "Every letter is a real aircraft, airborne right now. Position, altitude and heading come from the OpenSky Network and land once a minute; between updates the letters keep flying along their own vectors. Nobody chooses where they fall: the alphabet redistributes itself across the world, and the continents end up drawn by traffic. Drag to spin the globe, scroll or pinch to zoom.",
+      globeHint: "Drag to spin · scroll to zoom",
+      globeUnit: "letters in the air",
+      globeLoading: "looking for aircraft…",
+      globeOffline: "no signal — flying from memory",
+      globeAria: "Real-time globe that can be spun and zoomed, with a letter riding on every aircraft in the air",
     },
     experiments: {
       number: "03",
@@ -2847,6 +2862,13 @@ function Creations({
               <p>{copy.interactive.flagNote}</p>
             </div>
           </article>
+          <article className="cr-live-piece is-wide">
+            <GlobePoem copy={copy.interactive} />
+            <div className="cr-live-body">
+              <h3>{copy.interactive.globeTitle}</h3>
+              <p>{copy.interactive.globeNote}</p>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -3318,6 +3340,308 @@ function ClockPoem({ label, aria }: { label: string; aria: string }) {
       <figcaption className="live-readout">
         <span>{label}</span>
         <strong>{readout}</strong>
+      </figcaption>
+    </figure>
+  );
+}
+
+// GLOBO DE VOOS ---------------------------------------------------------
+// Orthographic projection done by hand on a 2D canvas, like the other pieces
+// on this page: a WebGL dependency would be heavier than the ~40 lines of
+// spherical trigonometry it would replace.
+
+interface GlobeFlight {
+  id: string;
+  lon: number;
+  lat: number;
+  alt: number;
+  track: number;
+  speed: number;
+  ch: string;
+}
+
+type GlobePoint = readonly [number, number, number, number];
+
+const globeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+// Hashed from the ICAO address so an aircraft keeps its letter between polls.
+function letterFor(id: string) {
+  let hash = 0;
+  for (let index = 0; index < id.length; index += 1) hash = (hash * 31 + id.charCodeAt(index)) >>> 0;
+  return globeAlphabet[hash % globeAlphabet.length];
+}
+
+// Fixed geometry is stored as sines and cosines, so projecting a point costs a
+// handful of multiplications per frame instead of four trigonometric calls.
+function globePoint(lon: number, lat: number): GlobePoint {
+  const l = (lon * Math.PI) / 180;
+  const p = (lat * Math.PI) / 180;
+  return [Math.sin(l), Math.cos(l), Math.sin(p), Math.cos(p)];
+}
+
+const landRings: GlobePoint[][] = landOutline
+  .split("|")
+  .map((ring) => ring.split(";").map((pair) => {
+    const [lon, lat] = pair.split(",");
+    return globePoint(Number(lon), Number(lat));
+  }));
+
+const globeGraticule: GlobePoint[][] = (() => {
+  const lines: GlobePoint[][] = [];
+  for (let lon = -180; lon < 180; lon += 30) {
+    const meridian: GlobePoint[] = [];
+    for (let lat = -90; lat <= 90; lat += 3) meridian.push(globePoint(lon, lat));
+    lines.push(meridian);
+  }
+  for (let lat = -60; lat <= 60; lat += 30) {
+    const parallel: GlobePoint[] = [];
+    for (let lon = -180; lon <= 180; lon += 3) parallel.push(globePoint(lon, lat));
+    lines.push(parallel);
+  }
+  return lines;
+})();
+
+function GlobePoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive"] }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [status, setStatus] = useState<"loading" | "live" | "offline">("loading");
+  const [count, setCount] = useState(0);
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    let flights: GlobeFlight[] = [];
+    let yaw = -50;
+    let pitch = 16;
+    let zoom = 1;
+    let frame = 0;
+    let visible = true;
+    let alive = true;
+    let last = performance.now();
+    const pointers = new Map<number, { x: number; y: number }>();
+    let pinch = 0;
+
+    const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
+
+    const resize = () => {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.max(1, Math.round(rect.width * ratio));
+      canvas.height = Math.max(1, Math.round(rect.height * ratio));
+    };
+    resize();
+
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvas);
+
+    const visibility = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+    }, { rootMargin: "150px 0px" });
+    visibility.observe(canvas);
+
+    const poll = async () => {
+      try {
+        const response = await fetch("/.netlify/functions/opensky");
+        if (!response.ok) throw new Error(String(response.status));
+        const data = (await response.json()) as { flights: [string, number, number, number, number, number][] };
+        if (!alive) return;
+        flights = data.flights.map(([id, lon, lat, alt, track, speed]) => ({
+          id,
+          lon,
+          lat,
+          alt,
+          track,
+          speed,
+          ch: letterFor(id),
+        }));
+        setCount(flights.length);
+        setStatus("live");
+      } catch {
+        // The snapshot we already have keeps flying on its own vectors.
+        if (alive) setStatus(flights.length ? "offline" : "loading");
+      }
+    };
+    void poll();
+    const timer = window.setInterval(() => {
+      if (visible) void poll();
+    }, 60000);
+
+    const spread = () => {
+      const [a, b] = [...pointers.values()];
+      return Math.hypot(a.x - b.x, a.y - b.y);
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      canvas.setPointerCapture(event.pointerId);
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      pinch = 0;
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      const previous = pointers.get(event.pointerId);
+      if (!previous) return;
+      const point = { x: event.clientX, y: event.clientY };
+      pointers.set(event.pointerId, point);
+
+      if (pointers.size > 1) {
+        const distance = spread();
+        if (pinch) zoom = clamp(zoom * (distance / pinch), 1, 8);
+        pinch = distance;
+        return;
+      }
+
+      yaw -= ((point.x - previous.x) * 0.3) / zoom;
+      pitch = clamp(pitch + ((point.y - previous.y) * 0.3) / zoom, -85, 85);
+    };
+
+    const onPointerUp = (event: PointerEvent) => {
+      pointers.delete(event.pointerId);
+      pinch = 0;
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      zoom = clamp(zoom * Math.exp(-event.deltaY * 0.0015), 1, 8);
+    };
+
+    canvas.addEventListener("pointerdown", onPointerDown);
+    canvas.addEventListener("pointermove", onPointerMove);
+    canvas.addEventListener("pointerup", onPointerUp);
+    canvas.addEventListener("pointercancel", onPointerUp);
+    canvas.addEventListener("wheel", onWheel, { passive: false });
+
+    let px = 0;
+    let py = 0;
+    let pz = 0;
+
+    const draw = (now: number) => {
+      frame = requestAnimationFrame(draw);
+      const elapsed = Math.min((now - last) / 1000, 0.5);
+      last = now;
+      if (!visible) return;
+
+      if (!pointers.size && !reduceMotion) yaw -= elapsed * 2.4;
+      if (yaw > 180) yaw -= 360;
+      else if (yaw < -180) yaw += 360;
+
+      // Between polls each aircraft is carried forward along its own vector,
+      // so the letters drift for real instead of jumping once a minute.
+      for (const flight of flights) {
+        const step = (flight.speed * elapsed) / 6371000;
+        if (!step) continue;
+        const heading = (flight.track * Math.PI) / 180;
+        const latitude = (flight.lat * Math.PI) / 180;
+        flight.lat = clamp(flight.lat + (step * Math.cos(heading) * 180) / Math.PI, -89.9, 89.9);
+        flight.lon += (step * Math.sin(heading) * 180) / (Math.PI * Math.max(0.05, Math.cos(latitude)));
+        if (flight.lon > 180) flight.lon -= 360;
+        else if (flight.lon < -180) flight.lon += 360;
+      }
+
+      const width = canvas.width;
+      const height = canvas.height;
+      const scale = width / Math.max(1, canvas.clientWidth);
+      const centreX = width / 2;
+      const centreY = height / 2;
+      const radius = Math.min(width, height) * 0.46 * zoom;
+
+      const yawRad = (yaw * Math.PI) / 180;
+      const pitchRad = (pitch * Math.PI) / 180;
+      const sinYaw = Math.sin(yawRad);
+      const cosYaw = Math.cos(yawRad);
+      const sinPitch = Math.sin(pitchRad);
+      const cosPitch = Math.cos(pitchRad);
+
+      const project = (sinLon: number, cosLon: number, sinLat: number, cosLat: number, lift = 1) => {
+        const sinDelta = sinLon * cosYaw - cosLon * sinYaw;
+        const cosDelta = cosLon * cosYaw + sinLon * sinYaw;
+        pz = sinPitch * sinLat + cosPitch * cosLat * cosDelta;
+        px = centreX + cosLat * sinDelta * radius * lift;
+        py = centreY - (cosPitch * sinLat - sinPitch * cosLat * cosDelta) * radius * lift;
+      };
+
+      const trace = (points: GlobePoint[]) => {
+        context.beginPath();
+        let drawing = false;
+        for (const [sinLon, cosLon, sinLat, cosLat] of points) {
+          project(sinLon, cosLon, sinLat, cosLat);
+          if (pz <= 0) {
+            drawing = false;
+            continue;
+          }
+          if (drawing) context.lineTo(px, py);
+          else {
+            context.moveTo(px, py);
+            drawing = true;
+          }
+        }
+        context.stroke();
+      };
+
+      context.fillStyle = "#000000";
+      context.fillRect(0, 0, width, height);
+
+      context.beginPath();
+      context.arc(centreX, centreY, radius, 0, Math.PI * 2);
+      context.fillStyle = "#05070a";
+      context.fill();
+      context.lineWidth = scale;
+      context.strokeStyle = "rgba(255, 255, 255, 0.2)";
+      context.stroke();
+
+      context.lineWidth = scale * 0.8;
+      context.strokeStyle = "rgba(255, 255, 255, 0.09)";
+      for (const line of globeGraticule) trace(line);
+
+      context.lineWidth = scale * 1.2;
+      context.strokeStyle = "rgba(168, 233, 53, 0.42)";
+      for (const ring of landRings) trace(ring);
+
+      // One font string for the whole frame: re-parsing it per letter is the
+      // only thing that makes a few thousand glyphs expensive.
+      const size = Math.min(width, height) * 0.018;
+      context.font = `500 ${size}px "Playfair Display", Georgia, serif`;
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      context.fillStyle = "#ffffff";
+      for (const flight of flights) {
+        const lon = (flight.lon * Math.PI) / 180;
+        const lat = (flight.lat * Math.PI) / 180;
+        project(Math.sin(lon), Math.cos(lon), Math.sin(lat), Math.cos(lat), 1 + flight.alt / 260000);
+        if (pz <= 0.03) continue;
+        if (px < -size || px > width + size || py < -size || py > height + size) continue;
+        context.globalAlpha = 0.16 + pz * 0.6;
+        context.fillText(flight.ch, px, py);
+      }
+      context.globalAlpha = 1;
+    };
+
+    frame = requestAnimationFrame(draw);
+
+    return () => {
+      alive = false;
+      cancelAnimationFrame(frame);
+      window.clearInterval(timer);
+      observer.disconnect();
+      visibility.disconnect();
+      canvas.removeEventListener("pointerdown", onPointerDown);
+      canvas.removeEventListener("pointermove", onPointerMove);
+      canvas.removeEventListener("pointerup", onPointerUp);
+      canvas.removeEventListener("pointercancel", onPointerUp);
+      canvas.removeEventListener("wheel", onWheel);
+    };
+  }, [reduceMotion]);
+
+  return (
+    <figure className="live-poem">
+      <canvas ref={canvasRef} className="live-canvas is-globe" role="img" aria-label={copy.globeAria} />
+      <figcaption className="live-readout">
+        <span>{copy.globeHint}</span>
+        <strong>
+          {status === "loading" ? copy.globeLoading : status === "offline" ? copy.globeOffline : `${count} ${copy.globeUnit}`}
+        </strong>
       </figcaption>
     </figure>
   );
