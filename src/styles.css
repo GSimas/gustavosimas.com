@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&display=swap');
+/* Display faces for the falling-letters poem, one weight each. */
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500&family=Cormorant+Garamond:wght@300&family=Instrument+Serif&family=Space+Grotesk:wght@400&family=Syne:wght@700&display=swap');
 
 :root {
   --font-scale: 1;
@@ -3247,6 +3249,192 @@ img {
 
 .live-canvas.is-globe:active {
   cursor: grabbing;
+}
+
+.live-canvas.is-gravity {
+  aspect-ratio: 16 / 9;
+  background: radial-gradient(120% 100% at 50% 0%, #0d1410 0%, #05070a 70%);
+  touch-action: none;
+  cursor: grab;
+}
+
+.live-canvas.is-gravity:active {
+  cursor: grabbing;
+}
+
+.gravity-compose {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.gravity-compose .live-field {
+  flex: 1;
+}
+
+.gravity-compose .live-export-button {
+  min-height: 44px;
+}
+
+.live-colours .gravity-font {
+  border: none;
+  padding: 0;
+}
+
+.gravity-font select {
+  min-height: 34px;
+  padding: 0 26px 0 10px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: var(--minimum-text-size);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 0;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--faint) 50%),
+    linear-gradient(135deg, var(--faint) 50%, transparent 50%);
+  background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.gravity-sliders {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px 22px;
+}
+
+.gravity-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 150px;
+  flex: 1 1 150px;
+}
+
+.gravity-slider span {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: var(--minimum-text-size);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.gravity-slider strong {
+  color: var(--green);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.gravity-slider input[type="range"] {
+  width: 100%;
+  height: 18px;
+  margin: 0;
+  background: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.gravity-slider input[type="range"]::-webkit-slider-runnable-track {
+  height: 1px;
+  background: var(--line-strong);
+}
+
+.gravity-slider input[type="range"]::-moz-range-track {
+  height: 1px;
+  background: var(--line-strong);
+}
+
+.gravity-slider input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 11px;
+  height: 11px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+.gravity-slider input[type="range"]::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border: none;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+.gravity-slider input[type="range"]:focus-visible {
+  outline: 1px solid var(--green);
+  outline-offset: 3px;
+}
+
+.gravity-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.gravity-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line-strong);
+  background: var(--panel);
+}
+
+.gravity-chip.is-editing {
+  border-color: var(--green);
+}
+
+.gravity-chip > button:first-child {
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.gravity-chip button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--minimum-text-size);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.gravity-chip button:hover {
+  color: var(--text);
+}
+
+.gravity-chip button + button {
+  border-left: 1px solid var(--line);
+  padding: 0 8px;
+}
+
+.gravity-chip em {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.gravity-empty,
+.gravity-hint {
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: var(--minimum-text-size);
+  letter-spacing: 0.06em;
 }
 
 .live-readout {

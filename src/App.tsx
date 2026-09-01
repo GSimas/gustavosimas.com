@@ -2,6 +2,16 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { landOutline } from "./land";
 import {
+  fadeLetters,
+  gravityDefaults,
+  gravityMaxChars,
+  gravityMaxWords,
+  gravityRanges,
+  stepGravity,
+  type GravityLetter,
+  type GravitySettings,
+} from "./gravity";
+import {
   ArrowDown,
   ArrowLeft,
   ArrowUpRight,
@@ -539,6 +549,15 @@ const creationExperiments = [
     tagEn: "Artificial life",
     href: "https://smoothlife.gustavosimas.com/",
   },
+  {
+    title: "PARTICLES∞ — Emergent Matter Lab",
+    titleEn: "PARTICLES∞ — Emergent Matter Lab",
+    description: "Um laboratório de vida por partículas: milhares de pontos coloridos que só sabem se atrair ou se repelir uns aos outros e, dessa regra mínima, formam células, membranas, enxames e organismos que ninguém programou.",
+    descriptionEn: "A particle life laboratory: thousands of colored dots that only know how to attract or repel one another and, from that minimal rule, form cells, membranes, swarms and organisms nobody programmed.",
+    tag: "Vida artificial",
+    tagEn: "Artificial life",
+    href: "https://particlelife.gustavosimas.com/",
+  },
 ];
 
 const creationsCopy = {
@@ -578,9 +597,9 @@ const creationsCopy = {
     interactive: {
       number: "01",
       label: "Poemas interativos",
-      title1: "Três poemas",
+      title1: "Quatro poemas",
       title2: "que respondem.",
-      subtitle: "Um relógio que marca o horário de Brasília em tempo real, com as letras sendo arrastadas pelo tempo, uma bandeira que balança a sua frase e um globo onde cada avião no ar carrega uma letra.",
+      subtitle: "Um relógio que marca o horário de Brasília em tempo real, com as letras sendo arrastadas pelo tempo, uma bandeira que balança a sua frase, um globo onde cada avião no ar carrega uma letra e um chão onde as palavras caem e se desmancham em letras.",
       clockTitle: "O Tempo Não Para",
       clockNote: "O tempo arrasta as palavras. “Não sei o que é o tempo. Não sei qual a verdadeira medida que ele tem, se tem alguma. A do relógio sei que é falsa: divide o tempo espacialmente, por fora” — Fernando Pessoa. Relógio no horário de Brasília.",
       clockLabel: "Horário de Brasília",
@@ -603,6 +622,25 @@ const creationsCopy = {
       globeLoading: "procurando aviões…",
       globeOffline: "sem sinal — voando de memória",
       globeAria: "Globo terrestre em tempo real que pode ser girado e ampliado, com uma letra sobre cada avião no ar",
+      gravityTitle: "A Gravidade da Palavra",
+      gravityNote: "Toda palavra escrita aqui se desfaz ao cair: as letras se soltam umas das outras e passam a obedecer só à gravidade, ao atrito e ao acaso das colisões. Nenhuma volta a se juntar sozinha; o sentido se acumula no chão como entulho tipográfico. Escolha a fonte e a cor, edite ou apague o que já caiu, e arraste qualquer letra para jogá-la de novo ao ar.",
+      gravitySeed: "gravidade",
+      gravityInput: "Escreva uma palavra",
+      gravityPlaceholder: "queda",
+      gravityAdd: "Soltar",
+      gravityUpdate: "Atualizar",
+      gravityFont: "Fonte das letras",
+      gravityColour: "Cor",
+      gravityClear: "Limpar o chão",
+      gravityEdit: "Editar palavra",
+      gravityDelete: "Apagar palavra",
+      gravityEmpty: "Nada caiu ainda.",
+      gravityHint: "Até 28 caracteres por palavra · clique numa palavra para editar · arraste as letras para atirá-las.",
+      gravityAria: "Canvas com física de gravidade onde as letras das palavras escritas caem, colidem e se empilham",
+      gravityPull: "Gravidade",
+      gravityBounce: "Quique",
+      gravityGrip: "Atrito",
+      gravityReset: "Física original",
     },
     experiments: {
       number: "03",
@@ -660,9 +698,9 @@ const creationsCopy = {
     interactive: {
       number: "01",
       label: "Interactive poems",
-      title1: "Three poems",
+      title1: "Four poems",
       title2: "that answer back.",
-      subtitle: "A clock running on real Brasília time, its letters dragged along by time itself, a flag that waves your own words, and a globe where every aircraft in the air carries a letter.",
+      subtitle: "A clock running on real Brasília time, its letters dragged along by time itself, a flag that waves your own words, a globe where every aircraft in the air carries a letter, and a floor where words fall and come apart into letters.",
       clockTitle: "O Tempo Não Para",
       clockNote: "Time drags the words along. “I do not know what time is. I do not know its true measure, if it has one. The clock’s I know to be false: it divides time spatially, from the outside” — Fernando Pessoa. A clock running on Brasília time.",
       clockLabel: "Brasília time",
@@ -685,6 +723,25 @@ const creationsCopy = {
       globeLoading: "looking for aircraft…",
       globeOffline: "no signal — flying from memory",
       globeAria: "Real-time globe that can be spun and zoomed, with a letter riding on every aircraft in the air",
+      gravityTitle: "The Gravity of the Word",
+      gravityNote: "Every word written here comes apart as it falls: the letters break loose from one another and start obeying nothing but gravity, friction and the chance of collisions. None of them reassembles on its own; meaning piles up on the floor as typographic rubble. Pick a typeface and a colour, edit or erase what has already fallen, and drag any letter to throw it back into the air.",
+      gravitySeed: "gravity",
+      gravityInput: "Write a word",
+      gravityPlaceholder: "fall",
+      gravityAdd: "Drop",
+      gravityUpdate: "Update",
+      gravityFont: "Letter typeface",
+      gravityColour: "Colour",
+      gravityClear: "Clear the floor",
+      gravityEdit: "Edit word",
+      gravityDelete: "Delete word",
+      gravityEmpty: "Nothing has fallen yet.",
+      gravityHint: "Up to 28 characters per word · click a word to edit it · drag the letters to throw them.",
+      gravityAria: "Canvas with gravity physics where the letters of the words written fall, collide and pile up",
+      gravityPull: "Gravity",
+      gravityBounce: "Bounce",
+      gravityGrip: "Friction",
+      gravityReset: "Default physics",
     },
     experiments: {
       number: "03",
@@ -2924,6 +2981,13 @@ function Creations({
               <p>{copy.interactive.globeNote}</p>
             </div>
           </article>
+          <article className="cr-live-piece is-wide">
+            <GravityPoem copy={copy.interactive} />
+            <div className="cr-live-body">
+              <h3>{copy.interactive.gravityTitle}</h3>
+              <p>{copy.interactive.gravityNote}</p>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -3772,6 +3836,406 @@ function GlobePoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive"]
         <strong>
           {status === "loading" ? copy.globeLoading : status === "offline" ? copy.globeOffline : `${count} ${copy.globeUnit}`}
         </strong>
+      </figcaption>
+    </figure>
+  );
+}
+
+// Display faces with enough contrast to survive being read one glyph at a time.
+const gravityFonts = [
+  { id: "instrument", label: "Instrument", family: '"Instrument Serif", Georgia, serif', weight: 400 },
+  { id: "bodoni", label: "Bodoni", family: '"Bodoni Moda", Didot, Georgia, serif', weight: 500 },
+  { id: "cormorant", label: "Cormorant", family: '"Cormorant Garamond", Garamond, Georgia, serif', weight: 300 },
+  { id: "syne", label: "Syne", family: "Syne, Inter, sans-serif", weight: 700 },
+  { id: "space", label: "Space", family: '"Space Grotesk", Inter, sans-serif', weight: 400 },
+] as const;
+
+type GravityFontId = (typeof gravityFonts)[number]["id"];
+
+interface GravityWord {
+  id: number;
+  text: string;
+  font: GravityFontId;
+  colour: string;
+}
+
+function GravityPoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive"] }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const lettersRef = useRef<GravityLetter[]>([]);
+  const worldRef = useRef({ width: 0, height: 0 });
+  const nextIdRef = useRef(1);
+  const seededRef = useRef(false);
+  const [words, setWords] = useState<GravityWord[]>([]);
+  const [draft, setDraft] = useState("");
+  const [editing, setEditing] = useState<number | null>(null);
+  const [font, setFont] = useState<GravityFontId>("instrument");
+  const [colour, setColour] = useState("#a8e935");
+  const [physics, setPhysics] = useState<GravitySettings>(gravityDefaults);
+  const physicsRef = useRef(physics);
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    physicsRef.current = physics;
+  }, [physics]);
+
+  // Letters are spawned imperatively: React owns the word list, the canvas owns
+  // the bodies, and the only bridge between them is the word id.
+  const spawnWord = (word: GravityWord) => {
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext("2d");
+    if (!canvas || !context) return;
+    const { width, height } = worldRef.current;
+    if (!width || !height) return;
+
+    const choice = gravityFonts.find((option) => option.id === word.font) ?? gravityFonts[0];
+    const size = Math.max(20, Math.min(58, Math.min(width, height) * 0.11));
+    const spec = `${choice.weight} ${size}px ${choice.family}`;
+
+    // Nothing on the page renders these faces, so the canvas has to ask for the
+    // download itself — measuring before it lands would size the discs to a
+    // fallback the letters are never drawn in.
+    if (!document.fonts.check(spec)) {
+      void document.fonts
+        .load(spec, word.text)
+        .catch(() => undefined)
+        .then(() => {
+          if (!lettersRef.current.some((letter) => letter.wordId === word.id)) spawnLetters(word, spec, size);
+        });
+      return;
+    }
+    spawnLetters(word, spec, size);
+  };
+
+  const spawnLetters = (word: GravityWord, spec: string, size: number) => {
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext("2d");
+    if (!canvas || !context) return;
+    const { width, height } = worldRef.current;
+    if (!width || !height) return;
+
+    context.font = spec;
+    const characters = [...word.text].filter((ch) => ch.trim().length > 0);
+    const widths = characters.map((ch) => context.measureText(ch).width);
+    const span = widths.reduce((total, value) => total + value * 1.1, 0);
+    let cursor = width / 2 - span / 2;
+
+    characters.forEach((ch, index) => {
+      const glyph = Math.max(widths[index], size * 0.45);
+      const r = (Math.max(glyph, size * 0.72) / 2) * 0.92;
+      const x = Math.max(r, Math.min(width - r, cursor + glyph * 0.55));
+      cursor += glyph * 1.1;
+      lettersRef.current.push({
+        ch,
+        wordId: word.id,
+        font: spec,
+        colour: word.colour,
+        size,
+        r,
+        mass: r * r,
+        x,
+        y: reduceMotion ? height - r - index * 0.5 : -r - index * (size * 0.9),
+        vx: reduceMotion ? 0 : (Math.random() - 0.5) * 90,
+        vy: reduceMotion ? 0 : 60,
+        angle: reduceMotion ? 0 : (Math.random() - 0.5) * 0.7,
+        va: reduceMotion ? 0 : (Math.random() - 0.5) * 2,
+        held: false,
+        fade: 1,
+      });
+    });
+  };
+
+  const dropLetters = (wordId: number) => {
+    fadeLetters(lettersRef.current, (letter) => letter.wordId === wordId);
+  };
+
+  const submit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const text = draft.trim().slice(0, gravityMaxChars);
+    if (!text) return;
+
+    if (editing !== null) {
+      const word: GravityWord = { id: editing, text, font, colour };
+      dropLetters(editing);
+      spawnWord(word);
+      setWords((previous) => previous.map((item) => (item.id === editing ? word : item)));
+      setEditing(null);
+    } else {
+      const word: GravityWord = { id: nextIdRef.current, text, font, colour };
+      nextIdRef.current += 1;
+      spawnWord(word);
+      setWords((previous) => {
+        const next = [...previous, word];
+        while (next.length > gravityMaxWords) {
+          const oldest = next.shift();
+          if (oldest) dropLetters(oldest.id);
+        }
+        return next;
+      });
+    }
+    setDraft("");
+  };
+
+  const removeWord = (wordId: number) => {
+    dropLetters(wordId);
+    setWords((previous) => previous.filter((item) => item.id !== wordId));
+    if (editing === wordId) {
+      setEditing(null);
+      setDraft("");
+    }
+  };
+
+  const editWord = (word: GravityWord) => {
+    setEditing(word.id);
+    setDraft(word.text);
+    setFont(word.font);
+    setColour(word.colour);
+  };
+
+  const clearAll = () => {
+    fadeLetters(lettersRef.current, () => true);
+    setWords([]);
+    setEditing(null);
+    setDraft("");
+  };
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    let frame = 0;
+    let visible = true;
+    let previous = performance.now();
+    let carry = 0;
+
+    const resize = () => {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.max(1, Math.round(rect.width));
+      const height = Math.max(1, Math.round(rect.height));
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      worldRef.current = { width, height };
+      for (const letter of lettersRef.current) {
+        letter.x = Math.max(letter.r, Math.min(width - letter.r, letter.x));
+        letter.y = Math.min(height - letter.r, letter.y);
+      }
+    };
+    resize();
+
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvas);
+
+    const visibility = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        previous = performance.now();
+      },
+      { rootMargin: "150px 0px" },
+    );
+    visibility.observe(canvas);
+
+    let dragged: GravityLetter | null = null;
+    let pointer = { x: 0, y: 0, at: 0 };
+
+    const toWorld = (event: PointerEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      const { x, y } = toWorld(event);
+      for (let index = lettersRef.current.length - 1; index >= 0; index -= 1) {
+        const letter = lettersRef.current[index];
+        if (Math.hypot(letter.x - x, letter.y - y) <= letter.r * 1.3) {
+          dragged = letter;
+          letter.held = true;
+          letter.vx = 0;
+          letter.vy = 0;
+          pointer = { x, y, at: performance.now() };
+          canvas.setPointerCapture(event.pointerId);
+          event.preventDefault();
+          return;
+        }
+      }
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (!dragged) return;
+      const { x, y } = toWorld(event);
+      const now = performance.now();
+      const elapsed = Math.max(8, now - pointer.at) / 1000;
+      dragged.vx = (x - pointer.x) / elapsed;
+      dragged.vy = (y - pointer.y) / elapsed;
+      dragged.x = x;
+      dragged.y = y;
+      pointer = { x, y, at: now };
+      event.preventDefault();
+    };
+
+    const onPointerUp = () => {
+      if (!dragged) return;
+      // A stale throw velocity would fling a letter the user merely parked.
+      if (performance.now() - pointer.at > 120) {
+        dragged.vx = 0;
+        dragged.vy = 0;
+      }
+      dragged.held = false;
+      dragged = null;
+    };
+
+    canvas.addEventListener("pointerdown", onPointerDown);
+    canvas.addEventListener("pointermove", onPointerMove);
+    canvas.addEventListener("pointerup", onPointerUp);
+    canvas.addEventListener("pointercancel", onPointerUp);
+
+    const draw = (now: number) => {
+      frame = requestAnimationFrame(draw);
+      const { width, height } = worldRef.current;
+      if (!visible) {
+        previous = now;
+        return;
+      }
+
+      carry = Math.min(0.25, carry + (now - previous) / 1000);
+      previous = now;
+      const step = 1 / 120;
+      while (carry >= step) {
+        stepGravity(lettersRef.current, width, height, step, physicsRef.current);
+        carry -= step;
+      }
+
+      context.clearRect(0, 0, width, height);
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      for (const letter of lettersRef.current) {
+        context.save();
+        context.globalAlpha = letter.fade;
+        context.translate(letter.x, letter.y);
+        context.rotate(letter.angle);
+        context.scale(letter.fade, letter.fade);
+        context.fillStyle = letter.colour;
+        context.font = letter.font;
+        context.fillText(letter.ch, 0, 0);
+        context.restore();
+      }
+    };
+
+    frame = requestAnimationFrame(draw);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      visibility.disconnect();
+      canvas.removeEventListener("pointerdown", onPointerDown);
+      canvas.removeEventListener("pointermove", onPointerMove);
+      canvas.removeEventListener("pointerup", onPointerUp);
+      canvas.removeEventListener("pointercancel", onPointerUp);
+    };
+  }, [reduceMotion]);
+
+  useEffect(() => {
+    if (seededRef.current) return;
+    seededRef.current = true;
+    const word: GravityWord = { id: nextIdRef.current, text: copy.gravitySeed, font: "instrument", colour: "#a8e935" };
+    nextIdRef.current += 1;
+    spawnWord(word);
+    setWords([word]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <figure className="live-poem">
+      <canvas ref={canvasRef} className="live-canvas is-gravity" role="img" aria-label={copy.gravityAria} />
+      <figcaption className="live-controls">
+        <form className="gravity-compose" onSubmit={submit}>
+          <div className="live-field">
+            <label htmlFor="gravity-word">{copy.gravityInput}</label>
+            <input
+              id="gravity-word"
+              type="text"
+              value={draft}
+              maxLength={gravityMaxChars}
+              placeholder={copy.gravityPlaceholder}
+              autoComplete="off"
+              spellCheck={false}
+              onChange={(event) => setDraft(event.target.value)}
+            />
+          </div>
+          <button type="submit" className="live-export-button" disabled={!draft.trim()}>
+            {editing === null ? copy.gravityAdd : copy.gravityUpdate}
+          </button>
+        </form>
+
+        <div className="live-colours">
+          <label className="gravity-font">
+            <select value={font} onChange={(event) => setFont(event.target.value as GravityFontId)} aria-label={copy.gravityFont}>
+              {gravityFonts.map((option) => (
+                <option key={option.id} value={option.id} style={{ fontFamily: option.family }}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <input type="color" value={colour} onChange={(event) => setColour(event.target.value)} />
+            <span>{copy.gravityColour}</span>
+          </label>
+          <button type="button" className="live-reset" onClick={clearAll} disabled={!words.length}>
+            {copy.gravityClear}
+          </button>
+        </div>
+
+        <div className="gravity-sliders">
+          {([
+            { key: "pull", label: copy.gravityPull, format: (value: number) => String(Math.round(value)) },
+            { key: "bounce", label: copy.gravityBounce, format: (value: number) => `${Math.round(value * 100)}%` },
+            { key: "grip", label: copy.gravityGrip, format: (value: number) => `${Math.round(value * 100)}%` },
+          ] as const).map(({ key, label, format }) => (
+            <label key={key} className="gravity-slider">
+              <span>
+                {label} <strong>{format(physics[key])}</strong>
+              </span>
+              <input
+                type="range"
+                min={gravityRanges[key].min}
+                max={gravityRanges[key].max}
+                step={gravityRanges[key].step}
+                value={physics[key]}
+                onChange={(event) => setPhysics((previous) => ({ ...previous, [key]: Number(event.target.value) }))}
+              />
+            </label>
+          ))}
+          <button type="button" className="live-reset" onClick={() => setPhysics(gravityDefaults)}>
+            {copy.gravityReset}
+          </button>
+        </div>
+
+        <div className="gravity-words">
+          {words.length ? (
+            words.map((word) => (
+              <span key={word.id} className={`gravity-chip ${editing === word.id ? "is-editing" : ""}`}>
+                <button
+                  type="button"
+                  onClick={() => editWord(word)}
+                  title={copy.gravityEdit}
+                  style={{ fontFamily: gravityFonts.find((option) => option.id === word.font)?.family }}
+                >
+                  <em style={{ background: word.colour }} aria-hidden="true" />
+                  {word.text}
+                </button>
+                <button type="button" onClick={() => removeWord(word.id)} aria-label={`${copy.gravityDelete}: ${word.text}`}>
+                  <X size={12} />
+                </button>
+              </span>
+            ))
+          ) : (
+            <span className="gravity-empty">{copy.gravityEmpty}</span>
+          )}
+        </div>
+        <small className="gravity-hint">{copy.gravityHint}</small>
       </figcaption>
     </figure>
   );
