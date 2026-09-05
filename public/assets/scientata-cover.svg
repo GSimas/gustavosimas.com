@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Capa autoral da Scientata</title>
+  <desc id="desc">Rede de nós conectados representando o ecossistema de aplicações e narrativas para pesquisa.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07110f"/><stop offset="1" stop-color="#0d1d18"/></linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#b8ff4a" stroke-opacity=".06"/></pattern>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+  <rect width="1200" height="760" fill="url(#grid)"/>
+  <g font-family="Arial, sans-serif">
+    <text x="70" y="106" font-size="29" font-weight="800" fill="#f0eee6">Scient<tspan fill="#b8ff4a" font-family="Georgia, serif" font-style="italic">ata</tspan></text>
+    <text x="852" y="102" font-size="12" letter-spacing="4" fill="#7f8f85">PROCESSAMENTO LOCAL</text>
+  </g>
+  <text x="70" y="215" fill="#b8ff4a" font-family="Arial, sans-serif" font-size="13" letter-spacing="5">ECOSSISTEMA PARA PESQUISA</text>
+  <text x="70" y="286" fill="#f0eee6" font-family="Georgia, serif" font-size="62">Pesquisa com visão</text>
+  <text x="70" y="348" fill="#f0eee6" font-family="Georgia, serif" font-size="62">e inteligência.</text>
+  <g transform="translate(72 421)">
+    <rect width="1056" height="202" rx="14" fill="#0a1714" stroke="#3f5349"/>
+    <g stroke="#5d7566" stroke-width="2" fill="none">
+      <path d="M96 148 236 62 396 132 556 54 700 140 856 70 984 128"/>
+      <path d="M96 148 396 132 700 140 984 128"/>
+      <path d="M236 62 556 54 856 70"/>
+    </g>
+    <g fill="#0a1714" stroke="#b8ff4a" stroke-width="3">
+      <circle cx="96" cy="148" r="13"/><circle cx="396" cy="132" r="13"/><circle cx="700" cy="140" r="13"/><circle cx="984" cy="128" r="13"/>
+    </g>
+    <g fill="#b8ff4a">
+      <circle cx="236" cy="62" r="9"/><circle cx="556" cy="54" r="9"/><circle cx="856" cy="70" r="9"/>
+    </g>
+    <g font-family="monospace" font-size="13" fill="#8fa396" letter-spacing="2">
+      <text x="40" y="44">DO PRIMEIRO ARQUIVO À PUBLICAÇÃO</text>
+    </g>
+  </g>
+  <text x="70" y="690" fill="#7f8f85" font-family="Arial, sans-serif" font-size="13" letter-spacing="4">APLICAÇÕES  ·  NARRATIVAS  ·  FORMAÇÃO  ·  CONSULTORIA</text>
+</svg>

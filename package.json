@@ -11,8 +11,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b",
-    "snapshot": "node scripts/build-flight-snapshot.mjs",
-    "check:gravity": "node scripts/check-gravity.ts"
+    "check:gravity": "node scripts/check-gravity.ts",
+    "check:mosaic": "node scripts/check-mosaic.ts"
   },
   "dependencies": {
     "gifenc": "^1.0.3",

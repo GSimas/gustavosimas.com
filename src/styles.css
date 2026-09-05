@@ -1051,20 +1051,23 @@ img {
   color: #eaf3ff;
   background: #162c4a;
 }
+.visual-scientata {
+  background: #07110f;
+}
 .visual-simetrics {
   background: #0a1024;
 }
 .visual-life-infinite {
   background: #07100b;
 }
-.visual-mdforge {
-  background: #171411;
-}
 .visual-datavizlab {
   background: #091123;
 }
 .visual-tokenlab {
   background: #050906;
+}
+.visual-entreletras {
+  background: #17150f;
 }
 
 .project-body {
@@ -3240,15 +3243,28 @@ img {
   background: #fff;
 }
 
-.live-canvas.is-globe {
-  aspect-ratio: 16 / 9;
-  background: #000;
-  touch-action: none;
-  cursor: grab;
+
+.live-canvas.is-mosaic {
+  aspect-ratio: 12 / 5;
+  background: radial-gradient(120% 100% at 50% 0%, #14100d 0%, #07070a 70%);
 }
 
-.live-canvas.is-globe:active {
-  cursor: grabbing;
+.mosaic-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mosaic-modes button[aria-pressed="true"] {
+  color: var(--bg);
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.mosaic-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
 }
 
 .live-canvas.is-gravity {

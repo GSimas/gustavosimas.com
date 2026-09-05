@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { landOutline } from "./land";
+import { mosaicGrid, mosaicStencil, type MosaicInk } from "./mosaic";
 import {
   fadeLetters,
   gravityDefaults,
@@ -151,6 +151,16 @@ const projects: Project[] = [
     image: "/assets/mensagem-audiolivro.jpg",
   },
   {
+    title: "Scientata",
+    category: "Tecnologia",
+    year: "2026",
+    description:
+      "Ecossistema para pesquisa científica que reúne ferramentas, narrativas digitais interativas, conteúdo e consultoria.",
+    href: "https://scientata.com/",
+    visual: "scientata",
+    image: "/assets/scientata-cover.svg",
+  },
+  {
     title: "Simetrics",
     category: "Tecnologia",
     year: "2026",
@@ -171,16 +181,6 @@ const projects: Project[] = [
     image: "/assets/life-infinite-cover.svg",
   },
   {
-    title: "MDForge",
-    category: "Tecnologia",
-    year: "2026",
-    description:
-      "Conversor privado de arquivos e pastas para Markdown editável. Processa documentos em múltiplos formatos inteiramente no navegador, sem uploads ou armazenamento em servidores.",
-    href: "https://mdforge.scientata.com/",
-    visual: "mdforge",
-    image: "/assets/mdforge-cover.svg",
-  },
-  {
     title: "DataVizLab",
     category: "Tecnologia",
     year: "2026",
@@ -199,6 +199,16 @@ const projects: Project[] = [
     href: "https://tokenlab.scientata.com/",
     visual: "tokenlab",
     image: "/assets/tokenlab-cover.svg",
+  },
+  {
+    title: "Entreletras",
+    category: "Tecnologia",
+    year: "2026",
+    description:
+      "Jogo de palavras em português: você escreve uma horizontal e o dicionário responde com as verticais que cruzam cada letra. Dois modos — Trama, com a palavra escondida do dia, e Bistrô, livre e sem fim.",
+    href: "https://entreletras.io/",
+    visual: "entreletras",
+    image: "/assets/entreletras-cover.svg",
   },
 ];
 
@@ -235,6 +245,10 @@ const projectTranslationsEn: Record<string, { title: string; description: string
     title: "VI Mídia Production",
     description: "Audio engineering, sound design and accessible phonographic production for education and entertainment, including audiobooks, audio description and assistive technology.",
   },
+  Scientata: {
+    title: "Scientata",
+    description: "An ecosystem for scientific research bringing together tools, interactive digital narratives, content and consultancy.",
+  },
   Simetrics: {
     title: "Simetrics",
     description: "A bibliometric and scientometric intelligence platform that turns up to 10,000 documents into indicators, knowledge networks and thematic maps — processed locally in the browser.",
@@ -243,10 +257,6 @@ const projectTranslationsEn: Record<string, { title: string; description: string
     title: "LIFE∞ — Infinite Life Lab",
     description: "An interactive Conway's Game of Life laboratory on an infinite canvas for creating patterns, tracking metrics and exploring emergence, self-organization, complexity and artificial life.",
   },
-  MDForge: {
-    title: "MDForge",
-    description: "A private converter for turning files and folders into editable Markdown. Multiple formats are processed entirely in the browser, with no server uploads or storage.",
-  },
   DataVizLab: {
     title: "DataVizLab",
     description: "A platform with 78 methods, a recommender and a local studio for choosing, building, auditing and exporting clear, accessible visualizations suited to the analytical question.",
@@ -254,6 +264,10 @@ const projectTranslationsEn: Record<string, { title: string; description: string
   TokenLab: {
     title: "TokenLab",
     description: "A local analyzer for counting tokens, simulating chunking strategies and estimating load, overlap and requests before indexing knowledge bases in RAG pipelines.",
+  },
+  Entreletras: {
+    title: "Entreletras",
+    description: "A Portuguese word game: you write a horizontal word and the dictionary answers with the verticals crossing each of its letters. Two modes — Trama, with a hidden word of the day, and Bistrô, free and endless.",
   },
 };
 
@@ -599,7 +613,7 @@ const creationsCopy = {
       label: "Poemas interativos",
       title1: "Quatro poemas",
       title2: "que respondem.",
-      subtitle: "Um relógio que marca o horário de Brasília em tempo real, com as letras sendo arrastadas pelo tempo, uma bandeira que balança a sua frase, um globo onde cada avião no ar carrega uma letra e um chão onde as palavras caem e se desmancham em letras.",
+      subtitle: "Um relógio que marca o horário de Brasília em tempo real, com as letras sendo arrastadas pelo tempo, uma bandeira que balança a sua frase, uma palavra desenhada pela repetição de outra e um chão onde as palavras caem e se desmancham em letras.",
       clockTitle: "O Tempo Não Para",
       clockNote: "O tempo arrasta as palavras. “Não sei o que é o tempo. Não sei qual a verdadeira medida que ele tem, se tem alguma. A do relógio sei que é falsa: divide o tempo espacialmente, por fora” — Fernando Pessoa. Relógio no horário de Brasília.",
       clockLabel: "Horário de Brasília",
@@ -615,13 +629,17 @@ const creationsCopy = {
       flagExport: "Baixar a sua bandeira",
       flagExporting: "Gerando o arquivo…",
       flagAria: "Bandeira animada feita com a frase digitada pelo visitante",
-      globeTitle: "O Céu É Um Alfabeto",
-      globeNote: "Cada letra é um avião de verdade, agora, no ar. Posição, altitude e rumo vêm da OpenSky Network e chegam a cada minuto; entre uma atualização e outra as letras seguem voando pelo próprio vetor. Ninguém escolhe onde elas caem: o alfabeto se redistribui pelo mundo, e os continentes acabam desenhados pelo tráfego. Arraste para girar o globo, role ou pince para aproximar.",
-      globeHint: "Arraste para girar · role para aproximar",
-      globeUnit: "letras no ar",
-      globeLoading: "procurando aviões…",
-      globeOffline: "sem sinal — voando de memória",
-      globeAria: "Globo terrestre em tempo real que pode ser girado e ampliado, com uma letra sobre cada avião no ar",
+      mosaicTitle: "Uma Palavra Dentro da Outra",
+      mosaicNote: "Homenagem ao LUXO/LIXO de Augusto de Campos: uma palavra deixa de ser lida e passa a servir só de molde para outra. Escreva a palavra que aparece e a palavra que a preenche — a segunda se repete até desenhar cada letra da primeira, e o que se lê depende da distância de quem olha.",
+      mosaicStencil: "Palavra que aparece",
+      mosaicStencilPlaceholder: "LIXO",
+      mosaicTile: "Palavra que preenche",
+      mosaicTilePlaceholder: "LUXO",
+      mosaicMode: "Modo de composição",
+      mosaicModeFlow: "Palavra contínua",
+      mosaicModeWhole: "Palavras inteiras",
+      mosaicHint: "Até 12 caracteres em cada campo. Em «palavra contínua» o texto corre e é recortado pelas letras; em «palavras inteiras» nenhuma palavra é cortada. Deixe em branco para ver o par original.",
+      mosaicAria: "Canvas com uma palavra grande desenhada pela repetição de outra palavra menor",
       gravityTitle: "A Gravidade da Palavra",
       gravityNote: "Toda palavra escrita aqui se desfaz ao cair: as letras se soltam umas das outras e passam a obedecer só à gravidade, ao atrito e ao acaso das colisões. Nenhuma volta a se juntar sozinha; o sentido se acumula no chão como entulho tipográfico. Escolha a fonte e a cor, edite ou apague o que já caiu, e arraste qualquer letra para jogá-la de novo ao ar.",
       gravitySeed: "gravidade",
@@ -700,7 +718,7 @@ const creationsCopy = {
       label: "Interactive poems",
       title1: "Four poems",
       title2: "that answer back.",
-      subtitle: "A clock running on real Brasília time, its letters dragged along by time itself, a flag that waves your own words, a globe where every aircraft in the air carries a letter, and a floor where words fall and come apart into letters.",
+      subtitle: "A clock running on real Brasília time, its letters dragged along by time itself, a flag that waves your own words, a word drawn by the repetition of another, and a floor where words fall and come apart into letters.",
       clockTitle: "O Tempo Não Para",
       clockNote: "Time drags the words along. “I do not know what time is. I do not know its true measure, if it has one. The clock’s I know to be false: it divides time spatially, from the outside” — Fernando Pessoa. A clock running on Brasília time.",
       clockLabel: "Brasília time",
@@ -716,13 +734,17 @@ const creationsCopy = {
       flagExport: "Download your flag",
       flagExporting: "Building the file…",
       flagAria: "Animated flag built from the phrase typed by the visitor",
-      globeTitle: "O Céu É Um Alfabeto",
-      globeNote: "Every letter is a real aircraft, airborne right now. Position, altitude and heading come from the OpenSky Network and land once a minute; between updates the letters keep flying along their own vectors. Nobody chooses where they fall: the alphabet redistributes itself across the world, and the continents end up drawn by traffic. Drag to spin the globe, scroll or pinch to zoom.",
-      globeHint: "Drag to spin · scroll to zoom",
-      globeUnit: "letters in the air",
-      globeLoading: "looking for aircraft…",
-      globeOffline: "no signal — flying from memory",
-      globeAria: "Real-time globe that can be spun and zoomed, with a letter riding on every aircraft in the air",
+      mosaicTitle: "One Word Inside Another",
+      mosaicNote: "After Augusto de Campos' LUXO/LIXO: one word stops being read and becomes nothing but the mould of another. Write the word that shows and the word that fills it — the second repeats itself until it draws every letter of the first, and what you read depends on how far away you stand.",
+      mosaicStencil: "Word that shows",
+      mosaicStencilPlaceholder: "LIXO",
+      mosaicTile: "Word that fills it",
+      mosaicTilePlaceholder: "LUXO",
+      mosaicMode: "Composition mode",
+      mosaicModeFlow: "Running text",
+      mosaicModeWhole: "Whole words",
+      mosaicHint: "Up to 12 characters in each field. In \u201crunning text\u201d the words flow and get cut by the letters; in \u201cwhole words\u201d nothing is ever cut open. Leave them empty for the original pair.",
+      mosaicAria: "Canvas with a large word drawn by the repetition of a smaller word",
       gravityTitle: "The Gravity of the Word",
       gravityNote: "Every word written here comes apart as it falls: the letters break loose from one another and start obeying nothing but gravity, friction and the chance of collisions. None of them reassembles on its own; meaning piles up on the floor as typographic rubble. Pick a typeface and a colour, edit or erase what has already fallen, and drag any letter to throw it back into the air.",
       gravitySeed: "gravity",
@@ -2975,10 +2997,10 @@ function Creations({
             </div>
           </article>
           <article className="cr-live-piece is-wide">
-            <GlobePoem copy={copy.interactive} />
+            <MosaicPoem copy={copy.interactive} />
             <div className="cr-live-body">
-              <h3>{copy.interactive.globeTitle}</h3>
-              <p>{copy.interactive.globeNote}</p>
+              <h3>{copy.interactive.mosaicTitle}</h3>
+              <p>{copy.interactive.mosaicNote}</p>
             </div>
           </article>
           <article className="cr-live-piece is-wide">
@@ -3507,335 +3529,260 @@ function ClockPoem({ label, aria }: { label: string; aria: string }) {
   );
 }
 
-// GLOBO DE VOOS ---------------------------------------------------------
-// Orthographic projection done by hand on a 2D canvas, like the other pieces
-// on this page: a WebGL dependency would be heavier than the ~40 lines of
-// spherical trigonometry it would replace.
+// PALAVRA DENTRO DA PALAVRA ---------------------------------------------
+// After Augusto de Campos' LUXO/LIXO: the big word is never drawn, only used
+// as a stencil. Two ways of filling it — "flow" tiles the small word over the
+// whole canvas and clips it to the stencil, "whole" lays the small word on a
+// grid and keeps only the cells the stencil covers, so every word stays intact.
 
-interface GlobeFlight {
-  id: string;
-  lon: number;
-  lat: number;
-  alt: number;
-  track: number;
-  speed: number;
-  ch: string;
-}
+const mosaicMaxChars = 12;
+type MosaicMode = "flow" | "whole";
 
-type GlobePoint = readonly [number, number, number, number];
-
-const globeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-// Hashed from the ICAO address so an aircraft keeps its letter between polls.
-function letterFor(id: string) {
-  let hash = 0;
-  for (let index = 0; index < id.length; index += 1) hash = (hash * 31 + id.charCodeAt(index)) >>> 0;
-  return globeAlphabet[hash % globeAlphabet.length];
-}
-
-// Fixed geometry is stored as sines and cosines, so projecting a point costs a
-// handful of multiplications per frame instead of four trigonometric calls.
-function globePoint(lon: number, lat: number): GlobePoint {
-  const l = (lon * Math.PI) / 180;
-  const p = (lat * Math.PI) / 180;
-  return [Math.sin(l), Math.cos(l), Math.sin(p), Math.cos(p)];
-}
-
-const landRings: GlobePoint[][] = landOutline
-  .split("|")
-  .map((ring) => ring.split(";").map((pair) => {
-    const [lon, lat] = pair.split(",");
-    return globePoint(Number(lon), Number(lat));
-  }));
-
-const globeGraticule: GlobePoint[][] = (() => {
-  const lines: GlobePoint[][] = [];
-  for (let lon = -180; lon < 180; lon += 30) {
-    const meridian: GlobePoint[] = [];
-    for (let lat = -90; lat <= 90; lat += 3) meridian.push(globePoint(lon, lat));
-    lines.push(meridian);
-  }
-  for (let lat = -60; lat <= 60; lat += 30) {
-    const parallel: GlobePoint[] = [];
-    for (let lon = -180; lon <= 180; lon += 3) parallel.push(globePoint(lon, lat));
-    lines.push(parallel);
-  }
-  return lines;
-})();
-
-function GlobePoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive"] }) {
+function MosaicPoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive"] }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [status, setStatus] = useState<"loading" | "live" | "offline">("loading");
-  const [count, setCount] = useState(0);
+  const maskRef = useRef<HTMLCanvasElement | null>(null);
+  const [stencil, setStencil] = useState("");
+  const [tile, setTile] = useState("");
+  const [mode, setMode] = useState<MosaicMode>("flow");
   const reduceMotion = useReducedMotion();
+  const wordsRef = useRef({ stencil: "", tile: "" });
+
+  const clean = (value: string, fallback: string) => (value.trim() || fallback).toUpperCase().slice(0, mosaicMaxChars);
+
+  useEffect(() => {
+    wordsRef.current = {
+      stencil: clean(stencil, copy.mosaicStencilPlaceholder),
+      tile: clean(tile, copy.mosaicTilePlaceholder),
+    };
+  }, [stencil, tile, copy]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const context = canvas.getContext("2d");
-    if (!context) return;
+    const context = canvas?.getContext("2d");
+    if (!canvas || !context) return;
 
-    let flights: GlobeFlight[] = [];
-    let yaw = -50;
-    let pitch = 16;
-    let zoom = 1;
+    const mask = maskRef.current ?? (maskRef.current = document.createElement("canvas"));
+    const maskContext = mask.getContext("2d", { willReadFrequently: true });
+    if (!maskContext) return;
+
+    let width = 0;
+    let height = 0;
+    let ratio = 1;
     let frame = 0;
     let visible = true;
-    let alive = true;
-    let last = performance.now();
-    const pointers = new Map<number, { x: number; y: number }>();
-    let pinch = 0;
-
-    const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
+    let drift = 0;
+    let painted = "";
+    let previous = performance.now();
 
     const resize = () => {
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      ratio = Math.min(window.devicePixelRatio || 1, 2);
       const rect = canvas.getBoundingClientRect();
-      canvas.width = Math.max(1, Math.round(rect.width * ratio));
-      canvas.height = Math.max(1, Math.round(rect.height * ratio));
+      width = Math.max(1, Math.round(rect.width));
+      height = Math.max(1, Math.round(rect.height));
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+      mask.width = canvas.width;
+      mask.height = canvas.height;
+      // Resizing wipes the canvas, so the still version has to be laid out again.
+      painted = "";
     };
     resize();
 
     const observer = new ResizeObserver(resize);
     observer.observe(canvas);
 
-    const visibility = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-    }, { rootMargin: "150px 0px" });
+    const visibility = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        previous = performance.now();
+      },
+      { rootMargin: "150px 0px" },
+    );
     visibility.observe(canvas);
 
-    type FlightRow = [string, number, number, number, number, number];
+    const stencilFont = (size: number) => `700 ${size}px Inter, ui-sans-serif, sans-serif`;
+    const tileFont = (size: number) => `500 ${size}px "DM Mono", ui-monospace, monospace`;
+    // The frame loop re-measures every pass, so a face that lands late simply
+    // corrects itself on the next one — no need to wait on the download here.
+    void document.fonts.load(stencilFont(120)).catch(() => undefined);
+    void document.fonts.load(tileFont(16)).catch(() => undefined);
 
-    const adopt = (rows: FlightRow[]) => {
-      flights = rows.map(([id, lon, lat, alt, track, speed]) => ({
-        id,
-        lon,
-        lat,
-        alt,
-        track,
-        speed,
-        ch: letterFor(id),
-      }));
-      setCount(flights.length);
-    };
-
-    // Read a sky off the wire, refusing anything that is not really JSON —
-    // in dev there is no function behind this path and the SPA fallback
-    // answers every request with index.html.
-    const skyFrom = async (url: string, timeout: number) => {
-      const response = await fetch(url, { signal: AbortSignal.timeout(timeout) });
-      if (!response.ok) throw new Error(String(response.status));
-      if (!response.headers.get("content-type")?.includes("application/json")) {
-        throw new Error("not json");
+    // Clipped fill: the small word runs edge to edge and the stencil cuts it.
+    const paintFlow = (word: string, size: number) => {
+      // Small enough that a dozen or so rows cross the stencil: any coarser and
+      // the big word stops being legible from across the room.
+      const unit = Math.max(6, Math.min(14, size * 0.04));
+      context.font = tileFont(unit);
+      context.textAlign = "left";
+      context.textBaseline = "middle";
+      context.fillStyle = "#eef2e8";
+      const chunk = `${word} `;
+      const chunkWidth = context.measureText(chunk).width || unit;
+      const line = chunk.repeat(Math.ceil(width / chunkWidth) + 3);
+      const step = unit * 1.15;
+      for (let row = 0, y = step / 2; y < height + step; row += 1, y += step) {
+        // Alternating directions keep neighbouring rows from locking into a
+        // single sliding block, which reads as a texture instead of a word.
+        const shift = row % 2 === 0 ? drift : -drift;
+        context.fillText(line, (shift % chunkWidth) - 2 * chunkWidth, y);
       }
-      return (await response.json()) as { flights: FlightRow[]; source?: string };
+      context.globalCompositeOperation = "destination-in";
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.drawImage(mask, 0, 0);
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.globalCompositeOperation = "source-over";
     };
 
-    // The globe should never be an empty ball waiting on a network round trip:
-    // draw the shipped snapshot first, then let live traffic replace it.
-    const seed = async () => {
-      if (flights.length) return;
-      try {
-        const data = await skyFrom("/assets/flights-snapshot.json", 8000);
-        if (!alive || flights.length) return;
-        adopt(data.flights);
-        setStatus((current) => (current === "live" ? current : "offline"));
-      } catch {
-        // Nothing to seed with; poll() is still on its way.
+    // Whole-word fill: a cell is either printed in full or left blank, so the
+    // letters are spelled by which words are there — never by cutting one open.
+    const paintWhole = (word: string, stencilLetters: number, ink: MosaicInk) => {
+      // Measure the word once at a reference size: its width scales linearly, so
+      // this is all the grid needs to work back from resolution to type size.
+      const reference = 100;
+      context.font = tileFont(reference);
+      const perPixel = (context.measureText(word).width || reference) / reference;
+      const grid = mosaicGrid(width, height, ink, stencilLetters, perPixel, ratio);
+
+      context.font = tileFont(grid.size);
+      context.textAlign = "center";
+      context.textBaseline = "alphabetic";
+      context.fillStyle = "#eef2e8";
+      const tile = context.measureText(word);
+      const lift = ((tile.actualBoundingBoxAscent ?? grid.size * 0.7) - (tile.actualBoundingBoxDescent ?? 0)) / 2;
+
+      const pixels = maskContext.getImageData(0, 0, mask.width, mask.height).data;
+      const covered = (x: number, y: number) => {
+        const px = Math.round(x * ratio);
+        const py = Math.round(y * ratio);
+        if (px < 0 || py < 0 || px >= mask.width || py >= mask.height) return false;
+        return pixels[(py * mask.width + px) * 4 + 3] > 40;
+      };
+
+      for (let row = 0; row < grid.rows; row += 1) {
+        for (let column = 0; column < grid.columns; column += 1) {
+          const x = grid.left + (column + 0.5) * grid.cell;
+          const y = grid.top + (row + 0.5) * grid.rowHeight;
+          // How much of the cell the stencil covers, not just its centre: one
+          // centre sample drops whole words off the diagonals and keeps them on
+          // the thinnest hairline, which is what shreds letters like M and X.
+          let hits = 0;
+          let probes = 0;
+          for (let sx = -3; sx <= 3; sx += 1) {
+            for (let sy = -2; sy <= 2; sy += 1) {
+              probes += 1;
+              if (covered(x + (sx * grid.cell) / 7.5, y + (sy * grid.rowHeight) / 5)) hits += 1;
+            }
+          }
+          if (hits / probes >= 0.4) context.fillText(word, x, y + lift);
+        }
       }
     };
-
-    const poll = async () => {
-      try {
-        const data = await skyFrom("/.netlify/functions/opensky", 9000);
-        if (!alive) return;
-        if (!data.flights.length) throw new Error(data.source ?? "empty");
-        adopt(data.flights);
-        setStatus(data.source === "live" ? "live" : "offline");
-      } catch {
-        // The snapshot we already have keeps flying on its own vectors.
-        if (alive) setStatus(flights.length ? "offline" : "loading");
-      }
-    };
-    void seed();
-    void poll();
-    const timer = window.setInterval(() => {
-      if (visible) void poll();
-    }, 60000);
-
-    const spread = () => {
-      const [a, b] = [...pointers.values()];
-      return Math.hypot(a.x - b.x, a.y - b.y);
-    };
-
-    const onPointerDown = (event: PointerEvent) => {
-      canvas.setPointerCapture(event.pointerId);
-      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-      pinch = 0;
-    };
-
-    const onPointerMove = (event: PointerEvent) => {
-      const previous = pointers.get(event.pointerId);
-      if (!previous) return;
-      const point = { x: event.clientX, y: event.clientY };
-      pointers.set(event.pointerId, point);
-
-      if (pointers.size > 1) {
-        const distance = spread();
-        if (pinch) zoom = clamp(zoom * (distance / pinch), 1, 8);
-        pinch = distance;
-        return;
-      }
-
-      yaw -= ((point.x - previous.x) * 0.3) / zoom;
-      pitch = clamp(pitch + ((point.y - previous.y) * 0.3) / zoom, -85, 85);
-    };
-
-    const onPointerUp = (event: PointerEvent) => {
-      pointers.delete(event.pointerId);
-      pinch = 0;
-    };
-
-    const onWheel = (event: WheelEvent) => {
-      event.preventDefault();
-      zoom = clamp(zoom * Math.exp(-event.deltaY * 0.0015), 1, 8);
-    };
-
-    canvas.addEventListener("pointerdown", onPointerDown);
-    canvas.addEventListener("pointermove", onPointerMove);
-    canvas.addEventListener("pointerup", onPointerUp);
-    canvas.addEventListener("pointercancel", onPointerUp);
-    canvas.addEventListener("wheel", onWheel, { passive: false });
-
-    let px = 0;
-    let py = 0;
-    let pz = 0;
 
     const draw = (now: number) => {
+      const elapsed = Math.min(0.05, (now - previous) / 1000);
+      previous = now;
       frame = requestAnimationFrame(draw);
-      const elapsed = Math.min((now - last) / 1000, 0.5);
-      last = now;
       if (!visible) return;
 
-      if (!pointers.size && !reduceMotion) yaw -= elapsed * 2.4;
-      if (yaw > 180) yaw -= 360;
-      else if (yaw < -180) yaw += 360;
+      const words = wordsRef.current;
+      const flowing = mode === "flow" && !reduceMotion;
+      const key = `${mode}|${words.stencil}|${words.tile}|${width}x${height}`;
+      if (flowing) drift += elapsed * 16;
+      else if (key === painted) return;
+      painted = key;
 
-      // Between polls each aircraft is carried forward along its own vector,
-      // so the letters drift for real instead of jumping once a minute.
-      for (const flight of flights) {
-        const step = (flight.speed * elapsed) / 6371000;
-        if (!step) continue;
-        const heading = (flight.track * Math.PI) / 180;
-        const latitude = (flight.lat * Math.PI) / 180;
-        flight.lat = clamp(flight.lat + (step * Math.cos(heading) * 180) / Math.PI, -89.9, 89.9);
-        flight.lon += (step * Math.sin(heading) * 180) / (Math.PI * Math.max(0.05, Math.cos(latitude)));
-        if (flight.lon > 180) flight.lon -= 360;
-        else if (flight.lon < -180) flight.lon += 360;
-      }
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.clearRect(0, 0, width, height);
 
-      const width = canvas.width;
-      const height = canvas.height;
-      const scale = width / Math.max(1, canvas.clientWidth);
-      const centreX = width / 2;
-      const centreY = height / 2;
-      const radius = Math.min(width, height) * 0.46 * zoom;
+      // The stencil, fitted to whichever of the two axes runs out first.
+      maskContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+      maskContext.clearRect(0, 0, width, height);
+      maskContext.textAlign = "center";
+      maskContext.textBaseline = "alphabetic";
+      maskContext.fillStyle = "#000";
+      const reference = 100;
+      maskContext.font = stencilFont(reference);
+      const measured = maskContext.measureText(words.stencil).width || reference;
+      const { size, squeeze } = mosaicStencil(width, height, measured / reference);
+      maskContext.font = stencilFont(size);
+      // Centre the ink, not the em box: capitals sit high in the line, and
+      // centring on the baseline would leave the word floating above the frame.
+      const metrics = maskContext.measureText(words.stencil);
+      const ascent = metrics.actualBoundingBoxAscent ?? size * 0.72;
+      const descent = metrics.actualBoundingBoxDescent ?? 0;
+      const drawn = (metrics.actualBoundingBoxLeft ?? 0) + (metrics.actualBoundingBoxRight ?? 0) || metrics.width;
+      const ink: MosaicInk = { width: drawn * squeeze, height: ascent + descent };
+      maskContext.save();
+      maskContext.translate(width / 2, height / 2 + (ascent - descent) / 2);
+      maskContext.scale(squeeze, 1);
+      maskContext.fillText(words.stencil, 0, 0);
+      maskContext.restore();
 
-      const yawRad = (yaw * Math.PI) / 180;
-      const pitchRad = (pitch * Math.PI) / 180;
-      const sinYaw = Math.sin(yawRad);
-      const cosYaw = Math.cos(yawRad);
-      const sinPitch = Math.sin(pitchRad);
-      const cosPitch = Math.cos(pitchRad);
-
-      const project = (sinLon: number, cosLon: number, sinLat: number, cosLat: number, lift = 1) => {
-        const sinDelta = sinLon * cosYaw - cosLon * sinYaw;
-        const cosDelta = cosLon * cosYaw + sinLon * sinYaw;
-        pz = sinPitch * sinLat + cosPitch * cosLat * cosDelta;
-        px = centreX + cosLat * sinDelta * radius * lift;
-        py = centreY - (cosPitch * sinLat - sinPitch * cosLat * cosDelta) * radius * lift;
-      };
-
-      const trace = (points: GlobePoint[]) => {
-        context.beginPath();
-        let drawing = false;
-        for (const [sinLon, cosLon, sinLat, cosLat] of points) {
-          project(sinLon, cosLon, sinLat, cosLat);
-          if (pz <= 0) {
-            drawing = false;
-            continue;
-          }
-          if (drawing) context.lineTo(px, py);
-          else {
-            context.moveTo(px, py);
-            drawing = true;
-          }
-        }
-        context.stroke();
-      };
-
-      context.fillStyle = "#000000";
-      context.fillRect(0, 0, width, height);
-
-      context.beginPath();
-      context.arc(centreX, centreY, radius, 0, Math.PI * 2);
-      context.fillStyle = "#05070a";
-      context.fill();
-      context.lineWidth = scale;
-      context.strokeStyle = "rgba(255, 255, 255, 0.2)";
-      context.stroke();
-
-      context.lineWidth = scale * 0.8;
-      context.strokeStyle = "rgba(255, 255, 255, 0.09)";
-      for (const line of globeGraticule) trace(line);
-
-      context.lineWidth = scale * 1.2;
-      context.strokeStyle = "rgba(168, 233, 53, 0.42)";
-      for (const ring of landRings) trace(ring);
-
-      // One font string for the whole frame: re-parsing it per letter is the
-      // only thing that makes a few thousand glyphs expensive.
-      const size = Math.min(width, height) * 0.018;
-      context.font = `500 ${size}px "Playfair Display", Georgia, serif`;
-      context.textAlign = "center";
-      context.textBaseline = "middle";
-      context.fillStyle = "#ffffff";
-      for (const flight of flights) {
-        const lon = (flight.lon * Math.PI) / 180;
-        const lat = (flight.lat * Math.PI) / 180;
-        project(Math.sin(lon), Math.cos(lon), Math.sin(lat), Math.cos(lat), 1 + flight.alt / 260000);
-        if (pz <= 0.03) continue;
-        if (px < -size || px > width + size || py < -size || py > height + size) continue;
-        context.globalAlpha = 0.16 + pz * 0.6;
-        context.fillText(flight.ch, px, py);
-      }
-      context.globalAlpha = 1;
+      if (mode === "whole") paintWhole(words.tile, words.stencil.length, ink);
+      else paintFlow(words.tile, size);
     };
-
     frame = requestAnimationFrame(draw);
 
     return () => {
-      alive = false;
       cancelAnimationFrame(frame);
-      window.clearInterval(timer);
       observer.disconnect();
       visibility.disconnect();
-      canvas.removeEventListener("pointerdown", onPointerDown);
-      canvas.removeEventListener("pointermove", onPointerMove);
-      canvas.removeEventListener("pointerup", onPointerUp);
-      canvas.removeEventListener("pointercancel", onPointerUp);
-      canvas.removeEventListener("wheel", onWheel);
     };
-  }, [reduceMotion]);
+  }, [mode, reduceMotion]);
+
+  const modes: Array<{ id: MosaicMode; label: string }> = [
+    { id: "flow", label: copy.mosaicModeFlow },
+    { id: "whole", label: copy.mosaicModeWhole },
+  ];
 
   return (
     <figure className="live-poem">
-      <canvas ref={canvasRef} className="live-canvas is-globe" role="img" aria-label={copy.globeAria} />
-      <figcaption className="live-readout">
-        <span>{copy.globeHint}</span>
-        <strong>
-          {status === "loading" ? copy.globeLoading : status === "offline" ? copy.globeOffline : `${count} ${copy.globeUnit}`}
-        </strong>
+      <canvas ref={canvasRef} className="live-canvas is-mosaic" role="img" aria-label={copy.mosaicAria} />
+      <figcaption className="live-controls">
+        <div className="mosaic-fields">
+          <div className="live-field">
+            <label htmlFor="mosaic-stencil">{copy.mosaicStencil}</label>
+            <input
+              id="mosaic-stencil"
+              type="text"
+              value={stencil}
+              maxLength={mosaicMaxChars}
+              placeholder={copy.mosaicStencilPlaceholder}
+              autoComplete="off"
+              spellCheck={false}
+              onChange={(event) => setStencil(event.target.value)}
+            />
+          </div>
+          <div className="live-field">
+            <label htmlFor="mosaic-tile">{copy.mosaicTile}</label>
+            <input
+              id="mosaic-tile"
+              type="text"
+              value={tile}
+              maxLength={mosaicMaxChars}
+              placeholder={copy.mosaicTilePlaceholder}
+              autoComplete="off"
+              spellCheck={false}
+              onChange={(event) => setTile(event.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="mosaic-modes" role="group" aria-label={copy.mosaicMode}>
+          {modes.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              className="live-reset"
+              aria-pressed={mode === option.id}
+              onClick={() => setMode(option.id)}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+
+        <small className="gravity-hint">{copy.mosaicHint}</small>
       </figcaption>
     </figure>
   );
