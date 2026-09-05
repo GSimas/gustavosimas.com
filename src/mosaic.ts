@@ -1,138 +1,108 @@
-// Grid geometry for the whole-word mode of "Uma Palavra Dentro da Outra".
-//
-// In that mode the big word is spelled by which cells of a grid carry the small
-// word and which stay empty, so how well it reads comes down to one number: how
-// many cells cross its letters. A long filler word makes wide cells and, left to
-// itself, would draw the stencil with four columns of mush — which is why the
-// type size here is derived from the resolution the stencil needs, and never the
-// other way round.
-
-export interface MosaicInk {
-  /** Width of the stencil's ink, not of the canvas. */
-  width: number;
-  /** Height of the stencil's ink: cap height, near enough, for capitals. */
-  height: number;
-}
-
-export interface MosaicGrid {
-  /** Type size for the filler word. */
-  size: number;
-  /** Column pitch. */
-  cell: number;
-  /** Row pitch. */
-  rowHeight: number;
-  columns: number;
-  rows: number;
-  /** Left edge of the first column; negative, so the grid overhangs the canvas. */
-  left: number;
-  /** Top edge of the first row; negative, for the same reason. */
-  top: number;
-  /** Cells that fall across the stencil — the resolution it is drawn at. */
-  sampledColumns: number;
-  sampledRows: number;
-  /** True when the type size floor stopped the grid reaching its target. */
-  starved: boolean;
-  /** The floor that applied, so a caller can report why a grid came out coarse. */
-  minSize: number;
-}
-
+/** Geometry shared by the renderer and its regression checks. Units are logical
+ * pixels, independent of both the viewport and the device pixel ratio. */
+export const mosaicMaxChars = 12;
 export const mosaicTargets = {
-  /** Columns wanted per letter of the big word. Below ~3 its letters stop reading. */
-  cellsPerLetter: 3.5,
-  /** Never ask for fewer than this many columns, however short the big word. */
-  minColumns: 12,
-  /** Rows wanted across the height of the big word. */
-  rows: 12,
-  /**
-   * Device pixels a filler word needs per em to still be read. The floor on the
-   * type size falls out of this and the canvas' pixel ratio, so a dense screen
-   * is allowed the finer grid it can actually show.
-   */
-  legiblePixels: 9,
-  /** Floor on that floor, in CSS pixels, whatever the screen claims. */
-  minSize: 4.5,
-  /** Ceiling, so a two-letter filler word doesn't turn into a headline. */
-  maxSize: 20,
-  /** Row pitch as a multiple of the type size. */
-  leading: 1.12,
-  /** Column pitch as a multiple of the filler word's width. */
-  tracking: 1.06,
-  /**
-   * How far the big word may be condensed horizontally. A long word fitted to
-   * the width alone comes out short, leaving most of the frame empty and the
-   * grid with too few rows to draw it; condensing lets it claim the height back.
-   */
-  squeeze: 0.58,
-  /** And how far a short word may be stretched to claim the width back. */
-  stretch: 1.3,
+  width: 1200,
+  height: 500,
+  cellsPerLetter: 12,
+  rows: 22,
+  readingSize: 14,
+  minimumFidelity: 0.82,
+  leading: 1.45,
+  tracking: 1.18,
 } as const;
 
-const clamp = (value: number, low: number, high: number) => Math.max(low, Math.min(high, value));
-
-/**
- * Type size and horizontal scale for the big word. It takes all the height the
- * frame allows and is then condensed or stretched, within limits, to use the
- * width as well — a word that fills the frame is a word the grid can resolve.
- */
-export function mosaicStencil(canvasWidth: number, canvasHeight: number, widthPerPixel: number) {
-  const fromWidth = (canvasWidth * 0.88) / Math.max(widthPerPixel, 0.01);
-  const fromHeight = canvasHeight * 0.82;
-  const size = Math.min(fromHeight, fromWidth / mosaicTargets.squeeze);
-  return { size, squeeze: clamp(fromWidth / size, mosaicTargets.squeeze, mosaicTargets.stretch) };
+export function cleanMosaicWord(value: string, fallback: string) {
+  // Normalize before counting: a pasted decomposed accent is one character.
+  const visible = value.normalize('NFC')
+    .replace(/[\p{Cc}\p{Cf}\p{Default_Ignorable_Code_Point}]/gu, '')
+    .replace(/^\p{M}+/u, '').trim();
+  return Array.from((visible || fallback).toUpperCase()).slice(0, mosaicMaxChars).join('');
 }
 
-/** Smallest type size worth drawing at this pixel ratio. */
-export function mosaicMinSize(pixelRatio: number) {
-  return Math.max(mosaicTargets.minSize, mosaicTargets.legiblePixels / Math.max(pixelRatio, 1));
+export function mosaicGrid(inkWidth: number, inkHeight: number, letters: number, advance: number) {
+  const size = Math.min(
+    Math.max(1, inkWidth) / (Math.max(1, letters) * mosaicTargets.cellsPerLetter * Math.max(0.01, advance) * mosaicTargets.tracking),
+    Math.max(1, inkHeight) / (mosaicTargets.rows * mosaicTargets.leading),
+    20,
+  );
+  return { size, cell: size * Math.max(0.01, advance) * mosaicTargets.tracking, rowHeight: size * mosaicTargets.leading };
 }
 
-/**
- * @param widthPerPixel width of the filler word at a type size of 1px.
- * @param stencilLetters length of the big word, which sets the columns needed.
- */
-export function mosaicGrid(
-  canvasWidth: number,
-  canvasHeight: number,
-  ink: MosaicInk,
-  stencilLetters: number,
-  widthPerPixel: number,
-  pixelRatio = 1,
-): MosaicGrid {
-  const targets = mosaicTargets;
-  const minSize = mosaicMinSize(pixelRatio);
-  const wantedColumns = Math.max(targets.minColumns, stencilLetters * targets.cellsPerLetter);
-
-  const perColumn = Math.max(widthPerPixel, 0.01) * targets.tracking;
-  const fromColumns = ink.width / wantedColumns / perColumn;
-  const fromRows = ink.height / targets.rows / targets.leading;
-  const wanted = Math.min(fromColumns, fromRows);
-  const size = clamp(wanted, minSize, targets.maxSize);
-
-  const cell = Math.max(1, size * perColumn);
-  const rowHeight = Math.max(1, size * targets.leading);
-
-  // Both axes carry a cell centred on the canvas' own centre, so the grid is
-  // symmetric about the stencil and a letter's two halves are sampled alike.
-  const span = (extent: number, pitch: number) => {
-    const middle = extent / 2;
-    const before = Math.ceil((middle - pitch / 2) / pitch);
-    const start = middle - before * pitch - pitch / 2;
-    return { start, count: Math.max(1, Math.ceil((extent - start) / pitch)) };
-  };
-  const horizontal = span(canvasWidth, cell);
-  const vertical = span(canvasHeight, rowHeight);
-
+export function mosaicView(width: number, height: number, tileSize: number, reading: boolean) {
+  const fit = Math.min(width / mosaicTargets.width, height / mosaicTargets.height);
+  const scale = reading ? Math.max(fit, mosaicTargets.readingSize / tileSize) : fit;
   return {
-    size,
-    cell,
-    rowHeight,
-    columns: horizontal.count,
-    rows: vertical.count,
-    left: horizontal.start,
-    top: vertical.start,
-    sampledColumns: Math.floor(ink.width / cell),
-    sampledRows: Math.floor(ink.height / rowHeight),
-    minSize,
-    starved: wanted < minSize,
+    scale,
+    width: Math.max(width, mosaicTargets.width * scale),
+    height: Math.max(height, mosaicTargets.height * scale),
   };
+}
+
+/** Summed alpha area: all pixels in each cell count, including counters and
+ * diagonals. Unlike a handful of probes this cannot miss a thin white gap. */
+export function mosaicCoverage(data: Uint8ClampedArray, width: number, height: number) {
+  const stride = width + 1;
+  const sums = new Float64Array(stride * (height + 1));
+  for (let y = 0; y < height; y++) {
+    let row = 0;
+    for (let x = 0; x < width; x++) {
+      row += data[(y * width + x) * 4 + 3] / 255;
+      sums[(y + 1) * stride + x + 1] = sums[y * stride + x + 1] + row;
+    }
+  }
+  // Bilinear interpolation of the integral gives exact fractional-pixel area.
+  // Rounding cell edges can overcount ink at high zoom and erase small counters.
+  const integral = (x: number, y: number) => {
+    const x0 = Math.floor(x), y0 = Math.floor(y);
+    const x1 = Math.min(width, x0 + 1), y1 = Math.min(height, y0 + 1);
+    const dx = x - x0, dy = y - y0;
+    const upper = sums[y0 * stride + x0] * (1 - dx) + sums[y0 * stride + x1] * dx;
+    const lower = sums[y1 * stride + x0] * (1 - dx) + sums[y1 * stride + x1] * dx;
+    return upper * (1 - dy) + lower * dy;
+  };
+  return (left: number, top: number, right: number, bottom: number) => {
+    const x0 = Math.max(0, Math.min(width, left));
+    const x1 = Math.max(x0, Math.min(width, right));
+    const y0 = Math.max(0, Math.min(height, top));
+    const y1 = Math.max(y0, Math.min(height, bottom));
+    return integral(x1, y1) - integral(x0, y1) - integral(x1, y0) + integral(x0, y0);
+  };
+}
+
+export interface MosaicCell { x: number; y: number; glyph: number }
+export interface MosaicRegion { left: number; right: number; top: number; bottom: number }
+
+/** Each letter has its own phase. Select the phase with the greatest overlap
+ * (intersection / union), penalizing both missing strokes and filled counters.
+ * Regions are disjoint: a whole word can never bridge two stencil letters. */
+export function sampleMosaicGlyph(
+  region: MosaicRegion,
+  grid: { cell: number; rowHeight: number },
+  coverage: (left: number, top: number, right: number, bottom: number) => number,
+  glyph: number,
+) {
+  const { cell, rowHeight } = grid;
+  const totalInk = coverage(region.left, region.top, region.right, region.bottom);
+  let best = { cells: [] as MosaicCell[], fidelity: 0 };
+  for (const phaseX of [0, 0.25, 0.5, 0.75]) {
+    for (const phaseY of [0, 0.5]) {
+      const cells: MosaicCell[] = [];
+      let intersection = 0;
+      let outside = 0;
+      for (let y = region.top + phaseY * rowHeight; y + rowHeight <= region.bottom; y += rowHeight) {
+        for (let x = region.left + phaseX * cell; x + cell <= region.right; x += cell) {
+          const ink = coverage(x, y, x + cell, y + rowHeight);
+          const area = cell * rowHeight;
+          if (ink / area < 0.5) continue;
+          cells.push({ x: x + cell / 2, y: y + rowHeight / 2, glyph });
+          intersection += ink;
+          outside += Math.max(0, area - ink);
+        }
+      }
+      const fidelity = intersection / Math.max(1, totalInk + outside);
+      if (fidelity > best.fidelity) best = { cells, fidelity };
+    }
+  }
+  return best;
 }

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { mosaicGrid, mosaicStencil, type MosaicInk } from "./mosaic";
+import { MosaicPoem } from "./MosaicPoem";
 import {
   fadeLetters,
   gravityDefaults,
@@ -635,10 +635,13 @@ const creationsCopy = {
       mosaicStencilPlaceholder: "LIXO",
       mosaicTile: "Palavra que preenche",
       mosaicTilePlaceholder: "LUXO",
+      mosaicOverview: "Visão geral",
+      mosaicReading: "Ler preenchimento",
+      mosaicReadingHint: "Role a área ampliada para explorar; com o teclado, use as setas após focar o poema. A animação fica pausada nesta leitura.",
       mosaicMode: "Modo de composição",
       mosaicModeFlow: "Palavra contínua",
       mosaicModeWhole: "Palavras inteiras",
-      mosaicHint: "Até 12 caracteres em cada campo. Em «palavra contínua» o texto corre e é recortado pelas letras; em «palavras inteiras» nenhuma palavra é cortada. Deixe em branco para ver o par original.",
+      mosaicHint: "Até 12 caracteres em cada campo. Em «palavra contínua» o texto corre e é recortado pelas letras; em «palavras inteiras» nenhuma palavra é cortada. Use «Ler preenchimento» para ampliar as palavras menores. Deixe em branco para ver o par original.",
       mosaicAria: "Canvas com uma palavra grande desenhada pela repetição de outra palavra menor",
       gravityTitle: "A Gravidade da Palavra",
       gravityNote: "Toda palavra escrita aqui se desfaz ao cair: as letras se soltam umas das outras e passam a obedecer só à gravidade, ao atrito e ao acaso das colisões. Nenhuma volta a se juntar sozinha; o sentido se acumula no chão como entulho tipográfico. Escolha a fonte e a cor, edite ou apague o que já caiu, e arraste qualquer letra para jogá-la de novo ao ar.",
@@ -740,10 +743,13 @@ const creationsCopy = {
       mosaicStencilPlaceholder: "LIXO",
       mosaicTile: "Word that fills it",
       mosaicTilePlaceholder: "LUXO",
+      mosaicOverview: "Overview",
+      mosaicReading: "Read the filling",
+      mosaicReadingHint: "Scroll the enlarged area to explore; with a keyboard, focus the poem and use the arrow keys. Animation is paused in this view.",
       mosaicMode: "Composition mode",
       mosaicModeFlow: "Running text",
       mosaicModeWhole: "Whole words",
-      mosaicHint: "Up to 12 characters in each field. In \u201crunning text\u201d the words flow and get cut by the letters; in \u201cwhole words\u201d nothing is ever cut open. Leave them empty for the original pair.",
+      mosaicHint: "Up to 12 characters in each field. In \u201crunning text\u201d the words flow and get cut by the letters; in \u201cwhole words\u201d nothing is ever cut open. Use “Read the filling” to enlarge the smaller words. Leave them empty for the original pair.",
       mosaicAria: "Canvas with a large word drawn by the repetition of a smaller word",
       gravityTitle: "The Gravity of the Word",
       gravityNote: "Every word written here comes apart as it falls: the letters break loose from one another and start obeying nothing but gravity, friction and the chance of collisions. None of them reassembles on its own; meaning piles up on the floor as typographic rubble. Pick a typeface and a colour, edit or erase what has already fallen, and drag any letter to throw it back into the air.",
@@ -3524,265 +3530,6 @@ function ClockPoem({ label, aria }: { label: string; aria: string }) {
       <figcaption className="live-readout">
         <span>{label}</span>
         <strong>{readout}</strong>
-      </figcaption>
-    </figure>
-  );
-}
-
-// PALAVRA DENTRO DA PALAVRA ---------------------------------------------
-// After Augusto de Campos' LUXO/LIXO: the big word is never drawn, only used
-// as a stencil. Two ways of filling it — "flow" tiles the small word over the
-// whole canvas and clips it to the stencil, "whole" lays the small word on a
-// grid and keeps only the cells the stencil covers, so every word stays intact.
-
-const mosaicMaxChars = 12;
-type MosaicMode = "flow" | "whole";
-
-function MosaicPoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive"] }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const maskRef = useRef<HTMLCanvasElement | null>(null);
-  const [stencil, setStencil] = useState("");
-  const [tile, setTile] = useState("");
-  const [mode, setMode] = useState<MosaicMode>("flow");
-  const reduceMotion = useReducedMotion();
-  const wordsRef = useRef({ stencil: "", tile: "" });
-
-  const clean = (value: string, fallback: string) => (value.trim() || fallback).toUpperCase().slice(0, mosaicMaxChars);
-
-  useEffect(() => {
-    wordsRef.current = {
-      stencil: clean(stencil, copy.mosaicStencilPlaceholder),
-      tile: clean(tile, copy.mosaicTilePlaceholder),
-    };
-  }, [stencil, tile, copy]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
-    if (!canvas || !context) return;
-
-    const mask = maskRef.current ?? (maskRef.current = document.createElement("canvas"));
-    const maskContext = mask.getContext("2d", { willReadFrequently: true });
-    if (!maskContext) return;
-
-    let width = 0;
-    let height = 0;
-    let ratio = 1;
-    let frame = 0;
-    let visible = true;
-    let drift = 0;
-    let painted = "";
-    let previous = performance.now();
-
-    const resize = () => {
-      ratio = Math.min(window.devicePixelRatio || 1, 2);
-      const rect = canvas.getBoundingClientRect();
-      width = Math.max(1, Math.round(rect.width));
-      height = Math.max(1, Math.round(rect.height));
-      canvas.width = width * ratio;
-      canvas.height = height * ratio;
-      mask.width = canvas.width;
-      mask.height = canvas.height;
-      // Resizing wipes the canvas, so the still version has to be laid out again.
-      painted = "";
-    };
-    resize();
-
-    const observer = new ResizeObserver(resize);
-    observer.observe(canvas);
-
-    const visibility = new IntersectionObserver(
-      ([entry]) => {
-        visible = entry.isIntersecting;
-        previous = performance.now();
-      },
-      { rootMargin: "150px 0px" },
-    );
-    visibility.observe(canvas);
-
-    const stencilFont = (size: number) => `700 ${size}px Inter, ui-sans-serif, sans-serif`;
-    const tileFont = (size: number) => `500 ${size}px "DM Mono", ui-monospace, monospace`;
-    // The frame loop re-measures every pass, so a face that lands late simply
-    // corrects itself on the next one — no need to wait on the download here.
-    void document.fonts.load(stencilFont(120)).catch(() => undefined);
-    void document.fonts.load(tileFont(16)).catch(() => undefined);
-
-    // Clipped fill: the small word runs edge to edge and the stencil cuts it.
-    const paintFlow = (word: string, size: number) => {
-      // Small enough that a dozen or so rows cross the stencil: any coarser and
-      // the big word stops being legible from across the room.
-      const unit = Math.max(6, Math.min(14, size * 0.04));
-      context.font = tileFont(unit);
-      context.textAlign = "left";
-      context.textBaseline = "middle";
-      context.fillStyle = "#eef2e8";
-      const chunk = `${word} `;
-      const chunkWidth = context.measureText(chunk).width || unit;
-      const line = chunk.repeat(Math.ceil(width / chunkWidth) + 3);
-      const step = unit * 1.15;
-      for (let row = 0, y = step / 2; y < height + step; row += 1, y += step) {
-        // Alternating directions keep neighbouring rows from locking into a
-        // single sliding block, which reads as a texture instead of a word.
-        const shift = row % 2 === 0 ? drift : -drift;
-        context.fillText(line, (shift % chunkWidth) - 2 * chunkWidth, y);
-      }
-      context.globalCompositeOperation = "destination-in";
-      context.setTransform(1, 0, 0, 1, 0, 0);
-      context.drawImage(mask, 0, 0);
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      context.globalCompositeOperation = "source-over";
-    };
-
-    // Whole-word fill: a cell is either printed in full or left blank, so the
-    // letters are spelled by which words are there — never by cutting one open.
-    const paintWhole = (word: string, stencilLetters: number, ink: MosaicInk) => {
-      // Measure the word once at a reference size: its width scales linearly, so
-      // this is all the grid needs to work back from resolution to type size.
-      const reference = 100;
-      context.font = tileFont(reference);
-      const perPixel = (context.measureText(word).width || reference) / reference;
-      const grid = mosaicGrid(width, height, ink, stencilLetters, perPixel, ratio);
-
-      context.font = tileFont(grid.size);
-      context.textAlign = "center";
-      context.textBaseline = "alphabetic";
-      context.fillStyle = "#eef2e8";
-      const tile = context.measureText(word);
-      const lift = ((tile.actualBoundingBoxAscent ?? grid.size * 0.7) - (tile.actualBoundingBoxDescent ?? 0)) / 2;
-
-      const pixels = maskContext.getImageData(0, 0, mask.width, mask.height).data;
-      const covered = (x: number, y: number) => {
-        const px = Math.round(x * ratio);
-        const py = Math.round(y * ratio);
-        if (px < 0 || py < 0 || px >= mask.width || py >= mask.height) return false;
-        return pixels[(py * mask.width + px) * 4 + 3] > 40;
-      };
-
-      for (let row = 0; row < grid.rows; row += 1) {
-        for (let column = 0; column < grid.columns; column += 1) {
-          const x = grid.left + (column + 0.5) * grid.cell;
-          const y = grid.top + (row + 0.5) * grid.rowHeight;
-          // How much of the cell the stencil covers, not just its centre: one
-          // centre sample drops whole words off the diagonals and keeps them on
-          // the thinnest hairline, which is what shreds letters like M and X.
-          let hits = 0;
-          let probes = 0;
-          for (let sx = -3; sx <= 3; sx += 1) {
-            for (let sy = -2; sy <= 2; sy += 1) {
-              probes += 1;
-              if (covered(x + (sx * grid.cell) / 7.5, y + (sy * grid.rowHeight) / 5)) hits += 1;
-            }
-          }
-          if (hits / probes >= 0.4) context.fillText(word, x, y + lift);
-        }
-      }
-    };
-
-    const draw = (now: number) => {
-      const elapsed = Math.min(0.05, (now - previous) / 1000);
-      previous = now;
-      frame = requestAnimationFrame(draw);
-      if (!visible) return;
-
-      const words = wordsRef.current;
-      const flowing = mode === "flow" && !reduceMotion;
-      const key = `${mode}|${words.stencil}|${words.tile}|${width}x${height}`;
-      if (flowing) drift += elapsed * 16;
-      else if (key === painted) return;
-      painted = key;
-
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      context.clearRect(0, 0, width, height);
-
-      // The stencil, fitted to whichever of the two axes runs out first.
-      maskContext.setTransform(ratio, 0, 0, ratio, 0, 0);
-      maskContext.clearRect(0, 0, width, height);
-      maskContext.textAlign = "center";
-      maskContext.textBaseline = "alphabetic";
-      maskContext.fillStyle = "#000";
-      const reference = 100;
-      maskContext.font = stencilFont(reference);
-      const measured = maskContext.measureText(words.stencil).width || reference;
-      const { size, squeeze } = mosaicStencil(width, height, measured / reference);
-      maskContext.font = stencilFont(size);
-      // Centre the ink, not the em box: capitals sit high in the line, and
-      // centring on the baseline would leave the word floating above the frame.
-      const metrics = maskContext.measureText(words.stencil);
-      const ascent = metrics.actualBoundingBoxAscent ?? size * 0.72;
-      const descent = metrics.actualBoundingBoxDescent ?? 0;
-      const drawn = (metrics.actualBoundingBoxLeft ?? 0) + (metrics.actualBoundingBoxRight ?? 0) || metrics.width;
-      const ink: MosaicInk = { width: drawn * squeeze, height: ascent + descent };
-      maskContext.save();
-      maskContext.translate(width / 2, height / 2 + (ascent - descent) / 2);
-      maskContext.scale(squeeze, 1);
-      maskContext.fillText(words.stencil, 0, 0);
-      maskContext.restore();
-
-      if (mode === "whole") paintWhole(words.tile, words.stencil.length, ink);
-      else paintFlow(words.tile, size);
-    };
-    frame = requestAnimationFrame(draw);
-
-    return () => {
-      cancelAnimationFrame(frame);
-      observer.disconnect();
-      visibility.disconnect();
-    };
-  }, [mode, reduceMotion]);
-
-  const modes: Array<{ id: MosaicMode; label: string }> = [
-    { id: "flow", label: copy.mosaicModeFlow },
-    { id: "whole", label: copy.mosaicModeWhole },
-  ];
-
-  return (
-    <figure className="live-poem">
-      <canvas ref={canvasRef} className="live-canvas is-mosaic" role="img" aria-label={copy.mosaicAria} />
-      <figcaption className="live-controls">
-        <div className="mosaic-fields">
-          <div className="live-field">
-            <label htmlFor="mosaic-stencil">{copy.mosaicStencil}</label>
-            <input
-              id="mosaic-stencil"
-              type="text"
-              value={stencil}
-              maxLength={mosaicMaxChars}
-              placeholder={copy.mosaicStencilPlaceholder}
-              autoComplete="off"
-              spellCheck={false}
-              onChange={(event) => setStencil(event.target.value)}
-            />
-          </div>
-          <div className="live-field">
-            <label htmlFor="mosaic-tile">{copy.mosaicTile}</label>
-            <input
-              id="mosaic-tile"
-              type="text"
-              value={tile}
-              maxLength={mosaicMaxChars}
-              placeholder={copy.mosaicTilePlaceholder}
-              autoComplete="off"
-              spellCheck={false}
-              onChange={(event) => setTile(event.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="mosaic-modes" role="group" aria-label={copy.mosaicMode}>
-          {modes.map((option) => (
-            <button
-              key={option.id}
-              type="button"
-              className="live-reset"
-              aria-pressed={mode === option.id}
-              onClick={() => setMode(option.id)}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-
-        <small className="gravity-hint">{copy.mosaicHint}</small>
       </figcaption>
     </figure>
   );

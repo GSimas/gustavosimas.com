@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&display=swap');
 /* Display faces for the falling-letters poem, one weight each. */
 @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500&family=Cormorant+Garamond:wght@300&family=Instrument+Serif&family=Space+Grotesk:wght@400&family=Syne:wght@700&display=swap');
 
@@ -3220,6 +3220,7 @@ img {
 }
 
 .cr-live-piece.is-wide {
+  min-width: 0;
   grid-column: 1 / -1;
 }
 
@@ -3244,10 +3245,59 @@ img {
 }
 
 
-.live-canvas.is-mosaic {
+.mosaic-viewport {
+  position: relative;
+  width: 100%;
+  contain: inline-size;
+  overflow-anchor: none;
   aspect-ratio: 12 / 5;
+  min-height: 220px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
   background: radial-gradient(120% 100% at 50% 0%, #14100d 0%, #07070a 70%);
 }
+
+.mosaic-viewport.is-reading {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* Global reduced-motion styles set a tiny duration even on plain elements.
+   These dimensions must commit atomically before the initial reading scroll. */
+.mosaic-space { position: relative; transition-property: none; }
+
+.live-canvas.is-mosaic {
+  transition-property: none;
+  position: sticky;
+  left: 0;
+  top: 0;
+  max-width: none;
+  border: 0;
+}
+
+.mosaic-reading-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.mosaic-pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.mosaic-pair strong { color: var(--text); }
+.mosaic-reading-hint { color: var(--muted); }
+.mosaic-poem .mosaic-modes button { min-height: 44px; margin-left: 0; color: var(--muted); }
+.mosaic-poem .mosaic-modes button[aria-pressed="true"] { color: var(--bg); }
+.mosaic-viewport:focus-visible { outline: 2px solid var(--green); outline-offset: -3px; }
+
 
 .mosaic-modes {
   display: flex;

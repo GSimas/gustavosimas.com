@@ -44,3 +44,13 @@ Importe o repositório na Netlify e publique. A regra de redirecionamento para S
 - `src/styles.css`: identidade visual, responsividade, acessibilidade e impressão;
 - `public/assets`: fotografias e imagens do portfólio;
 - `public`: favicon, manifesto, robots, sitemap e redirecionamentos.
+
+## Poema interativo: legibilidade
+
+A composição, as duas escalas de leitura e os testes de “Uma Palavra Dentro da Outra”
+estão documentados em [MOSAIC.md](MOSAIC.md).
+
+```bash
+npm run check:mosaic
+npm run check:mosaic:browser
+```

@@ -1,127 +1,65 @@
-// Self-check for the whole-word grid of "Uma Palavra Dentro da Outra": for every
-// pairing of big word and filler word, assert the grid still samples the stencil
-// finely enough for its letters to read, covers the canvas, and stays symmetric.
-// Run with: npm run check:mosaic
-import { mosaicGrid, mosaicMinSize, mosaicStencil, mosaicTargets, type MosaicInk } from "../src/mosaic.ts";
+import assert from 'node:assert/strict';
+import { cleanMosaicWord, mosaicCoverage, mosaicGrid, mosaicTargets, mosaicView, sampleMosaicGlyph } from '../src/mosaic.ts';
 
-// DM Mono is monospaced: every glyph advances the same fraction of the type size.
-const monoAdvance = 0.6;
-const widthOf = (word: string) => word.length * monoAdvance;
-
-// Inter 700 capitals, near enough for a layout check.
-const stencilAdvance = 0.62;
-const capHeight = 0.72;
-
-// What the canvas does before the grid is asked for anything.
-function stencilInk(word: string, canvasWidth: number, canvasHeight: number): MosaicInk {
-  const perPixel = word.length * stencilAdvance;
-  const { size, squeeze } = mosaicStencil(canvasWidth, canvasHeight, perPixel);
-  return { width: size * perPixel * squeeze, height: size * capHeight };
-}
-
-// Width, height and pixel ratio of the canvas as the page actually lays it out.
-const canvases: Array<[string, number, number, number]> = [
-  ["desktop@1x", 958, 399, 1],
-  ["desktop@2x", 958, 399, 2],
-  ["laptop", 720, 300, 2],
-  ["tablet", 560, 233, 2],
-  ["phone", 328, 137, 2],
-];
-
-const stencils = ["LIXO", "AMOR", "EU", "A", "ESCAPAMENTO", "PROMPTOGRAFIA".slice(0, 12)];
-const tiles = ["LUXO", "ALMA", "ESCAPAMENTO", "A", "NÓS", "CONHECIMENTO"];
-
-let checked = 0;
-let starved = 0;
-let worstColumns = Infinity;
-let worstRows = Infinity;
-
-for (const [label, canvasWidth, canvasHeight, pixelRatio] of canvases) {
-  for (const stencil of stencils) {
-    const ink = stencilInk(stencil, canvasWidth, canvasHeight);
-    for (const tile of tiles) {
-      const grid = mosaicGrid(canvasWidth, canvasHeight, ink, stencil.length, widthOf(tile), pixelRatio);
-      const where = `${label} ${stencil}/${tile}`;
-      checked += 1;
-
-      // The filler word has to stay a word.
-      assert(grid.size >= mosaicMinSize(pixelRatio), `${where}: type size ${grid.size.toFixed(2)} below the floor`);
-      assert(grid.size <= mosaicTargets.maxSize, `${where}: type size ${grid.size.toFixed(2)} above the ceiling`);
-
-      // The grid has to cover the canvas, or the drawing gets a bald edge.
-      assert(grid.left <= 0 && grid.top <= 0, `${where}: grid starts inside the canvas`);
-      assert(grid.left + grid.columns * grid.cell >= canvasWidth - 1e-9, `${where}: grid stops short on the right`);
-      assert(grid.top + grid.rows * grid.rowHeight >= canvasHeight - 1e-9, `${where}: grid stops short at the bottom`);
-
-      // A cell centred on each axis, so both halves of a letter are sampled alike.
-      const columnOffset = (canvasWidth / 2 - (grid.left + grid.cell / 2)) % grid.cell;
-      const rowOffset = (canvasHeight / 2 - (grid.top + grid.rowHeight / 2)) % grid.rowHeight;
-      assert(near(columnOffset, 0, grid.cell), `${where}: no column centred on the axis`);
-      assert(near(rowOffset, 0, grid.rowHeight), `${where}: no row centred on the axis`);
-
-      // Whole words only: a word must fit inside its own cell.
-      assert(grid.cell >= grid.size * widthOf(tile), `${where}: cell narrower than the word it holds`);
-
-      if (grid.starved) {
-        // Some pairings simply do not fit: a twelve-letter word on a phone is
-        // drawn small, and a long filler word needs wide cells. What the grid
-        // owes then is the best it is allowed to do — type at the floor — not a
-        // resolution the frame cannot hold.
-        starved += 1;
-        assert(grid.size === grid.minSize, `${where}: starved without reaching the floor`);
-        continue;
+// The composition must NEVER sacrifice its resolution on a smaller screen.
+// The reading view must NEVER sacrifice physical text size to make it fit.
+const words = ['A', 'I', 'EU', 'LIXO', 'AMOR', 'MEMÓRIA', 'AÇÃO', 'ESCAPAMENTO', 'CONHECIMENTO', 'PROMPTOGRAFI'];
+const screens = [[280, 220], [328, 220], [560, 234], [720, 300], [958, 399], [1440, 600]];
+let cases = 0;
+for (const stencil of words) {
+  for (const tile of words) {
+    const grid = mosaicGrid(1056, 230, stencil.length, tile.length * 0.6);
+    assert(grid.cell * stencil.length * mosaicTargets.cellsPerLetter <= 1056 + 1e-8);
+    assert(grid.rowHeight * mosaicTargets.rows <= 230 + 1e-8);
+    assert(grid.cell > grid.size * tile.length * 0.6, 'Word needs breathing room');
+    for (const [width, height] of screens) {
+      for (const ratio of [1, 1.25, 2, 3]) {
+        const overview = mosaicView(width, height, grid.size, false);
+        assert(1200 * overview.scale <= width + 1e-8);
+        assert(500 * overview.scale <= height + 1e-8);
+        const reading = mosaicView(width, height, grid.size, true);
+        assert(grid.size * reading.scale >= 14 - 1e-8, `Unreadable ${stencil}/${tile}`);
+        assert(reading.width >= width && reading.height >= height);
+        assert(grid.size * reading.scale * ratio >= 14 - 1e-8);
+        cases++;
       }
-
-      // The resolution the whole mode lives or dies by.
-      const wantedColumns = Math.max(mosaicTargets.minColumns, stencil.length * mosaicTargets.cellsPerLetter);
-      assert(
-        grid.sampledColumns >= Math.floor(wantedColumns) - 1,
-        `${where}: only ${grid.sampledColumns} columns across the stencil, wanted ${wantedColumns.toFixed(1)}`,
-      );
-      assert(
-        grid.sampledRows >= mosaicTargets.rows - 1,
-        `${where}: only ${grid.sampledRows} rows across the stencil, wanted ${mosaicTargets.rows}`,
-      );
-      worstColumns = Math.min(worstColumns, grid.sampledColumns / stencil.length);
-      worstRows = Math.min(worstRows, grid.sampledRows);
     }
   }
 }
+assert.equal(cleanMosaicWord('', 'LIXO'), 'LIXO');
+assert.equal(cleanMosaicWord('   ', 'LUXO'), 'LUXO');
+assert.equal(cleanMosaicWord('ac\u0327a\u0303o', 'LIXO'), 'AÇÃO');
+assert.equal(cleanMosaicWord('  memória  ', 'LIXO'), 'MEMÓRIA');
+assert.equal(cleanMosaicWord('\uFE0F\u0301', 'LIXO'), 'LIXO');
+assert(mosaicGrid(0, 0, 1, 0).rowHeight > 0, 'Invisible glyph cannot cause an infinite loop');
+assert.equal(cleanMosaicWord('\u200b\u0000', 'LIXO'), 'LIXO');
+assert.equal(Array.from(cleanMosaicWord('ß'.repeat(12), 'LIXO')).length, 12);
+assert.equal(cleanMosaicWord('abcdefghijklmnop', 'LIXO'), 'ABCDEFGHIJKL');
 
-// Pairings that have to read, whatever else happens — the awkward ones first.
-const mustRead: Array<[string, string]> = [
-  ["AMOR", "ESCAPAMENTO"],
-  ["LIXO", "LUXO"],
-  ["ESCAPAMENTO", "LUXO"],
-  ["EU", "ALMA"],
-  ["PROMPTOGRAF", "AR"],
-  ["CORPO", "MEMÓRIA"],
-];
-for (const [label, canvasWidth, canvasHeight, pixelRatio] of canvases.slice(0, 4)) {
-  for (const [stencil, tile] of mustRead) {
-    const ink = stencilInk(stencil, canvasWidth, canvasHeight);
-    const grid = mosaicGrid(canvasWidth, canvasHeight, ink, stencil.length, widthOf(tile), pixelRatio);
-    const perLetter = grid.sampledColumns / stencil.length;
-    const where = `${label} ${stencil}/${tile}`;
-    assert(perLetter >= 3, `${where}: ${perLetter.toFixed(1)} columns per letter, needs 3`);
-    assert(grid.sampledColumns >= 10, `${where}: ${grid.sampledColumns} columns across the word, needs 10`);
-    assert(grid.sampledRows >= 10, `${where}: ${grid.sampledRows} rows, needs 10`);
+// Synthetic O with a counter: evaluate real occupied area, including empty
+// centres, bounds and subpixel antialiasing. A filled counter is a regression.
+const width = 120;
+const height = 100;
+const data = new Uint8ClampedArray(width * height * 4);
+for (let y = 10; y < 90; y++) {
+  for (let x = 10; x < 110; x++) {
+    if (x < 30 || x >= 90 || y < 30 || y >= 70) data[(y * width + x) * 4 + 3] = 255;
   }
 }
-
-console.log(
-  `ok — ${checked} pairings, worst case ${worstColumns.toFixed(1)} columns per letter ` +
-    `and ${worstRows} rows across the big word; the size floor bound in ${starved}`,
-);
-
-function near(value: number, target: number, period: number) {
-  const distance = Math.abs(((value - target) % period) + period) % period;
-  return distance < 1e-6 || Math.abs(distance - period) < 1e-6;
+const coverage = mosaicCoverage(data, width, height);
+assert.equal(coverage(0, 0, width, height), 5600);
+assert.equal(coverage(30, 30, 90, 70), 0);
+assert.equal(coverage(-100, -100, 200, 200), 5600);
+assert.equal(coverage(15, 15, 25, 25), 100);
+const grid = { cell: 10, rowHeight: 10 };
+const sampled = sampleMosaicGlyph({ left: 0, right: 120, top: 0, bottom: 100 }, grid, coverage, 0);
+assert.equal(sampled.fidelity, 1);
+assert.equal(sampled.cells.length, 56);
+for (const cell of sampled.cells) {
+  assert(!(cell.x > 30 && cell.x < 90 && cell.y > 30 && cell.y < 70), 'Counter filled');
+  assert(cell.x - 5 >= 0 && cell.x + 5 <= width, 'Escaped glyph region');
 }
-
-function assert(condition: boolean, message: string) {
-  if (!condition) {
-    console.error(`FAIL — ${message}`);
-    process.exit(1);
-  }
-}
+const translucent = new Uint8ClampedArray([0, 0, 0, 128]);
+assert(Math.abs(mosaicCoverage(translucent, 1, 1)(0, 0, 1, 1) - 128 / 255) < 1e-8);
+assert(Math.abs(mosaicCoverage(translucent, 1, 1)(0.25, 0.25, 0.75, 0.75) - 128 / 255 / 4) < 1e-8);
+console.log(`ok — ${cases} screen/pair/DPR combinations; normalization, counters, sampling and 14px reading floor`);
