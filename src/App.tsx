@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { MosaicPoem } from "./MosaicPoem";
+import { repelTuning, stepRepel, type RepelLetter } from "./repel";
+import { regenereGlyphs, regenereShape } from "./regenere";
 import {
   fadeLetters,
   gravityDefaults,
@@ -447,7 +449,7 @@ interface Poem {
   title: string;
   titleEn: string;
   year: string;
-  media: "video" | "image";
+  media: "video" | "image" | "canvas";
   ratio: string;
   words: string;
   note: string;
@@ -537,11 +539,11 @@ const poems: Poem[] = [
     title: "Regenere",
     titleEn: "Regenerate",
     year: "2025",
-    media: "video",
+    media: "canvas",
     ratio: "1 / 1",
     words: "regenere",
-    note: "As letras giram num cilindro sem emenda nem começo. O fim da palavra já é o seu recomeço, e o eixo nunca aparece.",
-    noteEn: "The letters revolve on a cylinder with no seam and no beginning. The end of the word is already its restart, and the axis never appears.",
+    note: "As letras giram num cilindro. O fim da palavra já é o seu recomeço: regeneração que rege, regeneração que gere.",
+    noteEn: "The letters revolve on a cylinder. The end of the word is already its restart: a regeneration that rules, a regeneration that begets — rege and gere both live inside regenere.",
   },
   {
     slug: "rodar-e-rodar",
@@ -720,9 +722,9 @@ const creationsCopy = {
     interactive: {
       number: "01",
       label: "Poemas interativos",
-      title1: "Quatro poemas",
+      title1: "Cinco poemas",
       title2: "que respondem.",
-      subtitle: "Um relógio que marca o horário de Brasília em tempo real, com as letras sendo arrastadas pelo tempo, uma bandeira que balança a sua frase, uma palavra desenhada pela repetição de outra e um chão onde as palavras caem e se desmancham em letras.",
+      subtitle: "Um relógio que marca o horário de Brasília em tempo real, com as letras sendo arrastadas pelo tempo, uma bandeira que balança a sua frase, uma palavra desenhada pela repetição de outra, um chão onde as palavras caem e se desmancham em letras e um letreiro de néon que foge de quem tenta tocá-lo.",
       clockTitle: "O Tempo Não Para",
       clockNote: "O tempo arrasta as palavras. “Não sei o que é o tempo. Não sei qual a verdadeira medida que ele tem, se tem alguma. A do relógio sei que é falsa: divide o tempo espacialmente, por fora” — Fernando Pessoa. Relógio no horário de Brasília.",
       clockLabel: "Horário de Brasília",
@@ -771,6 +773,10 @@ const creationsCopy = {
       gravityBounce: "Quique",
       gravityGrip: "Atrito",
       gravityReset: "Física original",
+      touchTitle: "Não Toque É Arte",
+      touchNote: "O aviso de museu virado poema. A frase acende em néon e troca de cor sem parar, mas não se deixa alcançar: quanto mais perto o cursor chega, com mais força as letras empurram e escapam pelos lados. Tire o mouse e o letreiro se remonta sozinho, na mesma linha de antes. A obra só continua inteira enquanto ninguém toca nela.",
+      touchLabel: "Aproxime o cursor",
+      touchAria: "Canvas com a frase não toque é arte em letras luminosas que mudam de cor e fogem do cursor do mouse",
     },
     experiments: {
       number: "03",
@@ -828,9 +834,9 @@ const creationsCopy = {
     interactive: {
       number: "01",
       label: "Interactive poems",
-      title1: "Four poems",
+      title1: "Five poems",
       title2: "that answer back.",
-      subtitle: "A clock running on real Brasília time, its letters dragged along by time itself, a flag that waves your own words, a word drawn by the repetition of another, and a floor where words fall and come apart into letters.",
+      subtitle: "A clock running on real Brasília time, its letters dragged along by time itself, a flag that waves your own words, a word drawn by the repetition of another, a floor where words fall and come apart into letters, and a neon sign that runs from anyone who tries to touch it.",
       clockTitle: "O Tempo Não Para",
       clockNote: "Time drags the words along. “I do not know what time is. I do not know its true measure, if it has one. The clock’s I know to be false: it divides time spatially, from the outside” — Fernando Pessoa. A clock running on Brasília time.",
       clockLabel: "Brasília time",
@@ -879,6 +885,10 @@ const creationsCopy = {
       gravityBounce: "Bounce",
       gravityGrip: "Friction",
       gravityReset: "Default physics",
+      touchTitle: "Não Toque É Arte",
+      touchNote: "The museum warning turned into a poem. The phrase burns in neon and never stops shifting colour, but it will not be reached: the closer the cursor gets, the harder the letters shove back and slip aside. Move the mouse away and the sign puts itself back together on the same line. The work stays whole only as long as nobody touches it.",
+      touchLabel: "Bring the cursor closer",
+      touchAria: "Canvas with the phrase não toque é arte in luminous letters that shift colour and flee from the mouse cursor",
     },
     experiments: {
       number: "03",
@@ -3207,6 +3217,13 @@ function Creations({
           <p>{copy.interactive.subtitle}</p>
         </div>
         <div className="cr-live">
+          <article className="cr-live-piece is-banner">
+            <TouchPoem copy={copy.interactive} />
+            <div className="cr-live-body">
+              <h3>{copy.interactive.touchTitle}</h3>
+              <p>{copy.interactive.touchNote}</p>
+            </div>
+          </article>
           <article className="cr-live-piece">
             <ClockPoem label={copy.interactive.clockLabel} aria={copy.interactive.clockAria} />
             <div className="cr-live-body">
@@ -3282,7 +3299,11 @@ function Creations({
                   aria-label={`${copy.poems.open}: ${title}`}
                 >
                   <span className="poem-frame" style={{ aspectRatio: poem.ratio }}>
-                    <PoemMedia poem={poem} play={!reduceMotion && poem.media === "video"} />
+                    {poem.media === "canvas" ? (
+                      <RegenerePoem className="poem-media" aria={isPt ? poem.note : poem.noteEn} />
+                    ) : (
+                      <PoemMedia poem={poem} play={!reduceMotion && poem.media === "video"} />
+                    )}
                     {poem.media === "video" && reduceMotion ? (
                       <span className="poem-play" aria-hidden="true">
                         <Play size={16} />
@@ -3405,7 +3426,9 @@ function Creations({
                 <X size={18} />
               </button>
               <div className="poem-lightbox-media" style={{ aspectRatio: active.ratio }}>
-                {active.media === "image" ? (
+                {active.media === "canvas" ? (
+                  <RegenerePoem className="poem-canvas" aria={isPt ? active.note : active.noteEn} />
+                ) : active.media === "image" ? (
                   <img src={`/assets/poemas/${active.slug}.jpg`} alt={isPt ? active.note : active.noteEn} />
                 ) : (
                   <video
@@ -3749,6 +3772,257 @@ function ClockPoem({ label, aria }: { label: string; aria: string }) {
       <figcaption className="live-readout">
         <span>{label}</span>
         <strong>{readout}</strong>
+      </figcaption>
+    </figure>
+  );
+}
+
+// "Regenere", rebuilt from the original video as a live drawing. The drum's
+// geometry lives in regenere.ts; this only paints it and keeps it turning.
+function RegenerePoem({ className, aria }: { className: string; aria: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    // The glyphs come back as transforms for type set at this size.
+    const nominal = 100;
+    const font = `200 ${nominal}px Inter, "Helvetica Neue", Helvetica, Arial, sans-serif`;
+    let width = 0;
+    let height = 0;
+    let ratio = 1;
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      ratio = Math.min(window.devicePixelRatio || 1, 2);
+      width = Math.max(1, rect.width);
+      height = Math.max(1, rect.height);
+      canvas.width = Math.round(width * ratio);
+      canvas.height = Math.round(height * ratio);
+    };
+    resize();
+
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvas);
+
+    let visible = true;
+    const visibility = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+    }, { rootMargin: "200px 0px" });
+    visibility.observe(canvas);
+
+    const inset = 0.94;
+    const draw = (turn: number) => {
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.fillStyle = "#fbfbfb";
+      context.fillRect(0, 0, width, height);
+      context.font = font;
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      const offsetX = (width * (1 - inset)) / 2;
+      const offsetY = (height * (1 - inset)) / 2;
+      for (const glyph of regenereGlyphs(width * inset, height * inset, turn)) {
+        const [a, b, c, d, x, y] = glyph.m;
+        context.setTransform(
+          (a / nominal) * ratio,
+          (b / nominal) * ratio,
+          (c / nominal) * ratio,
+          (d / nominal) * ratio,
+          (x + offsetX) * ratio,
+          (y + offsetY) * ratio,
+        );
+        context.fillStyle = `rgba(17,17,17,${glyph.alpha.toFixed(3)})`;
+        context.fillText(glyph.ch, 0, 0);
+      }
+      context.setTransform(1, 0, 0, 1, 0, 0);
+    };
+
+    if (reduceMotion) {
+      draw(0);
+      void document.fonts?.load(`200 40px Inter`).then(() => draw(0)).catch(() => {});
+      return () => {
+        observer.disconnect();
+        visibility.disconnect();
+      };
+    }
+
+    let frame = requestAnimationFrame(function spin(now) {
+      frame = requestAnimationFrame(spin);
+      if (!visible) return;
+      draw((-(now / 1000) * Math.PI * 2) / regenereShape.period);
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      visibility.disconnect();
+    };
+  }, [reduceMotion]);
+
+  return <canvas ref={canvasRef} className={className} role="img" aria-label={aria} />;
+}
+
+// "Não Toque É Arte": a neon museum warning that means it. The letters cycle
+// through the spectrum and shove themselves away from the pointer, so the phrase
+// can be read but never reached.
+const touchLines = ["NÃO TOQUE", "É ARTE"];
+type NeonLetter = RepelLetter & { hue: number };
+
+function TouchPoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive"] }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    const font = (size: number) => `700 ${size}px Syne, Inter, system-ui, sans-serif`;
+    let letters: NeonLetter[] = [];
+    let width = 0;
+    let height = 0;
+    let size = 0;
+    const pointer = { x: 0, y: 0, active: false };
+
+    const layout = () => {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      width = Math.max(1, rect.width);
+      height = Math.max(1, rect.height);
+      canvas.width = Math.round(width * ratio);
+      canvas.height = Math.round(height * ratio);
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+      const leading = 1.16;
+      // Letters are drawn one by one, so kerning is lost; a touch of tracking
+      // keeps the glow of neighbouring glyphs from merging.
+      const tracking = 1.06;
+      context.font = font(100);
+      const widest = Math.max(...touchLines.map((line) => context.measureText(line).width * tracking));
+      size = Math.min((width * 0.82) / (widest / 100), (height * 0.7) / (touchLines.length * leading));
+      context.font = font(size);
+
+      let index = 0;
+      letters = touchLines.flatMap((line, row) => {
+        const lineWidth = context.measureText(line).width * tracking;
+        const y = height / 2 + (row - (touchLines.length - 1) / 2) * size * leading;
+        let x = (width - lineWidth) / 2;
+        return [...line].flatMap((ch) => {
+          const advance = context.measureText(ch).width * tracking;
+          const centre = x + advance / 2;
+          x += advance;
+          if (ch === " ") return [];
+          const letter: NeonLetter = {
+            ch,
+            hx: centre,
+            hy: y,
+            size,
+            phase: index * 0.55,
+            hue: index * 26,
+            x: centre,
+            y,
+            vx: 0,
+            vy: 0,
+            angle: 0,
+            va: 0,
+          };
+          index += 1;
+          return [letter];
+        });
+      });
+    };
+    layout();
+
+    const observer = new ResizeObserver(layout);
+    observer.observe(canvas);
+
+    let visible = true;
+    const visibility = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+    }, { rootMargin: "150px 0px" });
+    visibility.observe(canvas);
+
+    const track = (event: PointerEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      pointer.x = event.clientX - rect.left;
+      pointer.y = event.clientY - rect.top;
+      pointer.active = true;
+    };
+    const release = () => {
+      pointer.active = false;
+    };
+    canvas.addEventListener("pointermove", track);
+    canvas.addEventListener("pointerdown", track);
+    canvas.addEventListener("pointerleave", release);
+    canvas.addEventListener("pointercancel", release);
+
+    let frame = 0;
+    let last = performance.now();
+    const draw = (now: number) => {
+      frame = requestAnimationFrame(draw);
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      if (!visible || dt <= 0) return;
+
+      const tuning = repelTuning(size);
+      stepRepel(letters, pointer, dt, tuning);
+      const drift = reduceMotion ? 0 : (now / 1000) * 22;
+
+      context.globalCompositeOperation = "source-over";
+      context.fillStyle = "#05050b";
+      context.fillRect(0, 0, width, height);
+
+      if (pointer.active) {
+        const halo = context.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, tuning.radius);
+        halo.addColorStop(0, `hsla(${(drift + 180) % 360}, 100%, 62%, 0.13)`);
+        halo.addColorStop(1, "hsla(0, 0%, 0%, 0)");
+        context.fillStyle = halo;
+        context.fillRect(0, 0, width, height);
+      }
+
+      context.globalCompositeOperation = "lighter";
+      context.font = font(size);
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      for (const letter of letters) {
+        const hue = (drift + letter.hue) % 360;
+        context.save();
+        context.translate(letter.x, letter.y);
+        context.rotate(letter.angle);
+        context.shadowColor = `hsl(${hue}, 100%, 55%)`;
+        context.shadowBlur = size * 0.5;
+        context.fillStyle = `hsl(${hue}, 100%, 58%)`;
+        context.fillText(letter.ch, 0, 0);
+        context.shadowBlur = size * 0.16;
+        context.fillStyle = `hsl(${hue}, 100%, 92%)`;
+        context.fillText(letter.ch, 0, 0);
+        context.restore();
+      }
+      context.globalCompositeOperation = "source-over";
+    };
+    frame = requestAnimationFrame(draw);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      visibility.disconnect();
+      canvas.removeEventListener("pointermove", track);
+      canvas.removeEventListener("pointerdown", track);
+      canvas.removeEventListener("pointerleave", release);
+      canvas.removeEventListener("pointercancel", release);
+    };
+  }, [reduceMotion]);
+
+  return (
+    <figure className="live-poem">
+      <canvas ref={canvasRef} className="live-canvas is-neon" role="img" aria-label={copy.touchAria} />
+      <figcaption className="live-readout">
+        <span>{copy.touchLabel}</span>
       </figcaption>
     </figure>
   );

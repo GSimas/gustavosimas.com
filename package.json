@@ -13,6 +13,8 @@
     "typecheck": "tsc -b",
     "check:gravity": "node scripts/check-gravity.ts",
     "check:mosaic": "node scripts/check-mosaic.ts",
+    "check:regenere": "node scripts/check-regenere.ts",
+    "check:repel": "node scripts/check-repel.ts",
     "check:mosaic:browser": "node scripts/check-mosaic-browser.mjs"
   },
   "dependencies": {
