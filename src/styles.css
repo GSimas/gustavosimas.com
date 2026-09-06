@@ -936,6 +936,15 @@ img {
   gap: 16px;
 }
 
+/* Clips the pages as they roll past. The padding is there so a card's hover
+   lift and shadow are not cut off by that same clipping. */
+.project-viewport {
+  position: relative;
+  overflow: hidden;
+  margin: -24px;
+  padding: 24px;
+}
+
 .project-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -1068,6 +1077,15 @@ img {
 }
 .visual-entreletras {
   background: #17150f;
+}
+.visual-colorima {
+  background: #090d16;
+}
+.visual-rapi {
+  background: #0b1220;
+}
+.visual-folha-coqueiros {
+  background: #0d1b28;
 }
 
 .project-body {

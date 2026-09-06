@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Capa autoral do Dashboard Folha de Coqueiros</title>
+  <desc id="desc">Rede de atores e categorias extraídas do acervo de um jornal de bairro.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0d1b28"/><stop offset="1" stop-color="#14263a"/></linearGradient>
+    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#5fa8d3" fill-opacity=".12"/></pattern>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+  <rect width="1200" height="760" fill="url(#grid)"/>
+  <g font-family="Arial, sans-serif">
+    <text x="70" y="106" font-size="29" font-weight="800" fill="#eef5fb">Folha de <tspan fill="#5fa8d3" font-family="Georgia, serif" font-style="italic">Coqueiros</tspan></text>
+    <text x="796" y="102" font-size="12" letter-spacing="4" fill="#7d95ab">DADOS TERRITORIAIS · JORNALISMO LOCAL</text>
+  </g>
+  <text x="70" y="215" fill="#5fa8d3" font-family="Arial, sans-serif" font-size="13" letter-spacing="5">O BAIRRO COMO BASE DE DADOS</text>
+  <text x="70" y="286" fill="#eef5fb" font-family="Georgia, serif" font-size="62">Quem move o lugar,</text>
+  <text x="70" y="348" fill="#eef5fb" font-family="Georgia, serif" font-size="62">e o que move quem.</text>
+  <g transform="translate(72 421)">
+    <rect width="1056" height="202" rx="14" fill="#0f2032" stroke="#2f4d66"/>
+    <g font-family="Arial, sans-serif">
+      <text x="40" y="62" fill="#5fa8d3" font-size="58" font-weight="800">864</text>
+      <text x="40" y="90" fill="#7d95ab" font-size="12" letter-spacing="3">MATÉRIAS NO ACERVO</text>
+      <text x="250" y="62" fill="#eef5fb" font-size="40">815</text>
+      <text x="250" y="90" fill="#7d95ab" font-size="12" letter-spacing="3">CATEGORIZADAS POR IA</text>
+      <text x="470" y="62" fill="#eef5fb" font-size="40">256</text>
+      <text x="470" y="90" fill="#7d95ab" font-size="12" letter-spacing="3">EVENTOS</text>
+    </g>
+    <g transform="translate(690 26)">
+      <g stroke="#40688a" stroke-width="2" fill="none">
+        <path d="M60 120 L150 60 L250 104 L330 44"/>
+        <path d="M60 120 L150 60"/>
+        <path d="M150 60 L120 20"/>
+        <path d="M250 104 L200 148"/>
+        <path d="M60 120 L200 148"/>
+        <path d="M250 104 L330 140"/>
+      </g>
+      <g fill="#0f2032" stroke="#5fa8d3" stroke-width="3">
+        <circle cx="60" cy="120" r="14"/><circle cx="150" cy="60" r="18"/><circle cx="250" cy="104" r="14"/>
+      </g>
+      <g fill="#e74c3c">
+        <circle cx="330" cy="44" r="8"/><circle cx="120" cy="20" r="8"/><circle cx="200" cy="148" r="8"/><circle cx="330" cy="140" r="8"/>
+      </g>
+    </g>
+  </g>
+  <text x="70" y="690" fill="#7d95ab" font-family="Arial, sans-serif" font-size="13" letter-spacing="4">REDE DE ATORES  ·  ENLACES CAUSAIS  ·  ASSISTENTE EDITORIAL</text>
+</svg>

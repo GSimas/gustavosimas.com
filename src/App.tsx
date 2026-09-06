@@ -204,6 +204,36 @@ const projects: Project[] = [
     image: "/assets/tokenlab-cover.svg",
   },
   {
+    title: "RAPI 2025",
+    category: "Tecnologia",
+    year: "2026",
+    description:
+      "Dashboard interativo do 9º Relatório Anual de Progresso dos Indicadores de Florianópolis: 206 indicadores de sustentabilidade ambiental, urbana e fiscal pela metodologia CES/BID, acompanhados desde 2017, com explorador e leitura assistida por IA.",
+    href: "https://rapi2025.scientata.com/",
+    visual: "rapi",
+    image: "/assets/rapi-cover.svg",
+  },
+  {
+    title: "Dashboard Folha de Coqueiros",
+    category: "Tecnologia",
+    year: "2026",
+    description:
+      "Inteligência de dados territoriais sobre o acervo de um jornal de bairro: 864 matérias categorizadas por IA, rede de atores, diagramas de enlace causal e assistente editorial para ler o território.",
+    href: "https://folhadecoqueiros.netlify.app/",
+    visual: "folha-coqueiros",
+    image: "/assets/folha-coqueiros-cover.svg",
+  },
+  {
+    title: "Colorima",
+    category: "Audiovisual",
+    year: "2026",
+    description:
+      "Jogo de reflexo cognitivo sobre o efeito Stroop invertido: em vez de ler a palavra é preciso inibir a leitura e responder à cor em que ela está escrita. Três modos — clássico, rush contra o tempo e zen, sem placar.",
+    href: "https://colorima.gustavosimas.com/",
+    visual: "colorima",
+    image: "/assets/colorima-cover.svg",
+  },
+  {
     title: "Entreletras",
     category: "Audiovisual",
     year: "2026",
@@ -268,10 +298,30 @@ const projectTranslationsEn: Record<string, { title: string; description: string
     title: "TokenLab",
     description: "A local analyzer for counting tokens, simulating chunking strategies and estimating load, overlap and requests before indexing knowledge bases in RAG pipelines.",
   },
+  "RAPI 2025": {
+    title: "RAPI 2025",
+    description: "An interactive dashboard for Florianópolis' 9th Annual Indicator Progress Report: 206 environmental, urban and fiscal sustainability indicators under the IDB's CES methodology, tracked since 2017, with an explorer and AI-assisted reading.",
+  },
+  "Dashboard Folha de Coqueiros": {
+    title: "Folha de Coqueiros Dashboard",
+    description: "Territorial data intelligence over a neighbourhood newspaper's archive: 864 articles categorised by AI, an actor network, causal loop diagrams and an editorial assistant for reading the territory.",
+  },
+  Colorima: {
+    title: "Colorima",
+    description: "A cognitive reflex game built on the inverted Stroop effect: instead of reading the word you have to hold the reading back and answer the colour it is printed in. Three modes — classic, a rush against the clock, and zen, with no score.",
+  },
   Entreletras: {
     title: "Entreletras",
     description: "A Portuguese word game: you write a horizontal word and the dictionary answers with the verticals crossing each of its letters. Two modes — Trama, with a hidden word of the day, and Bistrô, free and endless.",
   },
+};
+
+// Pages of the portfolio roll sideways: the one leaving slides out the way the
+// reader is heading, the one arriving comes in from the opposite edge.
+const projectPageRoll = {
+  enter: (direction: number) => ({ x: direction === 0 ? 0 : direction > 0 ? "100%" : "-100%", opacity: 0 }),
+  settled: { x: 0, opacity: 1 },
+  leave: (direction: number) => ({ x: direction === 0 ? 0 : direction > 0 ? "-100%" : "100%", opacity: 0 }),
 };
 
 const categoryLabels: Record<Language, Record<"Todos" | Category, string>> = {
@@ -850,6 +900,11 @@ const portfolioCopy = {
       searchPlaceholder: "Pesquisar projetos, tecnologias ou termos...",
       searchAria: "Pesquisar no portfólio",
       noResults: "Nenhum projeto encontrado para esta busca.",
+      previous: "Anterior",
+      next: "Próximo",
+      page: "Página",
+      pageOf: "de",
+      pagerAria: "Paginação do portfólio",
     },
     audio: {
       kicker: "Áudio como outra forma de pesquisa",
@@ -948,6 +1003,11 @@ const portfolioCopy = {
       searchPlaceholder: "Search projects, technologies or terms...",
       searchAria: "Search portfolio",
       noResults: "No projects found matching this search.",
+      previous: "Previous",
+      next: "Next",
+      page: "Page",
+      pageOf: "of",
+      pagerAria: "Portfolio pagination",
     },
     audio: {
       kicker: "Audio as another form of research",
@@ -1866,6 +1926,13 @@ function Portfolio({
   });
   const [menu, setMenu] = useState(false);
   const [filter, setFilter] = useState<"Todos" | Category>("Todos");
+  const [projectPage, setProjectPage] = useState(0);
+  // Which way the pages roll: +1 forwards, -1 back, 0 when the list itself
+  // changed under the reader and there is nothing to roll away from.
+  const [projectDirection, setProjectDirection] = useState(0);
+  // Cards per row, as the grid itself lays them out: three at full width, two
+  // from 1100px down, one on a phone.
+  const [projectColumns, setProjectColumns] = useState(3);
   const [projectSearch, setProjectSearch] = useState("");
   const copy = portfolioCopy[language];
   const isPt = language === "pt";
@@ -1902,6 +1969,66 @@ function Portfolio({
       );
     });
   }, [filter, projectSearch, language]);
+
+  useEffect(() => {
+    const wide = window.matchMedia("(min-width: 1101px)");
+    const medium = window.matchMedia("(min-width: 821px)");
+    const read = () => setProjectColumns(wide.matches ? 3 : medium.matches ? 2 : 1);
+    read();
+    wide.addEventListener("change", read);
+    medium.addEventListener("change", read);
+    return () => {
+      wide.removeEventListener("change", read);
+      medium.removeEventListener("change", read);
+    };
+  }, []);
+
+  // Two rows per page. The grid is twelve columns wide and a featured card takes
+  // six of them against a normal card's four, so the pages are packed the way
+  // the grid itself wraps — by columns, not by how many cards there are — which
+  // is what keeps every page exactly two rows tall.
+  const projectPages = useMemo(() => {
+    const span = (project: Project) => {
+      if (projectColumns === 1) return 12;
+      if (projectColumns === 2) return 6;
+      return project.featured ? 6 : 4;
+    };
+    const pages: Project[][] = [];
+    let current: Project[] = [];
+    let rows = 0;
+    let used = 0;
+    for (const project of visibleProjects) {
+      const cost = span(project);
+      if (used + cost > 12) {
+        rows += 1;
+        used = 0;
+      }
+      if (rows >= 2) {
+        pages.push(current);
+        current = [];
+        rows = 0;
+      }
+      current.push(project);
+      used += cost;
+    }
+    if (current.length) pages.push(current);
+    return pages;
+  }, [visibleProjects, projectColumns]);
+
+  const projectPageCount = Math.max(1, projectPages.length);
+  const currentProjectPage = Math.min(projectPage, projectPageCount - 1);
+  const pagedProjects = projectPages[currentProjectPage] ?? [];
+
+  // A new filter or search starts its results from the top, without rolling.
+  useEffect(() => {
+    setProjectPage(0);
+    setProjectDirection(0);
+  }, [filter, projectSearch, projectColumns]);
+
+  const turnProjectPage = (to: number) => {
+    setProjectDirection(to > currentProjectPage ? 1 : -1);
+    setProjectPage(to);
+  };
 
   const navigation: Array<{ label: string; href: string; isRoute?: boolean }> = [
     { label: copy.nav[0], href: "#manifesto" },
@@ -2139,28 +2266,62 @@ function Portfolio({
                 )}
               </div>
             </div>
-            <div className="project-grid">
-              <AnimatePresence>
-                {visibleProjects.map((project) => (
-                  <ProjectCard key={project.title} project={project} language={language} />
-                ))}
+            <div className="project-viewport">
+              <AnimatePresence initial={false} mode="popLayout" custom={projectDirection}>
+                <motion.div
+                  key={currentProjectPage}
+                  className="project-grid"
+                  custom={projectDirection}
+                  variants={projectPageRoll}
+                  initial="enter"
+                  animate="settled"
+                  exit="leave"
+                  transition={{ duration: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
+                >
+                  {pagedProjects.map((project) => (
+                    <ProjectCard key={project.title} project={project} language={language} />
+                  ))}
+                </motion.div>
               </AnimatePresence>
-              {visibleProjects.length === 0 && (
-                <div className="portfolio-empty-state">
-                  <p>{copy.portfolio.noResults}</p>
-                  <button
-                    type="button"
-                    className="button ghost"
-                    onClick={() => {
-                      setFilter("Todos");
-                      setProjectSearch("");
-                    }}
-                  >
-                    {isPt ? "Limpar filtros e busca" : "Clear filters and search"}
-                  </button>
-                </div>
-              )}
             </div>
+            {visibleProjects.length === 0 && (
+              <div className="portfolio-empty-state">
+                <p>{copy.portfolio.noResults}</p>
+                <button
+                  type="button"
+                  className="button ghost"
+                  onClick={() => {
+                    setFilter("Todos");
+                    setProjectSearch("");
+                  }}
+                >
+                  {isPt ? "Limpar filtros e busca" : "Clear filters and search"}
+                </button>
+              </div>
+            )}
+            {projectPageCount > 1 ? (
+              <nav className="poem-pager" aria-label={copy.portfolio.pagerAria}>
+                <button
+                  type="button"
+                  onClick={() => turnProjectPage(currentProjectPage - 1)}
+                  disabled={currentProjectPage === 0}
+                >
+                  <ChevronLeft size={14} aria-hidden="true" />
+                  {copy.portfolio.previous}
+                </button>
+                <span aria-live="polite">
+                  {copy.portfolio.page} {currentProjectPage + 1} {copy.portfolio.pageOf} {projectPageCount}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => turnProjectPage(currentProjectPage + 1)}
+                  disabled={currentProjectPage >= projectPageCount - 1}
+                >
+                  {copy.portfolio.next}
+                  <ChevronRight size={14} aria-hidden="true" />
+                </button>
+              </nav>
+            ) : null}
           </div>
         </section>
 

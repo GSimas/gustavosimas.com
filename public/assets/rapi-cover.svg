@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Capa autoral do RAPI 2024-2025</title>
+  <desc id="desc">Indicadores de sustentabilidade de Florianópolis distribuídos em dimensões, pilares e temas.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b1220"/><stop offset="1" stop-color="#132238"/></linearGradient>
+    <linearGradient id="bar" x1="0" y1="1" x2="0" y2="0"><stop stop-color="#2ca02c"/><stop offset="1" stop-color="#60b4fa"/></linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#60b4fa" stroke-opacity=".06"/></pattern>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+  <rect width="1200" height="760" fill="url(#grid)"/>
+  <g font-family="Arial, sans-serif">
+    <text x="70" y="106" font-size="29" font-weight="800" fill="#e8eef7">RAPI<tspan fill="#60b4fa"> 2024–2025</tspan></text>
+    <text x="836" y="102" font-size="12" letter-spacing="4" fill="#7e93ae">METODOLOGIA CES · BID</text>
+  </g>
+  <text x="70" y="215" fill="#60b4fa" font-family="Arial, sans-serif" font-size="13" letter-spacing="5">FLORIANÓPOLIS · 9ª EDIÇÃO</text>
+  <text x="70" y="286" fill="#e8eef7" font-family="Georgia, serif" font-size="62">A cidade medida</text>
+  <text x="70" y="348" fill="#e8eef7" font-family="Georgia, serif" font-size="62">desde 2017.</text>
+  <g transform="translate(72 421)">
+    <rect width="1056" height="202" rx="14" fill="#0d1a2b" stroke="#33526f"/>
+    <g font-family="Arial, sans-serif">
+      <text x="40" y="58" fill="#93d0fd" font-size="62" font-weight="800">206</text>
+      <text x="40" y="86" fill="#7e93ae" font-size="12" letter-spacing="3">INDICADORES</text>
+      <text x="250" y="58" fill="#e8eef7" font-size="40">3</text>
+      <text x="250" y="86" fill="#7e93ae" font-size="12" letter-spacing="3">DIMENSÕES</text>
+      <text x="400" y="58" fill="#e8eef7" font-size="40">12</text>
+      <text x="400" y="86" fill="#7e93ae" font-size="12" letter-spacing="3">PILARES</text>
+      <text x="540" y="58" fill="#e8eef7" font-size="40">25</text>
+      <text x="540" y="86" fill="#7e93ae" font-size="12" letter-spacing="3">TEMAS</text>
+    </g>
+    <g transform="translate(700 30)">
+      <rect x="0" y="86" width="26" height="60" rx="3" fill="url(#bar)"/>
+      <rect x="42" y="52" width="26" height="94" rx="3" fill="url(#bar)"/>
+      <rect x="84" y="104" width="26" height="42" rx="3" fill="url(#bar)"/>
+      <rect x="126" y="30" width="26" height="116" rx="3" fill="url(#bar)"/>
+      <rect x="168" y="70" width="26" height="76" rx="3" fill="url(#bar)"/>
+      <rect x="210" y="16" width="26" height="130" rx="3" fill="url(#bar)"/>
+      <rect x="252" y="60" width="26" height="86" rx="3" fill="url(#bar)"/>
+      <path d="M13 92 L55 58 L97 110 L139 36 L181 76 L223 22 L265 66" fill="none" stroke="#ff7f0e" stroke-width="3"/>
+    </g>
+  </g>
+  <text x="70" y="690" fill="#7e93ae" font-family="Arial, sans-serif" font-size="13" letter-spacing="4">AMBIENTAL  ·  URBANO  ·  FISCAL</text>
+</svg>
