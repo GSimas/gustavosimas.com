@@ -56,7 +56,7 @@ import {
   X,
 } from "lucide-react";
 
-type Category = "Pesquisa" | "Tecnologia" | "Literatura" | "Audiovisual";
+type Category = "Pesquisa" | "Tecnologia" | "Literatura" | "Audiovisual" | "Jogos";
 type Language = "pt" | "en";
 
 interface Project {
@@ -144,6 +144,46 @@ const projects: Project[] = [
     image: "/assets/promptografia-cover.svg",
   },
   {
+    title: "Trajetórias de mulheres negras no ensino superior",
+    category: "Pesquisa",
+    year: "2025",
+    description:
+      "Revisão narrativa sobre raça, gênero, classe e regionalidade nas trajetórias de mulheres negras no ensino superior brasileiro: as barreiras para entrar e permanecer, as estratégias de resistir e o que a estrutura move quando elas chegam (Revista Aracê, com Marcela Aguiar).",
+    href: "https://trajetoriamulheresnegras.scientata.com/",
+    visual: "trajetorias",
+    image: "/assets/trajetorias-cover.svg",
+  },
+  {
+    title: "Interação Humano-IA: Antropomorfização & Engajamento no ChatGPT",
+    category: "Pesquisa",
+    year: "2024",
+    description:
+      "Revisão de escopo sobre atribuir traços humanos a agentes conversacionais: o que a antropomorfização do ChatGPT ganha em engajamento, confiança e aceitação, e o que cobra em excesso de confiança, privacidade e acurácia (AHFE/IHSI 2024, com Vânia Ulbricht).",
+    href: "https://ihsi2024.scientata.com/",
+    visual: "ihsi",
+    image: "/assets/ihsi2024-cover.svg",
+  },
+  {
+    title: "The Role of Knowledge Engineering, Management and Media in the Knowledge Society",
+    category: "Pesquisa",
+    year: "2024",
+    description:
+      "Agenda de pesquisa para a intersecção entre engenharia, gestão e mídia do conhecimento em organizações intensivas em conhecimento, a partir de uma revisão de escopo em cinco etapas que contrasta paradigmas ocidentais e orientais (ECKM 2024, com Flávia Conti e Willian Andrade).",
+    href: "https://eckm2024.scientata.com/",
+    visual: "eckm",
+    image: "/assets/eckm2024-cover.svg",
+  },
+  {
+    title: "Algoritmo adaptativo para aparelhos auditivos",
+    category: "Pesquisa",
+    year: "2021",
+    description:
+      "Trabalho de conclusão em Engenharia Eletrônica (UFSC): um algoritmo que reduz ruído em aparelhos auditivos sem apagar as pistas acústicas que dizem de onde o som vem — e o compromisso que essa preservação cobra.",
+    href: "https://tcc.gustavosimas.com/",
+    visual: "biauricular",
+    image: "/assets/tcc-biauricular-cover.svg",
+  },
+  {
     title: "VI Mídia Produtora",
     category: "Audiovisual",
     year: "2020 — 2024",
@@ -172,16 +212,6 @@ const projects: Project[] = [
     href: "https://simetrics.app/",
     visual: "simetrics",
     image: "/assets/simetrics-cover.svg",
-  },
-  {
-    title: "LIFE∞ — Infinite Life Lab",
-    category: "Audiovisual",
-    year: "2026",
-    description:
-      "Laboratório interativo do Jogo da Vida de Conway em canvas infinito para criar padrões, acompanhar métricas e explorar emergência, auto-organização, complexidade e vida artificial.",
-    href: "https://gameoflife.gustavosimas.com/",
-    visual: "life-infinite",
-    image: "/assets/life-infinite-cover.svg",
   },
   {
     title: "DataVizLab",
@@ -224,8 +254,18 @@ const projects: Project[] = [
     image: "/assets/folha-coqueiros-cover.svg",
   },
   {
+    title: "Entreletras",
+    category: "Jogos",
+    year: "2026",
+    description:
+      "Jogo de palavras em português: você escreve uma horizontal e o dicionário responde com as verticais que cruzam cada letra. Dois modos — Trama, com a palavra escondida do dia, e Bistrô, livre e sem fim.",
+    href: "https://entreletras.io/",
+    visual: "entreletras",
+    image: "/assets/entreletras-cover.svg",
+  },
+  {
     title: "Colorima",
-    category: "Audiovisual",
+    category: "Jogos",
     year: "2026",
     description:
       "Jogo de reflexo cognitivo sobre o efeito Stroop invertido: em vez de ler a palavra é preciso inibir a leitura e responder à cor em que ela está escrita. Três modos — clássico, rush contra o tempo e zen, sem placar.",
@@ -234,14 +274,14 @@ const projects: Project[] = [
     image: "/assets/colorima-cover.svg",
   },
   {
-    title: "Entreletras",
-    category: "Audiovisual",
+    title: "LIFE∞ — Infinite Life Lab",
+    category: "Jogos",
     year: "2026",
     description:
-      "Jogo de palavras em português: você escreve uma horizontal e o dicionário responde com as verticais que cruzam cada letra. Dois modos — Trama, com a palavra escondida do dia, e Bistrô, livre e sem fim.",
-    href: "https://entreletras.io/",
-    visual: "entreletras",
-    image: "/assets/entreletras-cover.svg",
+      "Laboratório interativo do Jogo da Vida de Conway em canvas infinito para criar padrões, acompanhar métricas e explorar emergência, auto-organização, complexidade e vida artificial.",
+    href: "https://gameoflife.gustavosimas.com/",
+    visual: "life-infinite",
+    image: "/assets/life-infinite-cover.svg",
   },
 ];
 
@@ -273,6 +313,22 @@ const projectTranslationsEn: Record<string, { title: string; description: string
   "Promptografia e Agência Criativa": {
     title: "Promptography and Creative Agency",
     description: "Research on human creative agency, authorship and visual practices mediated by generative AI (Brazilian Journal of STS Studies).",
+  },
+  "Trajetórias de mulheres negras no ensino superior": {
+    title: "Black women's paths through higher education",
+    description: "A narrative review of race, gender, class and region in the paths Black women take through Brazilian higher education: the barriers to getting in and staying, the strategies for holding on, and what the structure itself moves once they arrive (Revista Aracê, with Marcela Aguiar).",
+  },
+  "Interação Humano-IA: Antropomorfização & Engajamento no ChatGPT": {
+    title: "Human-AI Interaction: Anthropomorphization & Engagement in ChatGPT",
+    description: "A scoping review of what happens when we lend human traits to conversational agents: what anthropomorphizing ChatGPT gains in engagement, trust and acceptance, and what it costs in overreliance, privacy and accuracy (AHFE/IHSI 2024, with Vânia Ulbricht).",
+  },
+  "The Role of Knowledge Engineering, Management and Media in the Knowledge Society": {
+    title: "The Role of Knowledge Engineering, Management and Media in the Knowledge Society",
+    description: "A research agenda for the intersection of knowledge engineering, management and media in knowledge-intensive organizations, drawn from a five-stage scoping review that sets Western and Eastern paradigms against each other (ECKM 2024, with Flávia Conti and Willian Andrade).",
+  },
+  "Algoritmo adaptativo para aparelhos auditivos": {
+    title: "An adaptive algorithm for hearing aids",
+    description: "An undergraduate thesis in Electronic Engineering (UFSC): an algorithm that cuts noise in hearing aids without erasing the acoustic cues that tell you where a sound is coming from — and the trade-off that preservation demands.",
   },
   "VI Mídia Produtora": {
     title: "VI Mídia Production",
@@ -325,8 +381,8 @@ const projectPageRoll = {
 };
 
 const categoryLabels: Record<Language, Record<"Todos" | Category, string>> = {
-  pt: { Todos: "Todos", Pesquisa: "Pesquisa", Tecnologia: "Tecnologia", Literatura: "Literatura", Audiovisual: "Audiovisual" },
-  en: { Todos: "All", Pesquisa: "Research", Tecnologia: "Technology", Literatura: "Literature", Audiovisual: "Audiovisual" },
+  pt: { Todos: "Todos", Pesquisa: "Pesquisa", Tecnologia: "Tecnologia", Literatura: "Literatura", Audiovisual: "Audiovisual", Jogos: "Jogos" },
+  en: { Todos: "All", Pesquisa: "Research", Tecnologia: "Technology", Literatura: "Literature", Audiovisual: "Audiovisual", Jogos: "Games" },
 };
 
 const highlightPublications = [
@@ -946,7 +1002,7 @@ const portfolioCopy = {
         { title: "Criação e cultura", items: ["Ensaios, literatura e poesia", "Produção fonográfica e som", "Curadoria musical e digital", "Promptografia e IA generativa", "Acessibilidade e audiodescrição"] },
       ],
     },
-    contact: { kicker: "Disponível para projetos, pesquisa e colaboração", title1: "Vamos imaginar", title2: "alguma coisa", title3: "juntos?", description: "Conhecimento, tecnologia, literatura, produção fonográfica e audiovisual para pensar o presente e inventar futuros." },
+    contact: { kicker: "Disponível para projetos, pesquisa e colaboração", title1: "Vamos imaginar", title2: "alguma coisa", title3: "juntos?", description: "Conhecimento, tecnologia e arte para pensar o presente e inventar futuros." },
     footer: { location: "Florianópolis · Brasil", text: "© 2026 · Conhecimento · tecnologia · imaginação", top: "Voltar ao topo" },
     atlas: { aria: "Atlas dos três eixos", core: "Conhecimento", nodes: ["Investigar", "Sistematizar", "Criar"] },
   },
@@ -1044,7 +1100,7 @@ const portfolioCopy = {
         { title: "Creation and culture", items: ["Essays, literature and poetry", "Phonographic production and sound", "Music and digital curation", "Promptography and generative AI", "Accessibility and audio description"] },
       ],
     },
-    contact: { kicker: "Available for projects, research and collaboration", title1: "Shall we imagine", title2: "something", title3: "together?", description: "Knowledge, technology, literature, phonographic production and audiovisual media to think through the present and invent futures." },
+    contact: { kicker: "Available for projects, research and collaboration", title1: "Shall we imagine", title2: "something", title3: "together?", description: "Knowledge, technology and art to think through the present and invent futures." },
     footer: { location: "Florianópolis · Brazil", text: "© 2026 · Knowledge · technology · imagination", top: "Back to top" },
     atlas: { aria: "Atlas of the three axes", core: "Knowledge", nodes: ["Investigate", "Systematize", "Create"] },
   },
@@ -2240,7 +2296,7 @@ function Portfolio({
             </div>
             <div className="portfolio-controls">
               <div className="filters" role="group" aria-label={copy.portfolio.filterAria}>
-                {(["Todos", "Pesquisa", "Tecnologia", "Literatura", "Audiovisual"] as const).map((item) => (
+                {(["Todos", "Pesquisa", "Tecnologia", "Literatura", "Audiovisual", "Jogos"] as const).map((item) => (
                   <button key={item} className={filter === item ? "active" : ""} onClick={() => setFilter(item)}>
                     {categoryLabels[language][item]}
                   </button>

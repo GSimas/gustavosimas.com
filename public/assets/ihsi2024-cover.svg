@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Capa autoral do artigo do IHSI 2024</title>
+  <desc id="desc">Uma bolha de conversa ganhando traços humanos, o antropomorfismo que o artigo examina.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#090d16"/><stop offset="1" stop-color="#0b1d24"/></linearGradient>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+  <g font-family="Arial, sans-serif">
+    <text x="70" y="106" font-size="29" font-weight="800" fill="#f1f5f9">Antropomorfização<tspan fill="#22d3ee"> &amp; HAI</tspan></text>
+    <text x="892" y="102" font-size="12" letter-spacing="4" fill="#6f8494">AHFE / IHSI 2024</text>
+  </g>
+  <text x="70" y="205" fill="#22d3ee" font-family="Arial, sans-serif" font-size="13" letter-spacing="5">INTERAÇÃO HUMANO-IA</text>
+  <text x="70" y="276" fill="#f1f5f9" font-family="Georgia, serif" font-size="58">Damos rosto ao que</text>
+  <text x="70" y="334" fill="#f1f5f9" font-family="Georgia, serif" font-size="58">responde como gente.</text>
+  <g transform="translate(760 470)">
+    <path d="M-180 -120 H180 A26 26 0 0 1 206 -94 V74 A26 26 0 0 1 180 100 H-60 L-120 160 V100 H-180 A26 26 0 0 1 -206 74 V-94 A26 26 0 0 1 -180 -120 Z"
+          fill="#0d2630" stroke="#22d3ee" stroke-width="2.5"/>
+    <g fill="#22d3ee">
+      <circle cx="-64" cy="-30" r="15"/>
+      <circle cx="64" cy="-30" r="15"/>
+    </g>
+    <path d="M-72 34 Q0 84 72 34" fill="none" stroke="#22d3ee" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(70 430)" font-family="monospace" font-size="15">
+    <text x="0" y="0" fill="#7fe4f2">+ engajamento, confiança e aceitação</text>
+    <text x="0" y="40" fill="#e07a5f">− overreliance, privacidade e acurácia</text>
+    <text x="0" y="80" fill="#6f8494">efeito answer-bot · revisão de escopo</text>
+  </g>
+  <text x="70" y="722" fill="#6f8494" font-family="Arial, sans-serif" font-size="13" letter-spacing="4">SIMAS  ·  ULBRICHT  —  UFSC / EGC</text>
+</svg>

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Capa autoral de Trajetórias de mulheres negras no ensino superior</title>
+  <desc id="desc">Quatro lentes — raça, gênero, classe e regionalidade — cruzando-se em vez de agirem em fila.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101014"/><stop offset="1" stop-color="#1a1518"/></linearGradient>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+  <g font-family="Arial, sans-serif">
+    <text x="70" y="106" font-size="29" font-weight="800" fill="#f1eadf">Trajetórias</text>
+    <text x="866" y="102" font-size="12" letter-spacing="4" fill="#77716d">REVISTA ARACÊ · 2025</text>
+  </g>
+  <text x="70" y="205" fill="#e9603c" font-family="Arial, sans-serif" font-size="13" letter-spacing="5">RAÇA · GÊNERO · CLASSE · REGIONALIDADE</text>
+  <text x="70" y="276" fill="#f1eadf" font-family="Georgia, serif" font-size="58">Quando elas entram,</text>
+  <text x="70" y="334" fill="#f1eadf" font-family="Georgia, serif" font-size="58">a estrutura se move.</text>
+  <g transform="translate(760 500)" fill="none" stroke-width="2.5">
+    <circle cx="-110" cy="-70" r="132" stroke="#e9603c" stroke-opacity=".85"/>
+    <circle cx="70" cy="-70" r="132" stroke="#ff8868" stroke-opacity=".7"/>
+    <circle cx="-110" cy="80" r="132" stroke="#d3cbc1" stroke-opacity=".5"/>
+    <circle cx="70" cy="80" r="132" stroke="#9c948d" stroke-opacity=".6"/>
+    <g font-family="Arial, sans-serif" font-size="14" font-weight="700" stroke="none" letter-spacing="1">
+      <text x="-238" y="-190" fill="#e9603c">RAÇA</text>
+      <text x="150" y="-190" fill="#ff8868">GÊNERO</text>
+      <text x="-250" y="238" fill="#d3cbc1">CLASSE</text>
+      <text x="120" y="238" fill="#9c948d">REGIONALIDADE</text>
+    </g>
+    <circle cx="-20" cy="5" r="7" fill="#f1eadf" stroke="none"/>
+  </g>
+  <g transform="translate(70 430)" font-family="monospace" font-size="15" fill="#a89f97">
+    <text x="0" y="0">01 — as barreiras para entrar e permanecer</text>
+    <text x="0" y="40">02 — as estratégias de resistir e transformar</text>
+    <text x="0" y="80">03 — os caminhos que a estrutura abre depois</text>
+  </g>
+  <text x="70" y="722" fill="#77716d" font-family="Arial, sans-serif" font-size="13" letter-spacing="4">REVISÃO NARRATIVA  ·  ENSINO SUPERIOR BRASILEIRO</text>
+</svg>
