@@ -8,6 +8,9 @@ import {
   gravityMaxWords,
   gravityRanges,
   stepGravity,
+  unweld,
+  weld,
+  wordOf,
   type GravityLetter,
   type GravitySettings,
 } from "./gravity";
@@ -53,7 +56,7 @@ import {
   X,
 } from "lucide-react";
 
-type Category = "Pesquisa" | "Tecnologia" | "Literatura" | "Música" | "Visual";
+type Category = "Pesquisa" | "Tecnologia" | "Literatura" | "Audiovisual";
 type Language = "pt" | "en";
 
 interface Project {
@@ -102,7 +105,7 @@ const projects: Project[] = [
   },
   {
     title: "Rancho de Amor à Ilha",
-    category: "Música",
+    category: "Audiovisual",
     year: "2026",
     description:
       "Releitura instrumental e lofi do hino oficial de Florianópolis (composição de Zininho), em homenagem ao centenário da Ponte Hercílio Luz.",
@@ -112,7 +115,7 @@ const projects: Project[] = [
   },
   {
     title: "Berimbrasil",
-    category: "Música",
+    category: "Audiovisual",
     year: "Em curso",
     description:
       "Curadoria e valorização da música brasileira em diálogo com memória, escuta e cultura digital (@brasil.wav).",
@@ -122,7 +125,7 @@ const projects: Project[] = [
   },
   {
     title: "Tecnomágica",
-    category: "Visual",
+    category: "Audiovisual",
     year: "Em curso",
     description:
       "Laboratório de promptografia, inteligência artificial, experimentação visual e imaginação técnica (@tecnomagica).",
@@ -142,7 +145,7 @@ const projects: Project[] = [
   },
   {
     title: "VI Mídia Produtora",
-    category: "Tecnologia",
+    category: "Audiovisual",
     year: "2020 — 2024",
     description:
       "Engenharia de áudio, design de som e produção fonográfica acessível para educação e entretenimento (audiolivros, audiodescrição e tecnologia assistiva).",
@@ -172,7 +175,7 @@ const projects: Project[] = [
   },
   {
     title: "LIFE∞ — Infinite Life Lab",
-    category: "Tecnologia",
+    category: "Audiovisual",
     year: "2026",
     description:
       "Laboratório interativo do Jogo da Vida de Conway em canvas infinito para criar padrões, acompanhar métricas e explorar emergência, auto-organização, complexidade e vida artificial.",
@@ -202,7 +205,7 @@ const projects: Project[] = [
   },
   {
     title: "Entreletras",
-    category: "Tecnologia",
+    category: "Audiovisual",
     year: "2026",
     description:
       "Jogo de palavras em português: você escreve uma horizontal e o dicionário responde com as verticais que cruzam cada letra. Dois modos — Trama, com a palavra escondida do dia, e Bistrô, livre e sem fim.",
@@ -272,8 +275,8 @@ const projectTranslationsEn: Record<string, { title: string; description: string
 };
 
 const categoryLabels: Record<Language, Record<"Todos" | Category, string>> = {
-  pt: { Todos: "Todos", Pesquisa: "Pesquisa", Tecnologia: "Tecnologia", Literatura: "Literatura", Música: "Música", Visual: "Visual" },
-  en: { Todos: "All", Pesquisa: "Research", Tecnologia: "Technology", Literatura: "Literature", Música: "Music", Visual: "Visual" },
+  pt: { Todos: "Todos", Pesquisa: "Pesquisa", Tecnologia: "Tecnologia", Literatura: "Literatura", Audiovisual: "Audiovisual" },
+  en: { Todos: "All", Pesquisa: "Research", Tecnologia: "Technology", Literatura: "Literature", Audiovisual: "Audiovisual" },
 };
 
 const highlightPublications = [
@@ -629,7 +632,7 @@ const creationsCopy = {
       flagExport: "Baixar a sua bandeira",
       flagExporting: "Gerando o arquivo…",
       flagAria: "Bandeira animada feita com a frase digitada pelo visitante",
-      mosaicTitle: "Uma Palavra Dentro da Outra",
+      mosaicTitle: "Topograma",
       mosaicNote: "Homenagem ao LUXO/LIXO de Augusto de Campos: uma palavra deixa de ser lida e passa a servir só de molde para outra. Escreva a palavra que aparece e a palavra que a preenche — a segunda se repete até desenhar cada letra da primeira, e o que se lê depende da distância de quem olha.",
       mosaicStencil: "Palavra que aparece",
       mosaicStencilPlaceholder: "LIXO",
@@ -644,7 +647,7 @@ const creationsCopy = {
       mosaicHint: "Até 12 caracteres em cada campo. Em «palavra contínua» o texto corre e é recortado pelas letras; em «palavras inteiras» nenhuma palavra é cortada. Use «Ler preenchimento» para ampliar as palavras menores. Deixe em branco para ver o par original.",
       mosaicAria: "Canvas com uma palavra grande desenhada pela repetição de outra palavra menor",
       gravityTitle: "A Gravidade da Palavra",
-      gravityNote: "Toda palavra escrita aqui se desfaz ao cair: as letras se soltam umas das outras e passam a obedecer só à gravidade, ao atrito e ao acaso das colisões. Nenhuma volta a se juntar sozinha; o sentido se acumula no chão como entulho tipográfico. Escolha a fonte e a cor, edite ou apague o que já caiu, e arraste qualquer letra para jogá-la de novo ao ar.",
+      gravityNote: "Toda palavra escrita aqui se desfaz ao cair: as letras se soltam umas das outras e passam a obedecer só à gravidade, ao atrito e ao acaso das colisões. No chão, porém, elas voltam a se juntar: arraste uma letra até encostar noutra e as duas se colam numa linha só. Do que sobrou de GRAVIDADE se tira VAIDADE. A palavra colada passa a cair, tombar e empilhar como peça inteira; dois cliques nela desmancham tudo de novo.",
       gravitySeed: "gravidade",
       gravityInput: "Escreva uma palavra",
       gravityPlaceholder: "queda",
@@ -656,8 +659,8 @@ const creationsCopy = {
       gravityEdit: "Editar palavra",
       gravityDelete: "Apagar palavra",
       gravityEmpty: "Nada caiu ainda.",
-      gravityHint: "Até 28 caracteres por palavra · clique numa palavra para editar · arraste as letras para atirá-las.",
-      gravityAria: "Canvas com física de gravidade onde as letras das palavras escritas caem, colidem e se empilham",
+      gravityHint: "Até 28 caracteres por palavra · clique numa palavra para editar · arraste uma letra até outra para colá-las · dois cliques desmancham a palavra colada.",
+      gravityAria: "Canvas com física de gravidade onde as letras caem, colidem, se empilham e se colam umas nas outras quando arrastadas",
       gravityPull: "Gravidade",
       gravityBounce: "Quique",
       gravityGrip: "Atrito",
@@ -737,7 +740,7 @@ const creationsCopy = {
       flagExport: "Download your flag",
       flagExporting: "Building the file…",
       flagAria: "Animated flag built from the phrase typed by the visitor",
-      mosaicTitle: "One Word Inside Another",
+      mosaicTitle: "Topograma",
       mosaicNote: "After Augusto de Campos' LUXO/LIXO: one word stops being read and becomes nothing but the mould of another. Write the word that shows and the word that fills it — the second repeats itself until it draws every letter of the first, and what you read depends on how far away you stand.",
       mosaicStencil: "Word that shows",
       mosaicStencilPlaceholder: "LIXO",
@@ -752,7 +755,7 @@ const creationsCopy = {
       mosaicHint: "Up to 12 characters in each field. In \u201crunning text\u201d the words flow and get cut by the letters; in \u201cwhole words\u201d nothing is ever cut open. Use “Read the filling” to enlarge the smaller words. Leave them empty for the original pair.",
       mosaicAria: "Canvas with a large word drawn by the repetition of a smaller word",
       gravityTitle: "The Gravity of the Word",
-      gravityNote: "Every word written here comes apart as it falls: the letters break loose from one another and start obeying nothing but gravity, friction and the chance of collisions. None of them reassembles on its own; meaning piles up on the floor as typographic rubble. Pick a typeface and a colour, edit or erase what has already fallen, and drag any letter to throw it back into the air.",
+      gravityNote: "Every word written here comes apart as it falls: the letters break loose from one another and start obeying nothing but gravity, friction and the chance of collisions. On the floor, though, they can be put back together: drag one letter until it touches another and the two weld into a single row, spelling whatever the wreckage allows. A welded word then falls, tips and stacks as one piece; double-click it to break it apart again.",
       gravitySeed: "gravity",
       gravityInput: "Write a word",
       gravityPlaceholder: "fall",
@@ -764,8 +767,8 @@ const creationsCopy = {
       gravityEdit: "Edit word",
       gravityDelete: "Delete word",
       gravityEmpty: "Nothing has fallen yet.",
-      gravityHint: "Up to 28 characters per word · click a word to edit it · drag the letters to throw them.",
-      gravityAria: "Canvas with gravity physics where the letters of the words written fall, collide and pile up",
+      gravityHint: "Up to 28 characters per word · click a word to edit it · drag one letter onto another to weld them · double-click a welded word to break it apart.",
+      gravityAria: "Canvas with gravity physics where letters fall, collide, pile up and weld to one another when dragged together",
       gravityPull: "Gravity",
       gravityBounce: "Bounce",
       gravityGrip: "Friction",
@@ -796,7 +799,7 @@ const creationsCopy = {
 const portfolioCopy = {
   pt: {
     brandTagline: "Conhecimento · tecnologia · imaginação",
-    nav: ["Manifesto", "Portfólio", "Trajetória", "Publicações", "Currículo", "Criações"],
+    nav: ["Manifesto", "Portfólio", "Trajetória", "Currículo", "Criações"],
     header: {
       brandAria: "Gustavo Simas — início",
       navAria: "Navegação principal",
@@ -811,9 +814,9 @@ const portfolioCopy = {
     },
     hero: {
       location: "Florianópolis · Brasil · 2026",
-      line1: "Pesquiso as",
-      emphasis: "tecnologias",
-      line3: "que nos criam.",
+      line1: "Entre Arte",
+      emphasis: "e Ciência,",
+      line3: "criando inovações",
       lede: "Engenheiro do conhecimento, pesquisador, escritor e artista. Minha prática atravessa inovação, ecologia do conhecimento, inteligência artificial, literatura e audiovisual.",
       explore: "Explorar trabalhos",
       cv: "Currículo completo",
@@ -894,7 +897,7 @@ const portfolioCopy = {
   },
   en: {
     brandTagline: "Knowledge · technology · imagination",
-    nav: ["Manifesto", "Portfolio", "Journey", "Publications", "CV", "Creations"],
+    nav: ["Manifesto", "Portfolio", "Journey", "CV", "Creations"],
     header: {
       brandAria: "Gustavo Simas — home",
       navAria: "Main navigation",
@@ -909,9 +912,9 @@ const portfolioCopy = {
     },
     hero: {
       location: "Florianópolis · Brazil · 2026",
-      line1: "I research the",
-      emphasis: "technologies",
-      line3: "that create us.",
+      line1: "Between Art",
+      emphasis: "and Science,",
+      line3: "creating innovations",
       lede: "Knowledge engineer, researcher, writer and artist. My practice spans innovation, knowledge ecology, artificial intelligence, literature and audiovisual media.",
       explore: "Explore projects",
       cv: "Full CV",
@@ -1904,9 +1907,8 @@ function Portfolio({
     { label: copy.nav[0], href: "#manifesto" },
     { label: copy.nav[1], href: "#trabalhos" },
     { label: copy.nav[2], href: "#trajetoria" },
-    { label: copy.nav[3], href: "#publicacoes" },
-    { label: copy.nav[4], href: "/curriculo", isRoute: true },
-    { label: copy.nav[5], href: "/criacoes", isRoute: true },
+    { label: copy.nav[3], href: "/curriculo", isRoute: true },
+    { label: copy.nav[4], href: "/criacoes", isRoute: true },
   ];
 
   return (
@@ -2111,7 +2113,7 @@ function Portfolio({
             </div>
             <div className="portfolio-controls">
               <div className="filters" role="group" aria-label={copy.portfolio.filterAria}>
-                {(["Todos", "Pesquisa", "Tecnologia", "Literatura", "Música", "Visual"] as const).map((item) => (
+                {(["Todos", "Pesquisa", "Tecnologia", "Literatura", "Audiovisual"] as const).map((item) => (
                   <button key={item} className={filter === item ? "active" : ""} onClick={() => setFilter(item)}>
                     {categoryLabels[language][item]}
                   </button>
@@ -3002,14 +3004,14 @@ function Creations({
               <p>{copy.interactive.flagNote}</p>
             </div>
           </article>
-          <article className="cr-live-piece is-wide">
+          <article className="cr-live-piece">
             <MosaicPoem copy={copy.interactive} />
             <div className="cr-live-body">
               <h3>{copy.interactive.mosaicTitle}</h3>
               <p>{copy.interactive.mosaicNote}</p>
             </div>
           </article>
-          <article className="cr-live-piece is-wide">
+          <article className="cr-live-piece">
             <GravityPoem copy={copy.interactive} />
             <div className="cr-live-body">
               <h3>{copy.interactive.gravityTitle}</h3>
@@ -3558,6 +3560,12 @@ function GravityPoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive
   const lettersRef = useRef<GravityLetter[]>([]);
   const worldRef = useRef({ width: 0, height: 0 });
   const nextIdRef = useRef(1);
+  const nextGroupRef = useRef(1);
+  // The gap that welds, and the wider one that only shows the hint, both as a
+  // fraction of the two letters' radii.
+  const weldReach = 0.35;
+  const previewReach = 3;
+  const hintRef = useRef<{ a: GravityLetter; b: GravityLetter } | null>(null);
   const seededRef = useRef(false);
   const [words, setWords] = useState<GravityWord[]>([]);
   const [draft, setDraft] = useState("");
@@ -3626,6 +3634,10 @@ function GravityPoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive
         size,
         r,
         mass: r * r,
+        advance: glyph,
+        groupId: null,
+        ox: 0,
+        oy: 0,
         x,
         y: reduceMotion ? height - r - index * 0.5 : -r - index * (size * 0.9),
         vx: reduceMotion ? 0 : (Math.random() - 0.5) * 90,
@@ -3731,7 +3743,9 @@ function GravityPoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive
     );
     visibility.observe(canvas);
 
-    let dragged: GravityLetter | null = null;
+    // Dragging moves a whole welded word, not the one letter under the finger.
+    let dragged: GravityLetter[] = [];
+    let grips: Array<{ x: number; y: number }> = [];
     let pointer = { x: 0, y: 0, at: 0 };
 
     const toWorld = (event: PointerEvent) => {
@@ -3739,17 +3753,126 @@ function GravityPoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive
       return { x: event.clientX - rect.left, y: event.clientY - rect.top };
     };
 
+    // The angle a word already reads at; a loose letter welds onto the upright.
+    const axisOf = (letter: GravityLetter) => (letter.groupId === null ? 0 : letter.angle);
+
+    const centreOf = (members: GravityLetter[]) => {
+      let mass = 0;
+      let x = 0;
+      let y = 0;
+      for (const member of members) {
+        mass += member.mass;
+        x += member.mass * member.x;
+        y += member.mass * member.y;
+      }
+      return { x: x / mass, y: y / mass };
+    };
+
+    // Every candidate the drag could weld onto: each loose letter, and each
+    // welded word once.
+    const candidates = () => {
+      const seen = new Set<number>();
+      const groups: GravityLetter[][] = [];
+      for (const letter of lettersRef.current) {
+        if (letter.fade < 1 || letter.held) continue;
+        if (letter.groupId === null) {
+          groups.push([letter]);
+          continue;
+        }
+        if (seen.has(letter.groupId)) continue;
+        seen.add(letter.groupId);
+        groups.push(wordOf(lettersRef.current, letter));
+      }
+      return groups;
+    };
+
+    /**
+     * The closest end-to-end pairing between the dragged letters and anything
+     * else on the floor. Which end depends on the side the drag came in from,
+     * so a letter approaching from the right always reads after the word.
+     */
+    const nearestJoin = () => {
+      if (!dragged.length) return null;
+      const held = new Set(dragged);
+      let best: { gap: number; lead: GravityLetter[]; follow: GravityLetter[]; a: GravityLetter; b: GravityLetter } | null =
+        null;
+
+      for (const target of candidates()) {
+        if (target.some((member) => held.has(member))) continue;
+        const angle = axisOf(target[0]);
+        const ax = Math.cos(angle);
+        const ay = Math.sin(angle);
+        const along = (letter: GravityLetter) => letter.x * ax + letter.y * ay;
+        const endOf = (members: GravityLetter[], last: boolean) =>
+          members.reduce((pick, member) => ((along(member) > along(pick)) === last ? member : pick));
+
+        const draggedCentre = centreOf(dragged);
+        const targetCentre = centreOf(target);
+        const after = (draggedCentre.x - targetCentre.x) * ax + (draggedCentre.y - targetCentre.y) * ay >= 0;
+        const a = endOf(target, after);
+        const b = endOf(dragged, !after);
+        const gap = Math.hypot(b.x - a.x, b.y - a.y) - (a.r + b.r);
+        if (best && gap >= best.gap) continue;
+        best = after
+          ? { gap, lead: target, follow: dragged, a, b }
+          : { gap, lead: dragged, follow: target, a, b };
+      }
+      return best;
+    };
+
+    /**
+     * Snap the merged word onto one row. The letters that were already resting
+     * stay exactly where they are; the dragged ones click into the slots left
+     * for them, which is what makes the weld read as a weld.
+     */
+    const settleWord = (members: GravityLetter[], anchor: GravityLetter[], angle: number) => {
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+      let mass = 0;
+      let cx = 0;
+      let cy = 0;
+      for (const member of anchor) {
+        mass += member.mass;
+        cx += member.mass * (member.x - (member.ox * cos - member.oy * sin));
+        cy += member.mass * (member.y - (member.ox * sin + member.oy * cos));
+      }
+      cx /= mass;
+      cy /= mass;
+      const { width, height } = worldRef.current;
+      for (const member of members) {
+        member.x = Math.max(member.r, Math.min(width - member.r, cx + member.ox * cos - member.oy * sin));
+        member.y = Math.min(height - member.r, cy + member.ox * sin + member.oy * cos);
+        member.angle = angle;
+        member.vx = 0;
+        member.vy = 0;
+        member.va = 0;
+      }
+    };
+
+    const grab = (members: GravityLetter[], x: number, y: number) => {
+      dragged = members;
+      grips = members.map((member) => ({ x: member.x - x, y: member.y - y }));
+      for (const member of members) {
+        member.held = true;
+        member.vx = 0;
+        member.vy = 0;
+      }
+    };
+
     const onPointerDown = (event: PointerEvent) => {
       const { x, y } = toWorld(event);
       for (let index = lettersRef.current.length - 1; index >= 0; index -= 1) {
         const letter = lettersRef.current[index];
+        if (letter.fade < 1) continue;
         if (Math.hypot(letter.x - x, letter.y - y) <= letter.r * 1.3) {
-          dragged = letter;
-          letter.held = true;
-          letter.vx = 0;
-          letter.vy = 0;
+          grab(wordOf(lettersRef.current, letter), x, y);
           pointer = { x, y, at: performance.now() };
-          canvas.setPointerCapture(event.pointerId);
+          try {
+            canvas.setPointerCapture(event.pointerId);
+          } catch {
+            // A pointer that has already gone cannot be captured; the drag
+            // still works, it just ends when the pointer leaves the canvas.
+          }
           event.preventDefault();
           return;
         }
@@ -3757,33 +3880,72 @@ function GravityPoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive
     };
 
     const onPointerMove = (event: PointerEvent) => {
-      if (!dragged) return;
+      if (!dragged.length) return;
       const { x, y } = toWorld(event);
       const now = performance.now();
       const elapsed = Math.max(8, now - pointer.at) / 1000;
-      dragged.vx = (x - pointer.x) / elapsed;
-      dragged.vy = (y - pointer.y) / elapsed;
-      dragged.x = x;
-      dragged.y = y;
+      const vx = (x - pointer.x) / elapsed;
+      const vy = (y - pointer.y) / elapsed;
+      dragged.forEach((member, index) => {
+        member.x = x + grips[index].x;
+        member.y = y + grips[index].y;
+        member.vx = vx;
+        member.vy = vy;
+      });
       pointer = { x, y, at: now };
       event.preventDefault();
+
+      const join = nearestJoin();
+      const reach = join ? (join.a.r + join.b.r) * weldReach : 0;
+      hintRef.current = join && join.gap < reach * previewReach ? { a: join.a, b: join.b } : null;
+      if (!join || join.gap > reach) return;
+
+      // Contact: the two words become one and the drag carries on with it.
+      const anchor = join.lead === dragged ? join.follow : join.lead;
+      const angle = axisOf(anchor[0]);
+      const members = weld(lettersRef.current, join.lead[0], join.follow[0], nextGroupRef.current);
+      nextGroupRef.current += 1;
+      settleWord(members, anchor, angle);
+      hintRef.current = null;
+      grab(members, x, y);
     };
 
     const onPointerUp = () => {
-      if (!dragged) return;
+      if (!dragged.length) return;
       // A stale throw velocity would fling a letter the user merely parked.
-      if (performance.now() - pointer.at > 120) {
-        dragged.vx = 0;
-        dragged.vy = 0;
+      const stale = performance.now() - pointer.at > 120;
+      for (const member of dragged) {
+        if (stale) {
+          member.vx = 0;
+          member.vy = 0;
+        }
+        member.held = false;
       }
-      dragged.held = false;
-      dragged = null;
+      dragged = [];
+      grips = [];
+      hintRef.current = null;
+    };
+
+    // Two clicks break a welded word back into loose letters.
+    const onDoubleClick = (event: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      for (let index = lettersRef.current.length - 1; index >= 0; index -= 1) {
+        const letter = lettersRef.current[index];
+        if (letter.groupId === null || letter.fade < 1) continue;
+        if (Math.hypot(letter.x - x, letter.y - y) <= letter.r * 1.3) {
+          unweld(lettersRef.current, letter);
+          return;
+        }
+      }
     };
 
     canvas.addEventListener("pointerdown", onPointerDown);
     canvas.addEventListener("pointermove", onPointerMove);
     canvas.addEventListener("pointerup", onPointerUp);
     canvas.addEventListener("pointercancel", onPointerUp);
+    canvas.addEventListener("dblclick", onDoubleClick);
 
     const draw = (now: number) => {
       frame = requestAnimationFrame(draw);
@@ -3802,6 +3964,23 @@ function GravityPoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive
       }
 
       context.clearRect(0, 0, width, height);
+
+      // The join about to happen, so the weld is something the reader can aim
+      // for rather than something that just occurs.
+      const hint = hintRef.current;
+      if (hint) {
+        context.save();
+        context.strokeStyle = hint.b.colour;
+        context.globalAlpha = 0.5;
+        context.lineWidth = 1.5;
+        context.setLineDash([4, 5]);
+        context.beginPath();
+        context.moveTo(hint.a.x, hint.a.y);
+        context.lineTo(hint.b.x, hint.b.y);
+        context.stroke();
+        context.restore();
+      }
+
       context.textAlign = "center";
       context.textBaseline = "middle";
       for (const letter of lettersRef.current) {
@@ -3827,6 +4006,7 @@ function GravityPoem({ copy }: { copy: (typeof creationsCopy)["pt"]["interactive
       canvas.removeEventListener("pointermove", onPointerMove);
       canvas.removeEventListener("pointerup", onPointerUp);
       canvas.removeEventListener("pointercancel", onPointerUp);
+      canvas.removeEventListener("dblclick", onDoubleClick);
     };
   }, [reduceMotion]);
 
