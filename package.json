@@ -15,7 +15,9 @@
     "check:mosaic": "node scripts/check-mosaic.ts",
     "check:regenere": "node scripts/check-regenere.ts",
     "check:repel": "node scripts/check-repel.ts",
-    "check:mosaic:browser": "node scripts/check-mosaic-browser.mjs"
+    "check:mosaic:browser": "node scripts/check-mosaic-browser.mjs",
+    "check:tavo": "node scripts/check-tavo.ts",
+    "audit": "node scripts/audit.mjs"
   },
   "dependencies": {
     "gifenc": "^1.0.3",
@@ -25,9 +27,11 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@types/node": "^22.20.5",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "axe-core": "^4.13.0",
     "playwright": "^1.62.1",
     "typescript": "~5.7.2",
     "vite": "^6.0.5"

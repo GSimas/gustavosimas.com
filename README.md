@@ -54,3 +54,36 @@ estão documentados em [MOSAIC.md](MOSAIC.md).
 npm run check:mosaic
 npm run check:mosaic:browser
 ```
+
+## Tavo — assistente de IA
+
+Botão flutuante presente em todas as páginas (`src/Tavo.tsx`). Responde sobre o Gustavo
+com base no conteúdo do site (`src/content.ts`), na voz do guia de estilo, via DeepSeek.
+
+- **Chave:** copie `.env.example` para `.env` e preencha `DEEPSEEK_API_KEY`. Na Netlify,
+  cadastre a mesma variável em *Site configuration → Environment variables*.
+- **Servidor:** `netlify/functions/tavo.ts` (rota `/api/tavo`). Em `npm run dev` a mesma
+  função roda como middleware do Vite; a chave nunca chega ao navegador.
+- **Guardrails:** só aceita a própria origem, rate limit (Netlify + memória), validação e
+  limites de entrada, papel `system` bloqueado no cliente, raciocínio do modelo não é
+  enviado ao navegador, marcador secreto contra vazamento do prompt, markdown renderizado
+  sem HTML, tempo máximo de resposta e escopo/privacidade definidos no prompt.
+- **Transparência (ISO/IEC 42001):** aviso fixo de que é uma IA, que pode errar, qual
+  provedor processa as mensagens e o contato para confirmar informações; cada resposta é
+  rotulada como gerada por IA.
+
+```bash
+npm run check:tavo
+```
+
+## Auditoria de desempenho e acessibilidade
+
+Mede o build de produção (bundle, FCP/LCP/CLS/TBT com CPU 4x mais lenta, latência de
+interação, FPS, heap entre trocas de rota e violações WCAG 2.1 AA via axe-core):
+
+```bash
+npm run build && npm run audit
+```
+
+Medidas de carregamento variam entre execuções (as fontes vêm da rede); compare
+tendências, não uma execução isolada.

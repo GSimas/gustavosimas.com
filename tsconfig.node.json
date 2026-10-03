@@ -2,12 +2,25 @@
   "compilerOptions": {
     "composite": true,
     "target": "ES2022",
-    "lib": ["ES2022"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": true,
+    "types": [
+      "node"
+    ]
   },
-  "include": ["vite.config.ts"]
+  "include": [
+    "vite.config.ts",
+    "netlify",
+    "src/content.ts",
+    "src/content-cv.ts",
+    "src/content-creations.ts"
+  ]
 }

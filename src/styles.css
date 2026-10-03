@@ -12,10 +12,14 @@
   --panel-hover: rgba(255, 255, 255, 0.06);
   --text: #eef2e8;
   --muted: #a8b0a8;
-  --faint: #727b73;
+  --faint: #7f8980;
   --line: rgba(238, 242, 232, 0.13);
   --line-strong: rgba(238, 242, 232, 0.24);
+  /* --green is for text, icons and accents; --green-fill is for solid
+     surfaces that carry dark text. They only differ in the light theme,
+     where one green can't be dark enough to read and light enough to read on. */
   --green: #a8e935;
+  --green-fill: #a8e935;
   --cyan: #75d7ef;
   --violet: #8e62d4;
   --gold: #f2c94c;
@@ -34,10 +38,11 @@
   --panel-hover: rgba(10, 18, 12, 0.065);
   --text: #172019;
   --muted: #515c53;
-  --faint: #6c776e;
+  --faint: #5c655d;
   --line: rgba(16, 28, 18, 0.15);
   --line-strong: rgba(16, 28, 18, 0.32);
-  --green: #4d7e10;
+  --green: #436e0e;
+  --green-fill: #63a215;
   --cyan: #086e87;
   --violet: #5c3894;
   --gold: #b38600;
@@ -56,6 +61,7 @@
   --line: #fff;
   --line-strong: #fff;
   --green: #c8ff50;
+  --green-fill: #c8ff50;
   --cyan: #74e8ff;
   --violet: #bf94ff;
   --gold: #ffe066;
@@ -73,6 +79,7 @@
   --line: #000;
   --line-strong: #000;
   --green: #245c00;
+  --green-fill: #8ad14a;
   --cyan: #00566d;
   --violet: #3b186b;
   --gold: #805b00;
@@ -114,12 +121,29 @@ img {
 
 ::selection {
   color: #0a1007;
-  background: var(--green);
+  background: var(--green-fill);
+}
+
+/* Fixed backdrop shared by every route (AtlasBackground.tsx); pages sit above it. */
+.atlas-background {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.site-shell,
+.cv-page,
+.cr-page {
+  position: relative;
+  z-index: 1;
 }
 
 .site-shell {
   min-height: 100vh;
-  background: radial-gradient(circle at 50% -20%, color-mix(in srgb, var(--green) 8%, transparent), transparent 35%), var(--bg);
+  background: radial-gradient(circle at 50% -20%, color-mix(in srgb, var(--green) 8%, transparent), transparent 35%);
 }
 
 .section-wrap {
@@ -422,8 +446,8 @@ img {
 
 .button.primary {
   color: #101508;
-  background: var(--green);
-  border-color: var(--green);
+  background: var(--green-fill);
+  border-color: var(--green-fill);
 }
 
 .button.ghost {
@@ -869,8 +893,8 @@ img {
 
 .filters button.active {
   color: #0d1309;
-  border-color: var(--green);
-  background: var(--green);
+  border-color: var(--green-fill);
+  background: var(--green-fill);
   font-weight: 500;
 }
 
@@ -1421,7 +1445,7 @@ img {
   margin-top: 100px;
   padding-bottom: 120px;
   color: #0b1307;
-  background: var(--green);
+  background: var(--green-fill);
 }
 
 .research-grid {
@@ -1437,6 +1461,12 @@ img {
 .research-section .section-marker,
 .research-section .research-intro p {
   color: rgba(11, 19, 7, 0.75);
+}
+
+/* On the lighter light-theme fill the muted text needs a little more ink. */
+:root[data-theme="light"] .research-section .section-marker,
+:root[data-theme="light"] .research-section .research-intro p {
+  color: rgba(11, 19, 7, 0.84);
 }
 
 .research-section .section-marker span:first-child {
@@ -1719,7 +1749,7 @@ img {
   --cv-muted: #555f57;
   --cv-muted-2: #4b544d;
   --cv-faint: #687269;
-  --cv-faint-2: #7a847b;
+  --cv-faint-2: #6b736c;
   --cv-faint-3: #737c75;
   --cv-ink-soft: #2b332d;
   --cv-ink-soft-2: #242c26;
@@ -1734,7 +1764,7 @@ img {
   min-height: 100vh;
   padding: 36px 20px 80px;
   color: var(--cv-ink);
-  background: var(--cv-bg);
+  background: color-mix(in srgb, var(--cv-bg) 72%, transparent);
   font-family: Inter, system-ui, sans-serif;
   transition: background 0.3s ease, color 0.3s ease;
 }
@@ -2134,7 +2164,7 @@ img {
 
 .cv-pub-filter-btn.active {
   background: var(--cv-accent);
-  color: #fff;
+  color: var(--cv-paper);
   border-color: var(--cv-accent);
 }
 
@@ -2784,6 +2814,9 @@ img {
     padding: 0;
     background: #fff;
   }
+  .atlas-background {
+    display: none;
+  }
   .cv-toolbar,
   .cv-interactive-tabs,
   .cv-pub-controls {
@@ -2826,7 +2859,6 @@ img {
   min-height: 100vh;
   padding: 36px 20px 0;
   color: var(--text);
-  background: var(--bg);
   font-family: var(--sans);
 }
 
@@ -3911,4 +3943,420 @@ img {
   .cr-zine-cover img {
     transition: none;
   }
+}
+
+/* ==========================================================================
+   TAVO — AI ASSISTANT (src/Tavo.tsx)
+   ========================================================================== */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.tavo-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 80;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 18px 0 16px;
+  color: #0a1007;
+  background: var(--green-fill);
+  border: 0;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--green) 28%, transparent), 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tavo-fab:hover {
+  transform: translateY(-2px);
+}
+
+.tavo-fab:focus-visible,
+.tavo-panel :focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+.tavo-fab .tavo-badge {
+  color: var(--green-fill);
+  background: #0a1007;
+}
+
+.tavo-fab.busy::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--green);
+  border-radius: inherit;
+  animation: tavo-ring 1.4s ease-out infinite;
+}
+
+@keyframes tavo-ring {
+  from { opacity: 0.8; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.18); }
+}
+
+.tavo-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  color: #0a1007;
+  background: var(--green-fill);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  vertical-align: middle;
+}
+
+.tavo-panel {
+  position: fixed;
+  right: 24px;
+  bottom: 88px;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  width: min(410px, calc(100vw - 32px));
+  height: min(640px, calc(100dvh - 180px));
+  color: var(--text);
+  background: color-mix(in srgb, var(--panel-solid) 96%, transparent);
+  border: 1px solid var(--line-strong);
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+  font-family: var(--sans);
+}
+
+.tavo-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 12px 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tavo-head > div {
+  flex: 1;
+  display: grid;
+  gap: 2px;
+}
+
+.tavo-head strong {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.tavo-head small {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+}
+
+.tavo-avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: var(--green);
+  border: 1px solid color-mix(in srgb, var(--green) 50%, transparent);
+  border-radius: 50%;
+}
+
+.tavo-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+
+.tavo-icon:hover {
+  color: var(--text);
+  border-color: var(--line);
+}
+
+.tavo-disclaimer {
+  margin: 0;
+  padding: 10px 12px;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--gold) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold) 22%, transparent);
+  border-radius: 10px;
+  font-size: max(var(--minimum-text-size), 0.7rem);
+  line-height: 1.5;
+}
+
+.tavo-disclaimer a {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.tavo-thread {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  overscroll-behavior: contain;
+}
+
+.tavo-empty p {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.tavo-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tavo-suggestions button {
+  padding: 8px 12px;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  text-align: left;
+}
+
+.tavo-suggestions button:hover {
+  border-color: var(--green);
+}
+
+.tavo-msg {
+  max-width: 92%;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.tavo-msg.user {
+  justify-self: end;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--green) 12%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--green) 25%, transparent);
+  border-radius: 14px 14px 4px 14px;
+}
+
+.tavo-msg.user p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.tavo-msg-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: max(var(--minimum-text-size), 0.62rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tavo-md p,
+.tavo-md ul,
+.tavo-md ol {
+  margin: 0 0 10px;
+}
+
+.tavo-md ul,
+.tavo-md ol {
+  padding-left: 20px;
+}
+
+.tavo-md li + li {
+  margin-top: 4px;
+}
+
+.tavo-md a {
+  color: var(--cyan);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.tavo-md strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.tavo-thinking {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.tavo-thinking i {
+  width: 4px;
+  height: 4px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: tavo-dot 1.2s ease-in-out infinite;
+}
+
+.tavo-thinking i:nth-child(2) { animation-delay: 0.15s; }
+.tavo-thinking i:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes tavo-dot {
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-3px); }
+}
+
+.tavo-caret {
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  background: var(--green);
+  vertical-align: text-bottom;
+  animation: tavo-blink 1s steps(2) infinite;
+}
+
+@keyframes tavo-blink {
+  50% { opacity: 0; }
+}
+
+.tavo-note {
+  display: block;
+  color: var(--faint);
+  font-size: 0.78rem;
+}
+
+.tavo-note.error {
+  color: var(--gold);
+}
+
+.tavo-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.tavo-form textarea {
+  flex: 1;
+  min-height: 42px;
+  max-height: 140px;
+  padding: 11px 12px;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font: inherit;
+  font-size: 0.9rem;
+  resize: none;
+  field-sizing: content;
+}
+
+.tavo-form textarea:focus {
+  border-color: var(--green);
+  outline: none;
+}
+
+.tavo-send {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  color: #0a1007;
+  background: var(--green-fill);
+  border: 0;
+  border-radius: 12px;
+}
+
+.tavo-send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .tavo-fab {
+    right: 16px;
+    bottom: 16px;
+    height: 48px;
+  }
+
+  .tavo-panel {
+    right: 8px;
+    bottom: 76px;
+    width: calc(100vw - 16px);
+    height: calc(100dvh - 92px);
+  }
+}
+
+@media print {
+  .tavo-fab,
+  .tavo-panel {
+    display: none !important;
+  }
+}
+
+/* Shown only when a piece crashes (src/ErrorBoundary.tsx). */
+.error-fallback {
+  display: grid;
+  place-items: center;
+  gap: 14px;
+  min-height: 180px;
+  padding: 24px;
+  color: var(--muted);
+  border: 1px dashed var(--line-strong);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.error-fallback p {
+  margin: 0;
+}
+
+/* The CV tab panel only adds semantics; it must not add a layout box. */
+.cv-tabpanel {
+  display: contents;
+}
+
+/* Off-screen until a keyboard user tabs onto it. */
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 10px 16px;
+  color: #0a1007;
+  background: var(--green-fill);
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+main[tabindex="-1"]:focus {
+  outline: none;
 }
