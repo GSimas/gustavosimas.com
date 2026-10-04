@@ -340,7 +340,7 @@ export const highlightPublications = [
     sourceEn: "Trilogía Ciencia Tecnología Sociedad",
     year: "2026",
     authors: "Silva, Gustavo Simas da; Ulbricht, Vania Ribas",
-    link: "https://technonecromancy.gustavosimas.com/",
+    link: "https://tecnonecromancia.scientata.com/",
   },
   {
     title: "An ESG-AI Matrix for Innovation Ecosystems",
@@ -376,7 +376,7 @@ export const highlightPublications = [
     sourceEn: "IHSI 2024 · Palermo, Italy",
     year: "2024",
     authors: "Simas, Gustavo; Ribas Ulbricht, Vânia",
-    link: "https://ihsi2024.gustavosimas.com",
+    link: "https://ihsi2024.scientata.com",
   },
 ];
 export const portfolioCopy = {

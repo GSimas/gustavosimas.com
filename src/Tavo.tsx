@@ -1,6 +1,6 @@
-import { Fragment, memo, useEffect, useRef, useState, type ReactNode } from "react";
+import { Fragment, memo, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, m } from "motion/react";
-import { ArrowUp, Bot, RotateCcw, Square, X } from "lucide-react";
+import { ArrowUp, RotateCcw, Square, X } from "lucide-react";
 import type { Language } from "./content";
 
 // Tavo lives beside the pages (mounted once in App), not inside any of them, so
@@ -9,6 +9,53 @@ import type { Language } from "./content";
 
 type Status = "thinking" | "streaming" | "done" | "error" | "stopped";
 type Message = { id: string; role: "user" | "assistant"; content: string; at?: number; status?: Status; error?: string };
+
+// Tavo's face: an illustrated nod to Gustavo's portrait (curly hair, mustache
+// and goatee, striped shirt over a light tee, warm tapestry behind), drawn
+// rather than photographed so the assistant never passes for the man himself.
+function TavoFace({ size }: { size: number }) {
+  const stripes = useId();
+  const skin = "#c0835d";
+  const dark = "#24150e";
+  return (
+    <svg className="tavo-face" width={size} height={size} viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+      <defs>
+        <pattern id={stripes} width="2.4" height="4" patternUnits="userSpaceOnUse">
+          <rect width="2.4" height="4" fill="#e7ebef" />
+          <rect width="0.9" height="4" fill="#9fb2c6" />
+        </pattern>
+      </defs>
+      <rect width="64" height="64" fill="#f0a22e" />
+      <path d="M0 40 Q18 30 30 6 L0 0Z M64 22 Q50 36 58 64 L64 64Z" fill="#e2701c" opacity="0.55" />
+      <rect x="28.3" y="41" width="7.4" height="11" fill="#a86a47" />
+      <path d="M19 64 L22 50 Q32 54.5 42 50 L45 64Z" fill="#f2e6cf" />
+      <path d="M2 64 Q6 51 22 48.5 L26 64Z M62 64 Q58 51 42 48.5 L38 64Z" fill={`url(#${stripes})`} />
+      <path d="M22 48.5 L18.5 55 L26 55.5Z M42 48.5 L45.5 55 L38 55.5Z" fill="#d5dde5" />
+      <ellipse cx="20.6" cy="32" rx="2.6" ry="3.6" fill={skin} />
+      <ellipse cx="43.4" cy="32" rx="2.6" ry="3.6" fill={skin} />
+      <ellipse cx="32" cy="31" rx="12" ry="13.6" fill={skin} />
+      <g fill={dark}>
+        <circle cx="21.6" cy="21" r="3.9" />
+        <circle cx="24" cy="15.5" r="6" />
+        <circle cx="31.5" cy="12.5" r="6.6" />
+        <circle cx="39" cy="14" r="6" />
+        <circle cx="42.6" cy="19.4" r="4.6" />
+        <circle cx="27" cy="19.5" r="3.4" />
+        <circle cx="34.5" cy="19" r="3.6" />
+      </g>
+      <g fill="none" stroke={dark} strokeLinecap="round">
+        <path d="M24.6 26.6 Q27.6 24.9 30.6 26.3" strokeWidth="1.9" />
+        <path d="M33.4 26.3 Q36.4 24.9 39.4 26.6" strokeWidth="1.9" />
+        <path d="M30.4 35.4 Q32 36.5 33.6 35.4" stroke="#8a5537" strokeWidth="1.1" />
+      </g>
+      <ellipse cx="27.6" cy="29.8" rx="1.5" ry="1.3" fill={dark} />
+      <ellipse cx="36.4" cy="29.8" rx="1.5" ry="1.3" fill={dark} />
+      <path d="M27.4 39.3 Q32 45 36.6 39.3 Q32 40.3 27.4 39.3Z" fill="#fff" />
+      <path d="M26.4 39.2 Q29.2 36.9 32 37.8 Q34.8 36.9 37.6 39.2 Q34.8 38.2 32 38.9 Q29.2 38.2 26.4 39.2Z" fill={dark} />
+      <ellipse cx="32" cy="45.2" rx="1.8" ry="1.6" fill={dark} />
+    </svg>
+  );
+}
 
 const STORAGE_KEY = "tavo-chat-v1";
 const MAX_CHARS = 2000;
@@ -223,7 +270,7 @@ export function Tavo({ language, navigate }: { language: Language; navigate: (pa
             transition={{ duration: 0.22 }}
           >
             <header className="tavo-head">
-              <span className="tavo-avatar" aria-hidden="true"><Bot size={18} /></span>
+              <span className="tavo-avatar" aria-hidden="true"><TavoFace size={34} /></span>
               <div>
                 <strong>{t.title} <span className="tavo-badge">{t.badge}</span></strong>
                 <small>{t.subtitle}</small>
@@ -290,7 +337,7 @@ export function Tavo({ language, navigate }: { language: Language; navigate: (pa
         aria-expanded={open}
         aria-controls="tavo-panel"
       >
-        {open ? <X size={22} /> : <Bot size={22} />}
+        {open ? <X size={22} /> : <TavoFace size={34} />}
         <span>{t.title}</span>
         <span className="tavo-badge">{t.badge}</span>
       </button>

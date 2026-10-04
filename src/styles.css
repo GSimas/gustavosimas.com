@@ -4068,12 +4068,20 @@ img {
 
 .tavo-avatar {
   display: grid;
-  place-items: center;
   width: 34px;
   height: 34px;
-  color: var(--green);
-  border: 1px solid color-mix(in srgb, var(--green) 50%, transparent);
+}
+
+.tavo-face {
+  flex: none;
   border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--green) 50%, transparent);
+}
+
+.tavo-fab .tavo-face {
+  margin-left: -9px;
+  box-shadow: 0 0 0 2px #0a1007;
 }
 
 .tavo-icon {

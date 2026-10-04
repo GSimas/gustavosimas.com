@@ -72,6 +72,11 @@ com base no conteúdo do site (`src/content.ts`), na voz do guia de estilo, via 
   provedor processa as mensagens e o contato para confirmar informações; cada resposta é
   rotulada como gerada por IA.
 
+- **Base extra:** `tavo/faq.md` (perguntas e respostas escritas à mão, com prioridade) e
+  `tavo/links.md` (coleta automática de todos os links externos do site: GitHub via API,
+  ORCID, Spotify, projetos e artigos; LinkedIn, Instagram e Lattes exigem login e ficam de
+  fora). A coleta roda a cada deploy na Netlify; localmente, `npm run tavo:links`.
+
 ```bash
 npm run check:tavo
 ```

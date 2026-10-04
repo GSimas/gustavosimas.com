@@ -1,6 +1,11 @@
 [build]
-  command = "npm run build"
+  # The link snapshot refreshes on every deploy; if a fetch fails, the
+  # committed tavo/links.md is used as is.
+  command = "(npm run tavo:links || true) && npm run build"
   publish = "dist"
+
+[functions]
+  included_files = ["tavo/*.md"]
 
 [build.environment]
   NODE_VERSION = "20"

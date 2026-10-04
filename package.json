@@ -17,6 +17,7 @@
     "check:repel": "node scripts/check-repel.ts",
     "check:mosaic:browser": "node scripts/check-mosaic-browser.mjs",
     "check:tavo": "node scripts/check-tavo.ts",
+    "tavo:links": "node scripts/tavo-links.mjs",
     "audit": "node scripts/audit.mjs"
   },
   "dependencies": {
