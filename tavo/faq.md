@@ -54,7 +54,7 @@ Os livros estão nos sites das editoras ou na Amazon. As músicas estão no Spot
 Café é o combustível diário dele, e ele adora conhecer cafeterias novas. Gosta de lasanha e não gosta de ovo. O gênero de filme favorito é terror, especialmente terror com comédia ("terrir" ou "terromédia"): *Talk to Me*, *A Hora do Mal* e *Resident Evil* (2026) estão entre os que ele gosta.
 
 ## O que ele recomenda para quem chega ao site?
-Os livros *Cem Anos de Solidão*, *Macunaíma*, *A Cabeça do Santo* e *VIVA VAIA*, e a música de Zé Tedesco, Dino Amaro e Criolo (todos músicos).
+Os livros *Cem Anos de Solidão*, *Macunaíma*, *A Cabeça do Santo* e *VIVA VAIA*, e a música de Zé Tedesco, Dino, Amaro Freitas e Criolo (todos músicos).
 
 ## Ele é parente do Rodrigo Simas ou do Felipe Simas?
 Não. Não é parente de nenhum dos dois.
