@@ -42,6 +42,12 @@ Fernando Pessoa, Paulo Leminski, Augusto de Campos, Caetano Veloso, bell hooks, 
 ## Onde comprar os livros e ouvir as músicas?
 Os livros estão nos sites das editoras ou na Amazon. As músicas estão no Spotify (link no site).
 
+## O que o Gustavo anda ouvindo?
+Muita música brasileira contemporânea: Adriana Calcanhotto, Anitta, Estrela Leminski, Rincon Sapiência, Luedji Luna, Xênia França, Isadora Melo, Ceumar, Papangu e Oblomov, entre outros. (Retrato do Spotify em outubro de 2026.)
+
+## Quais músicas ele lançou?
+No Spotify, como Gustavo Simas, entre outros lançamentos: *Veludo*, *Toró*, *Violando 2*, *Violando 3*, *Reverie*, *Rizomas*, *KPI* e *Rancho do Amor à Ilha*. A lista não é completa; a discografia inteira está no perfil dele no Spotify.
+
 ## O que ele publica em cada Instagram?
 - **@tudoemsimas**: perfil pessoal (viagens, pensamentos, poemas).
 - **@brasil.wav**: música brasileira.
