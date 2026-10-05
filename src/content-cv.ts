@@ -270,7 +270,7 @@ export const cvData = {
       type: "Artigo Periódico",
       year: "2026",
       citation: "DA SILVA, Gustavo Simas; ULBRICHT, Vânia Ribas. Promptography and the reconfiguration of human creative agency. Revista Brasileira de Estudos CTS, v. 1, p. 38-59, 2026.",
-      link: "https://revistabrasileiradeestudoscts.emnuvens.com.br/cts/article/view/100",
+      link: "https://revistabrasileiradeestudoscts.com/revista/article/view/37",
     },
     {
       type: "Artigo Periódico",

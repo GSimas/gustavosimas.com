@@ -154,7 +154,7 @@ export const projects: Project[] = [
     category: "Tecnologia",
     year: "2026",
     description:
-      "Plataforma de inteligência bibliométrica e cientométrica que transforma bases de até 10 mil documentos em indicadores, redes de conhecimento e mapas temáticos — com processamento local no navegador.",
+      "Plataforma de inteligência bibliométrica e cientométrica que transforma bases de até 10 mil documentos em indicadores, redes de conhecimento e mapas temáticos — com processamento local no navegador. Inclui revisão sistematizada, com PDFs por estudo e evidências vinculadas a trechos e páginas para conferência humana.",
     href: "https://simetrics.app/",
     visual: "simetrics",
     image: "/assets/simetrics-cover.svg",
@@ -188,6 +188,16 @@ export const projects: Project[] = [
     href: "https://rapi2025.scientata.com/",
     visual: "rapi",
     image: "/assets/rapi-cover.svg",
+  },
+  {
+    title: "Legislanópolis",
+    category: "Tecnologia",
+    year: "2026",
+    description:
+      "Plataforma de consulta e visualização da atividade legislativa de Florianópolis, com dados da Câmara Municipal e exportação de gráficos em PNG com fundo transparente ou JPG.",
+    href: "https://legislanopolis.scientata.com/",
+    visual: "legislanopolis",
+    image: "/assets/legislanopolis-cover.svg",
   },
   {
     title: "Dashboard Folha de Coqueiros",
@@ -286,7 +296,7 @@ export const projectTranslationsEn: Record<string, { title: string; description:
   },
   Simetrics: {
     title: "Simetrics",
-    description: "A bibliometric and scientometric intelligence platform that turns up to 10,000 documents into indicators, knowledge networks and thematic maps — processed locally in the browser.",
+    description: "A bibliometric and scientometric intelligence platform that turns up to 10,000 documents into indicators, knowledge networks and thematic maps — processed locally in the browser. Includes systematized reviews, with PDFs for each study and evidence linked to passages and pages for human verification.",
   },
   "LIFE∞ — Infinite Life Lab": {
     title: "LIFE∞ — Infinite Life Lab",
@@ -303,6 +313,10 @@ export const projectTranslationsEn: Record<string, { title: string; description:
   "RAPI 2025": {
     title: "RAPI 2025",
     description: "An interactive dashboard for Florianópolis' 9th Annual Indicator Progress Report: 206 environmental, urban and fiscal sustainability indicators under the IDB's CES methodology, tracked since 2017, with an explorer and AI-assisted reading.",
+  },
+  "Legislanópolis": {
+    title: "Legislanópolis",
+    description: "A platform for exploring and visualizing legislative activity in Florianópolis, using City Council data and exporting charts as PNGs with transparent backgrounds or JPGs.",
   },
   "Dashboard Folha de Coqueiros": {
     title: "Folha de Coqueiros Dashboard",
