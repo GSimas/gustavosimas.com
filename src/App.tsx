@@ -2,6 +2,7 @@ import { lazy, startTransition, Suspense, useDeferredValue, useEffect, useMemo, 
 import { AnimatePresence, m } from "motion/react";
 import { AtlasBackground } from "./AtlasBackground";
 import { ErrorBoundary } from "./ErrorBoundary";
+import { RecentPosts } from "./RecentPosts";
 import { SectionMarker } from "./SectionMarker";
 import { Tavo } from "./Tavo";
 
@@ -548,6 +549,8 @@ function Portfolio({
           </div>
         </section>
 
+        <RecentPosts language={language} />
+
         {/* MÚSICA & ÁUDIO SECTION */}
         <section id="musica" className="section-wrap section-spacing">
           <div className="sound-card">
@@ -599,7 +602,7 @@ function Portfolio({
         <section id="trajetoria" className="section-wrap section-spacing">
           <div className="section-heading">
             <div>
-              <SectionMarker number="04" label={copy.trajectory.label} />
+              <SectionMarker number="05" label={copy.trajectory.label} />
               <h2>
                 {copy.trajectory.title1}
                 <br />
@@ -633,7 +636,7 @@ function Portfolio({
         <section id="publicacoes" className="research-section section-spacing">
           <div className="section-wrap research-grid">
             <div className="research-intro">
-              <SectionMarker number="05" label={copy.research.label} />
+              <SectionMarker number="06" label={copy.research.label} />
               <h2>
                 {copy.research.title1}
                 <br />
@@ -682,7 +685,7 @@ function Portfolio({
         <section className="section-wrap section-spacing">
           <div className="section-heading compact">
             <div>
-              <SectionMarker number="06" label={copy.capabilities.label} />
+              <SectionMarker number="07" label={copy.capabilities.label} />
               <h2>
                 {copy.capabilities.title1}
                 <br />

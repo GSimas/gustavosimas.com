@@ -16,6 +16,14 @@ export interface Project {
   featured?: boolean;
 }
 
+export interface Post {
+  title: string;
+  link: string;
+  date: string;
+  excerpt: string;
+  image: string | null;
+}
+
 export const projects: Project[] = [
   {
     title: "Tecnogonia: criando tecnologias que nos criam",
@@ -453,6 +461,14 @@ export const portfolioCopy = {
       pageOf: "de",
       pagerAria: "Paginação do portfólio",
     },
+    posts: {
+      label: "Blog",
+      title1: "Posts",
+      title2: "recentes.",
+      subtitle: "Os cinco textos mais recentes do meu blog no Medium.",
+      all: "Ver todos no Medium",
+      unavailable: "Não foi possível carregar os posts agora, mas eles seguem disponíveis no Medium.",
+    },
     audio: {
       kicker: "Áudio como outra forma de pesquisa",
       title1: "Escutar também",
@@ -555,6 +571,14 @@ export const portfolioCopy = {
       page: "Page",
       pageOf: "of",
       pagerAria: "Portfolio pagination",
+    },
+    posts: {
+      label: "Blog",
+      title1: "Recent",
+      title2: "posts.",
+      subtitle: "The five latest pieces from my blog on Medium, written in Portuguese.",
+      all: "See all on Medium",
+      unavailable: "The posts couldn't be loaded right now, but they're still available on Medium.",
     },
     audio: {
       kicker: "Audio as another form of research",

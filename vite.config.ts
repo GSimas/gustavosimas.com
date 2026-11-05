@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import { Readable } from "node:stream";
+import { handlePosts } from "./netlify/functions/posts";
 import { handleTavo } from "./netlify/functions/tavo";
 
 // In dev, serve Tavo's Netlify function from the Vite server itself, so
@@ -31,7 +32,20 @@ function tavoDev(): Plugin {
   };
 }
 
+function postsDev(): Plugin {
+  return {
+    name: "posts-dev",
+    configureServer(server) {
+      server.middlewares.use("/api/posts", async (_req, res) => {
+        const response = await handlePosts();
+        res.writeHead(response.status, Object.fromEntries(response.headers));
+        res.end(await response.text());
+      });
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   Object.assign(process.env, loadEnv(mode, process.cwd(), ""));
-  return { plugins: [react(), tavoDev()] };
+  return { plugins: [react(), tavoDev(), postsDev()] };
 });
